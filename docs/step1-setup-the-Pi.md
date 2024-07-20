@@ -7,10 +7,10 @@ If you're starting from scratch, start here at Step 1.
 
 > The ["Raspberry Pi Imager"](https://www.raspberrypi.org/software/) app can download and write the image to a memory card for you quickly and easily.
 
-# TODO: Update this image
+
 <p align="center">
-<img src="https://github.com/greiginsydney/Intervalometerator/assets/11004787/833fe4b4-9bf7-4104-bc66-2d94b66a9666" width="50%">
- </p>
+  <img src="https://github.com/user-attachments/assets/1583d726-06c1-4b54-b280-9537ce648574" width="50%">
+</p>
 
 # TODO: Update this image
 <p align="center">
