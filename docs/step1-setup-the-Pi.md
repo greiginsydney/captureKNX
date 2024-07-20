@@ -8,6 +8,17 @@ If you're starting from scratch, start here at Step 1.
 > The ["Raspberry Pi Imager"](https://www.raspberrypi.org/software/) app can download and write the image to a memory card for you quickly and easily.
 
 <p align="center">
+  <img src="https://github.com/user-attachments/assets/48df65a7-738b-493f-9e3f-3e3defbd3766" width="50%">
+</p>
+
+I built mine onto a Pi 4, so select your own hardware as required here, or `No filtering` to see the lot:
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a419f62b-e20c-4b1e-810c-6263c4609276" width="50%">
+</p>
+
+Having selected the device, you're taken to the `Choose OS` screen. Select `Raspberry Pi OS (other)`:
+<p align="center">
   <img src="https://github.com/user-attachments/assets/1583d726-06c1-4b54-b280-9537ce648574" width="50%">
 </p>
 
