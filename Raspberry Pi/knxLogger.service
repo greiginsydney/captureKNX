@@ -1,0 +1,13 @@
+[Unit]
+Description=Read from Serial (USB) and send data via TCP Socket to Telegraf (InfluxDB)
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+Restart=always
+RestartSec=3s
+ExecStart=/home/pi/venv/bin/python3 -u /home/pi/knxLogger/knxSerial2Telegraf.py
+
+[Install]
+WantedBy=multi-user.target
