@@ -69,11 +69,11 @@ then
 fi
 
 
+set +e #Suspend the error trap
 isDocker=$(which docker)
-if [[ isDocker != "" ]];
+set -e #Resume the error trap
+if [[ "$?" -ne 0 ]];
 then
-	echo -e "\n"$GREEN"Docker already exists. Skipping install."$RESET""
-else
 	echo -e "\n"$GREEN"Docker not found. Installing."$RESET""
 
 	# Install docker. This is the process from here:
@@ -96,6 +96,15 @@ else
 	apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 	echo -e "\n"$GREEN"End of Docker install steps."$RESET""
 	echo ''
+ 
+else
+	if [[ isDocker != "" ]];
+	then
+		echo -e "\n"$GREEN"Docker already exists. Skipping install."$RESET""
+	else
+		echo -e "\n"$YELLOW"Unexpected error looking for Docker."$RESET""
+  		read -p "Press any key to continue (fingers crossed) or ^C to abort " discard
+    	fi
 fi
 
 
