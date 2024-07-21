@@ -13,6 +13,8 @@
 # https://github.com/greiginsydney/knxLogger
 # https://greiginsydney.com/knx-logger
 
+
+
 set -e # The -e switch will cause the script to exit should any command return a non-zero value
 
 # keep track of the last executed command
@@ -38,33 +40,69 @@ RESET="\033[0m"
 # -----------------------------------
 
 while true;
-        do
-                if [[ "$VIRTUAL_ENV" != "" ]];
-                then
-                        VENV_ACTIVE=1
-                        echo -e ""$GREEN"Virtual environment active."$RESET""
-                        break
-                else
-                        if [[ ! $TRIED ]];
-                        then
-                                echo -e "\n"$YELLOW"Virtual environment NOT active. Attempting to activate."$RESET""
-                                source "venv/bin/activate"
-                                TRIED==1
-                        else
-                                VENV_ACTIVE=0
-                                break
-                        fi;
-                fi;
-        done
+	do
+		if [[ "$VIRTUAL_ENV" != "" ]];
+		then
+			VENV_ACTIVE=1
+			echo -e ""$GREEN"Virtual environment active."$RESET""
+			break
+		else
+			if [[ ! $TRIED ]];
+			then
+				echo -e "\n"$YELLOW"Virtual environment NOT active. Attempting to activate."$RESET""
+				source "venv/bin/activate"
+				TRIED==1
+			else
+				VENV_ACTIVE=0
+				break
+				fi;
+		fi;
+	done
 
 if [[ ($VENV_ACTIVE == 0) ]];
 then
-        echo -e "\n"$YELLOW"The required virtual environment could not be activated"$RESET""
-        echo "Please execute the command 'source venv/bin/activate' and re-run the script."
-        echo -e "If that fails, check you have correctly created the required VENV. Review \nReview \nhttps://github.com/greiginsydney/knxLogger/blob/bookworm/docs/step1-setup-the-Pi.md"
-        echo ''
-        exit
+	echo -e "\n"$YELLOW"The required virtual environment could not be activated"$RESET""
+	echo "Please execute the command 'source venv/bin/activate' and re-run the script."
+	echo -e "If that fails, check you have correctly created the required VENV. Review \nReview \nhttps://github.com/greiginsydney/knxLogger/blob/bookworm/docs/step1-setup-the-Pi.md"
+	echo ''
+	exit
 fi
+
+
+isDocker=$(which docker)
+if [[ isDocker != "" ]];
+then
+	echo -e "\n"$GREEN"Docker already exists"$RESET""
+else
+	echo -e "\n"$GREEN"Docker not found. Installing."$RESET""
+
+	# Install docker. This is the process from here:
+	# https://docs.docker.com/engine/install/debian/
+
+	# Add Docker's official GPG key:
+	apt-get update
+	apt-get install ca-certificates curl
+	install -m 0755 -d /etc/apt/keyrings
+	curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+	chmod a+r /etc/apt/keyrings/docker.asc
+
+	# Add the repository to Apt sources:
+	echo \
+	  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+	  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+	   tee /etc/apt/sources.list.d/docker.list > /dev/null
+	apt-get update
+
+	apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+	echo -e "\n"$GREEN"End of Docker install steps."$RESET""
+	echo ''
+fi
+
+
+git clone https://github.com/huntabyte/tig-stack.git
+cd tig-stack
+
+
 
 apt install python3-pip -y
 pip3 install pyserial
