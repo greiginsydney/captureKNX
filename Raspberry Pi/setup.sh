@@ -72,7 +72,7 @@ fi
 isDocker=$(which docker)
 if [[ isDocker != "" ]];
 then
-	echo -e "\n"$GREEN"Docker already exists"$RESET""
+	echo -e "\n"$GREEN"Docker already exists. Skipping install."$RESET""
 else
 	echo -e "\n"$GREEN"Docker not found. Installing."$RESET""
 
@@ -99,9 +99,55 @@ else
 fi
 
 
-git clone https://github.com/huntabyte/tig-stack.git
-cd tig-stack
+if [ -d /home/$SUDO_USER/tig-stack ];
+then
+	echo -e "\n"$GREEN"tig-stack folder already exists. Skipping download."$RESET""
+else
+	echo -e "\n"$GREEN"tig-stack not found. Cloning from GitHub."$RESET""
+	
+	git clone https://github.com/huntabyte/tig-stack.git
+fi
 
+cd /home/$SUDO_USER/tig-stack
+
+echo -e "\n"$GREEN"Customising the environment (.env) file."$RESET""
+echo -e "\n"$GREEN"If you're unsure just hit return."$RESET""
+echo ''
+
+#Extract the current values:
+OLD_USERNAME=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_USERNAME=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
+OLD_PASSWORD=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_PASSWORD=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
+OLD_TOKEN=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
+OLD_ORG=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_ORG=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
+OLD_BUCKET=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_BUCKET=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
+OLD_RETENTION=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_RETENTION=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
+OLD_HOST=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_HOST=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
+OLD_PATH=$(sed -n -E 's/^\s*TELEGRAF_CFG_PATH=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
+OLD_PORT=$(sed -n -E 's/^\s*GRAFANA_PORT=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
+
+read -e -i "$OLD_USERNAME" -p   'DOCKER_INFLUXDB_INIT_USERNAME    = ' USERNAME
+read -e -i "$OLD_PASSWORD" -p   'DOCKER_INFLUXDB_INIT_PASSWORD    = ' PASSWORD
+read -e -i "$OLD_TOKEN" -p      'DOCKER_INFLUXDB_INIT_ADMIN_TOKEN = ' TOKEN
+read -e -i "$OLD_ORG" -p        'DOCKER_INFLUXDB_INIT_ORG         = ' ORG
+read -e -i "$OLD_BUCKET" -p     'DOCKER_INFLUXDB_INIT_BUCKET      = ' BUCKET
+read -e -i "$OLD_RETENTION" -p  'DOCKER_INFLUXDB_INIT_RETENTION   = ' RETENTION
+read -e -i "$OLD_HOST" -p       'DOCKER_INFLUXDB_INIT_HOST        = ' HOST
+read -e -i "$OLD_PATH" -p       'TELEGRAF_CFG_PATH                = ' TELEGRAF_CFG_PATH # PATH is a reserved word
+read -e -i "$OLD_PORT" -p       'GRAFANA_PORT                     = ' PORT
+
+#Paste in the new settings. (I used "|" as the delimiter for all, as "/" is in the replacement for the path
+sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_USERNAME=)(.*)|\1$USERNAME|" /home/$SUDO_USER/tig-stack/.env
+sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_PASSWORD=)(.*)|\1$PASSWORD|" /home/$SUDO_USER/tig-stack/.env
+sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=)(.*)|\1$TOKEN|" /home/$SUDO_USER/tig-stack/.env
+sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_ORG=)(.*)|\1$ORG|" /home/$SUDO_USER/tig-stack/.env
+sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_BUCKET=)(.*)|\1$BUCKET|" /home/$SUDO_USER/tig-stack/.env
+sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_RETENTION=)(.*)|\1$RETENTION|" /home/$SUDO_USER/tig-stack/.env
+sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_HOST=)(.*)|\1$HOST|" /home/$SUDO_USER/tig-stack/.env
+sed -i -E "s|^(\s*TELEGRAF_CFG_PATH=)(.*)|\1$TELEGRAF_CFG_PATH|" /home/$SUDO_USER/tig-stack/.env
+sed -i -E "s|^(\s*GRAFANA_PORT=)(.*)|\1$PORT|" /home/$SUDO_USER/tig-stack/.env
+
+echo ''
+echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
 
 
 apt install python3-pip -y
