@@ -149,9 +149,16 @@ sed -i -E "s|^(\s*GRAFANA_PORT=)(.*)|\1$PORT|" /home/$SUDO_USER/tig-stack/.env
 echo ''
 echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
 
-
+echo -e "\n"$GREEN"Running the tig-stack script."$RESET""
+echo ''
+docker compose up -d
+echo ''
+echo -e "\n"$GREEN"Back after running the tig-stack script."$RESET""
+echo ''
+echo -e "\n"$GREEN"Installing pip, pyserial."$RESET""
 apt install python3-pip -y
 pip3 install pyserial
+echo ''
 
 mkdir -pv /home/$SUDO_USER/knxLogger
 cd /home/$SUDO_USER/knxLogger
@@ -163,6 +170,7 @@ if [ -f knxLogger.service ];
 		then
 			echo "Skipped: the file '/etc/systemd/system/knxLogger.service' already exists & the new version is unchanged"
 		else
+			echo -e "\n"$GREEN"Moving knxLogger.service."$RESET""
 			mv -fv knxLogger.service /etc/systemd/system/knxLogger.service
 		fi
 fi
