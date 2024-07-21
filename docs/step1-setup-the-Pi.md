@@ -80,7 +80,7 @@ sudo nmcli con mod "mywifissid" ipv4.dns "10.0.0.1"
 
 20. Reboot the Pi to pickup its new IP address and lock in all the changes made above, including the change to the hostname: `sudo reboot`
 
-21. After it reboots, check it's on the network OK by typing `ifconfig` and check the output now shows the entries you added in Step 18.2.
+21. After it reboots, check it's on the network OK by typing `ifconfig` and check the output now shows the entries you added in Step 19.
 (Alternatively, just see if it responds to pings and you can SSH to it on its new IP).
 
 ## Remote config via SSH
