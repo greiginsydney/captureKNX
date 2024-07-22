@@ -69,11 +69,14 @@ then
 fi
 
 
-set +e #Suspend the error trap
-isDocker=$(which docker)
-set -e #Resume the error trap
-if [[ "$?" -ne 0 ]];
+#set +e #Suspend the error trap
+#isDocker=$(which docker)
+#set -e #Resume the error trap
+#if [[ "$?" -ne 0 ]];
+if docker --version >/dev/null 2>&1;
 then
+	echo -e "\n"$GREEN"Docker already exists. Skipping install."$RESET""
+else
 	echo -e "\n"$GREEN"Docker not found. Installing."$RESET""
 
 	# Install docker. This is the process from here:
@@ -93,19 +96,10 @@ then
 	   tee /etc/apt/sources.list.d/docker.list > /dev/null
 	apt-get update
 
-	apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+	apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 	echo -e "\n"$GREEN"End of Docker install steps."$RESET""
 	echo ''
- 
-else
-	if [[ isDocker != "" ]];
-	then
-		echo -e "\n"$GREEN"Docker already exists. Skipping install."$RESET""
-	else
-		echo -e "\n"$YELLOW"Unexpected error looking for Docker."$RESET""
-  		read -p "Press any key to continue (fingers crossed) or ^C to abort " discard
-    	fi
-fi
+ fi
 
 
 if [ -d /home/$SUDO_USER/tig-stack ];
