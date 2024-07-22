@@ -69,10 +69,12 @@ then
 fi
 
 
-#set +e #Suspend the error trap
-#isDocker=$(which docker)
-#set -e #Resume the error trap
-#if [[ "$?" -ne 0 ]];
+# set +e #Suspend the error trap
+# isDocker=$(which docker)
+# set -e #Resume the error trap
+# #if [[ isDocker ]];
+# if [[ "$?" -eq 0 ]];
+#if [ command -v docker >/dev/null 2>&1 ];
 if docker --version >/dev/null 2>&1;
 then
 	echo -e "\n"$GREEN"Docker already exists. Skipping install."$RESET""
@@ -99,8 +101,7 @@ else
 	apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 	echo -e "\n"$GREEN"End of Docker install steps."$RESET""
 	echo ''
- fi
-
+fi
 
 if [ -d /home/$SUDO_USER/tig-stack ];
 then
@@ -197,14 +198,14 @@ fi
 
 # Customise config.txt:
 if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
-  then
-	  echo -e "\n"$GREEN"UART changes to config.txt already exist"$RESET""
+	then
+		echo -e "\n"$GREEN"UART changes to config.txt already exist"$RESET""
 	else
 		echo -e "\n"$GREEN"Adding UART changes to config.txt"$RESET""
-    echo '# Added by setup.sh for the knxLogger' >> /boot/firmware/config.txt
+		echo -e '\n# Added by setup.sh for the knxLogger' >> /boot/firmware/config.txt
 		echo '# Refer https://hackaday.io/project/171850/instructions' >> /boot/firmware/config.txt
-    echo 'enable_uart=1' >> /boot/firmware/config.txt
-    echo 'dtoverlay=disable-bt' >> /boot/firmware/config.txt
+		echo -e 'enable_uart=1\ndtoverlay=disable-bt' >> /boot/firmware/config.txt
+		echo -e "\n"$GREEN"Added UART changes to config.txt OK"$RESET""
 fi
 
 
