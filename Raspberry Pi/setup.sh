@@ -208,4 +208,5 @@ if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
 		echo -e "\n"$GREEN"Added UART changes to config.txt OK"$RESET""
 fi
 
-
+echo ''
+echo -e "\n"$GREEN"Done!"$RESET""
