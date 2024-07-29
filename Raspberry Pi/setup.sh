@@ -176,8 +176,8 @@ docker compose up -d
 echo ''
 echo -e "\n"$GREEN"Back after running the tig-stack script."$RESET""
 echo ''
-echo -e "\n"$GREEN"Installing pip, pyserial."$RESET""
-apt install python3-pip -y
+echo -e "\n"$GREEN"Installing pip, python3-systemd, pyserial."$RESET""
+apt install python3-pip python3-systemd -y
 pip3 install pyserial
 echo ''
 
