@@ -184,6 +184,17 @@ echo ''
 mkdir -pv /home/$SUDO_USER/knxLogger
 cd /home/$SUDO_USER/knxLogger
 
+# Copy the knxSerial2Telegraf.py file across, if required:
+if [ -f knxSerial2Telegraf.py ];
+then
+	if cmp -s knxSerial2Telegraf.py /home/${SUDO_USER}/knxSerial2Telegraf.py;
+	then
+		echo "Skipped: the file '/home/${SUDO_USER}/knxSerial2Telegraf.py' already exists & the new version is unchanged"
+	else
+		mv -fv knxSerial2Telegraf.py /home/${SUDO_USER}/knxSerial2Telegraf.py
+	fi
+fi
+
 # Copy the knxLogger.service file across, if required:
 if [ -f knxLogger.service ];
 	then
