@@ -195,6 +195,9 @@ if [ -f knxLogger.service ];
 			mv -fv knxLogger.service /etc/systemd/system/knxLogger.service
 		fi
 fi
+# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
+echo -e ""$GREEN"Enabling knxLogger.service"$RESET""
+systemctl enable knxLogger.service
 
 # Customise config.txt:
 if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
