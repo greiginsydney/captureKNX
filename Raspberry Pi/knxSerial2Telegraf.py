@@ -35,7 +35,7 @@ log.setLevel(logging.DEBUG)
 # Constants
 #==================
 
-serial_port = 'TODO'
+serial_port = 'ttyKNX1'
 server_addr = ("localhost", 7654)
 
 #==================
@@ -49,13 +49,13 @@ ser = serial.Serial()
 # Interrupt handler (SIGINT & SIGTERM)
 #==================
 def clean_up_and_exit(exit_code):
-  tcp.close()
-  ser.close()
-  sys.exit(exit_code)
+    tcp.close()
+    ser.close()
+    sys.exit(exit_code)
 
 def handler_stop_signals(signum, frame):
-  print("Signal handler called with signal {} ... exiting now".format(signum))
-  clean_up_and_exit(2)
+    print("Signal handler called with signal {} ... exiting now".format(signum))
+    clean_up_and_exit(2)
 
 signal.signal(signal.SIGINT, handler_stop_signals)
 signal.signal(signal.SIGTERM, handler_stop_signals)
@@ -66,12 +66,12 @@ signal.signal(signal.SIGTERM, handler_stop_signals)
 log.info("Create TCP connection to: {}".format(server_addr))
 print("Create TCP connection to: {}".format(server_addr))
 while True:
-  try:
-    tcp.connect(server_addr)
-  except:
-    time.sleep(5)
-  else: # connection established successfully
-    break
+    try:
+        tcp.connect(server_addr)
+    except:
+        time.sleep(5)
+    else: # connection established successfully
+        break
 log.info("  ... connection established")
 print("  ... connection established")
 
@@ -82,10 +82,10 @@ log.info("Try to open serial port: " + serial_port)
 print("Try to open serial port: " + serial_port)
 ser.port = serial_port
 while not ser.is_open:
-  try:
-    ser.open()
-  except:
-    time.sleep(5)
+    try:
+        ser.open()
+    except:
+        time.sleep(5)
 log.info("  ... opened successfully")
 print("  ... opened successfully")
 
@@ -93,10 +93,10 @@ print("  ... opened successfully")
 # "Main" loop - shovel data from Serial to TCP Socket
 #==================
 while True:
-  try:
-    line = ser.readline()
-    tcp.sendall(line)
-  except:
-    log.info("Encountered Serial or TCP error ... exiting now")
-    print("Encountered Serial or TCP error ... exiting now")
-    clean_up_and_exit(1)
+    try:
+        line = ser.readline()
+        tcp.sendall(line)
+    except:
+        log.info("Encountered Serial or TCP error ... exiting now")
+        print("Encountered Serial or TCP error ... exiting now")
+        clean_up_and_exit(1)
