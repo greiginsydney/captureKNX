@@ -187,11 +187,11 @@ cd /home/$SUDO_USER/knxLogger
 # Copy the knxSerial2Telegraf.py file across, if required:
 if [ -f knxSerial2Telegraf.py ];
 then
-	if cmp -s knxSerial2Telegraf.py /home/${SUDO_USER}/knxSerial2Telegraf.py;
+	if cmp -s knxSerial2Telegraf.py /home/${SUDO_USER}/knxLogger/knxSerial2Telegraf.py;
 	then
-		echo "Skipped: the file '/home/${SUDO_USER}/knxSerial2Telegraf.py' already exists & the new version is unchanged"
+		echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/knxSerial2Telegraf.py' already exists & the new version is unchanged"
 	else
-		mv -fv knxSerial2Telegraf.py /home/${SUDO_USER}/knxSerial2Telegraf.py
+		mv -fv knxSerial2Telegraf.py /home/${SUDO_USER}/knxLogger/knxSerial2Telegraf.py
 	fi
 fi
 
