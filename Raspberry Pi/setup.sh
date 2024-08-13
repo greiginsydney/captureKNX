@@ -76,6 +76,45 @@ echo -e "\n"$GREEN"Installing knxdclient requests"$RESET""
 pip3 install knxdclient requests
 echo ''
 
+
+isTelegraf=$(dpkg -L telegraf 2>/dev/null)
+if [[ ! $isTelegraf  ]];
+then
+        echo -e "\n"$GREEN"Installing telegraf"$RESET""
+	curl -s https://repos.influxdata.com/influxdata-archive.key > influxdata-archive.key
+	echo '943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515 influxdata-archive.key' | sha256sum -c && cat influxdata-archive.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null
+	echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
+	apt-get update && sudo apt-get install telegraf -y
+else
+        echo -e "\n"$GREEN"telegraf is already installed - skipping"$RESET""
+fi
+
+
+# TODO: Test if Influx is already installed and skip
+echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
+curl -LO https://download.influxdata.com/influxdb/releases/influxdb2_2.7.8-1_arm64.deb
+dpkg -i influxdb2_2.7.8-1_arm64.deb
+systemctl start influxdb # TODO: don't start until the config has been customised
+
+
+echo -e "\n"$GREEN"Installing grafana"$RESET""
+apt-get install -y apt-transport-https software-properties-common wget
+mkdir -p /etc/apt/keyrings/
+wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+apt-get update
+apt-get install grafana-enterprise -y
+sudo systemctl daemon-reload
+sudo systemctl start grafana-server # TODO: don't start until the config has been customised
+sudo systemctl enable grafana-server
+
+echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
+sudo rm influxdb2_2.7.8-1_arm64.deb
+sudo rm grafana-enterprise_11.1.3_arm64.deb
+
+
+
+
 mkdir -pv /home/$SUDO_USER/knxLogger
 cd /home/$SUDO_USER/knxLogger
 
