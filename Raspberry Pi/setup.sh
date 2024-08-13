@@ -90,11 +90,16 @@ else
 fi
 
 
-# TODO: Test if Influx is already installed and skip
-echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
-curl -LO https://download.influxdata.com/influxdb/releases/influxdb2_2.7.8-1_arm64.deb
-dpkg -i influxdb2_2.7.8-1_arm64.deb
-systemctl start influxdb # TODO: don't start until the config has been customised
+isInfluxd=$(which influxd)
+if [[ ! $isInfluxd ]];
+then
+	echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
+	curl -LO https://download.influxdata.com/influxdb/releases/influxdb2_2.7.8-1_arm64.deb
+	dpkg -i influxdb2_2.7.8-1_arm64.deb
+	systemctl start influxdb # TODO: don't start until the config has been customised
+else
+        echo -e "\n"$GREEN"influx is already installed - skipping"$RESET""
+fi
 
 
 echo -e "\n"$GREEN"Installing grafana"$RESET""
