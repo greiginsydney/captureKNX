@@ -68,55 +68,57 @@ then
 	exit
 fi
 
-
-# set +e #Suspend the error trap
-# isDocker=$(which docker)
-# set -e #Resume the error trap
-# #if [[ isDocker ]];
-# if [[ "$?" -eq 0 ]];
-#if [ command -v docker >/dev/null 2>&1 ];
-if docker --version >/dev/null 2>&1;
-then
-	echo -e "\n"$GREEN"Docker already exists. Skipping install."$RESET""
-else
-	echo -e "\n"$GREEN"Docker not found. Installing."$RESET""
-
-	# Install docker. This is the process from here:
-	# https://docs.docker.com/engine/install/debian/
-
-	# Add Docker's official GPG key:
-	apt-get update
-	apt-get install ca-certificates curl
-	install -m 0755 -d /etc/apt/keyrings
-	curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
-	chmod a+r /etc/apt/keyrings/docker.asc
-
-	# Add the repository to Apt sources:
-	echo \
-	  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
-	  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-	   tee /etc/apt/sources.list.d/docker.list > /dev/null
-	apt-get update
-
-	apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-	echo -e "\n"$GREEN"End of Docker install steps."$RESET""
-	echo ''
-fi
-
-if [ -d /home/$SUDO_USER/tig-stack ];
-then
-	echo -e "\n"$GREEN"tig-stack folder already exists. Skipping download."$RESET""
-else
-	echo -e "\n"$GREEN"tig-stack not found. Cloning from GitHub."$RESET""
-	
-	git clone https://github.com/huntabyte/tig-stack.git
-fi
-
-cd /home/$SUDO_USER/tig-stack
-
-echo -e "\n"$GREEN"Customising the environment (.env) file."$RESET""
-echo -e "\n"$GREEN"If you're unsure just hit return."$RESET""
+echo -e "\n"$GREEN"Installing git python3-pip knxd knxd-tools"$RESET""
+apt-get install git python3-pip knxd knxd-tools -y
+echo -e "\n"$GREEN"Installing rsyslog"$RESET""
+sudo apt install rsyslog -y
+echo -e "\n"$GREEN"Installing knxdclient requests"$RESET""
+pip3 install knxdclient requests
 echo ''
+
+mkdir -pv /home/$SUDO_USER/knxLogger
+cd /home/$SUDO_USER/knxLogger
+
+# Copy the knxLogger.py file across, if required:
+if [ -f knxLogger.py ];
+then
+	if cmp -s knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py;
+	then
+		echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/knxLogger.py' already exists & the new version is unchanged"
+	else
+		mv -fv knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py
+	fi
+fi
+
+# Copy the knxLogger.service file across, if required:
+if [ -f knxLogger.service ];
+	then
+		if cmp -s knxLogger.service /etc/systemd/system/knxLogger.service;
+		then
+			echo "Skipped: the file '/etc/systemd/system/knxLogger.service' already exists & the new version is unchanged"
+		else
+			echo -e "\n"$GREEN"Moving knxLogger.service."$RESET""
+			mv -fv knxLogger.service /etc/systemd/system/knxLogger.service
+		fi
+fi
+# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
+echo -e ""$GREEN"Enabling knxLogger.service"$RESET""
+systemctl enable knxLogger.service
+
+# Customise /boot/firmware/config.txt:
+if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
+	then
+		echo -e "\n"$GREEN"UART changes to config.txt already exist"$RESET""
+	else
+		echo -e "\n"$GREEN"Adding UART changes to config.txt"$RESET""
+		echo -e '\n# Added by setup.sh for the knxLogger' >> /boot/firmware/config.txt
+		echo '# Refer https://hackaday.io/project/171850/instructions' >> /boot/firmware/config.txt
+		echo -e 'enable_uart=1\ndtoverlay=disable-bt' >> /boot/firmware/config.txt
+		echo -e "\n"$GREEN"Added UART changes to config.txt OK"$RESET""
+fi
+
+
+
 
 #Extract the current values:
 OLD_USERNAME=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_USERNAME=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
@@ -170,57 +172,7 @@ sed -i -E "$SocketLine,$ s|^\s*#*\s*#*\s*(service_address = \"tcp://:)(.*)\"(.*)
 sed -i -E "$SocketLine,$ s/^\s*#*\s*#*\s*(data_format = \"influx\")(.*)/\\1/" /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf
 echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
 
-echo -e "\n"$GREEN"Running the tig-stack script."$RESET""
-echo ''
-docker compose up -d
-echo ''
-echo -e "\n"$GREEN"Back after running the tig-stack script."$RESET""
-echo ''
-echo -e "\n"$GREEN"Installing pip, pyserial."$RESET""
-apt install python3-pip -y
-pip3 install pyserial
-echo ''
 
-mkdir -pv /home/$SUDO_USER/knxLogger
-cd /home/$SUDO_USER/knxLogger
-
-# Copy the knxSerial2Telegraf.py file across, if required:
-if [ -f knxSerial2Telegraf.py ];
-then
-	if cmp -s knxSerial2Telegraf.py /home/${SUDO_USER}/knxLogger/knxSerial2Telegraf.py;
-	then
-		echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/knxSerial2Telegraf.py' already exists & the new version is unchanged"
-	else
-		mv -fv knxSerial2Telegraf.py /home/${SUDO_USER}/knxLogger/knxSerial2Telegraf.py
-	fi
-fi
-
-# Copy the knxLogger.service file across, if required:
-if [ -f knxLogger.service ];
-	then
-		if cmp -s knxLogger.service /etc/systemd/system/knxLogger.service;
-		then
-			echo "Skipped: the file '/etc/systemd/system/knxLogger.service' already exists & the new version is unchanged"
-		else
-			echo -e "\n"$GREEN"Moving knxLogger.service."$RESET""
-			mv -fv knxLogger.service /etc/systemd/system/knxLogger.service
-		fi
-fi
-# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
-echo -e ""$GREEN"Enabling knxLogger.service"$RESET""
-systemctl enable knxLogger.service
-
-# Customise config.txt:
-if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
-	then
-		echo -e "\n"$GREEN"UART changes to config.txt already exist"$RESET""
-	else
-		echo -e "\n"$GREEN"Adding UART changes to config.txt"$RESET""
-		echo -e '\n# Added by setup.sh for the knxLogger' >> /boot/firmware/config.txt
-		echo '# Refer https://hackaday.io/project/171850/instructions' >> /boot/firmware/config.txt
-		echo -e 'enable_uart=1\ndtoverlay=disable-bt' >> /boot/firmware/config.txt
-		echo -e "\n"$GREEN"Added UART changes to config.txt OK"$RESET""
-fi
 
 echo ''
 echo -e "\n"$GREEN"Done!"$RESET""
