@@ -90,7 +90,7 @@ else
 fi
 
 
-isInfluxd=$(which influxd)
+isInfluxd=$(command -v influxd)
 if [[ ! $isInfluxd ]];
 then
 	echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
