@@ -163,17 +163,25 @@ else
 fi
 
 
-
 # Customise /boot/firmware/config.txt:
 if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
-	then
-		echo -e "\n"$GREEN"UART changes to config.txt already exist"$RESET""
-	else
-		echo -e "\n"$GREEN"Adding UART changes to config.txt"$RESET""
-		echo -e '\n# Added by setup.sh for the knxLogger' >> /boot/firmware/config.txt
-		echo '# Refer https://hackaday.io/project/171850/instructions' >> /boot/firmware/config.txt
-		echo -e 'enable_uart=1\ndtoverlay=disable-bt' >> /boot/firmware/config.txt
-		echo -e "\n"$GREEN"Added UART changes to config.txt OK"$RESET""
+then
+	echo -e "\n"$GREEN"UART changes to config.txt already exist"$RESET""
+else
+	echo -e "\n"$GREEN"Adding UART changes to config.txt"$RESET""
+	echo -e '\n# Added by setup.sh for the knxLogger' >> /boot/firmware/config.txt
+fi
+if ! grep -q '^enable_uart=1' /boot/firmware/config.txt;
+then
+	echo -e 'enable_uart=1' >> /boot/firmware/config.txt
+fi
+if ! grep -q '^dtoverlay=disable-bt' /boot/firmware/config.txt;
+then
+	echo -e 'dtoverlay=disable-bt' >> /boot/firmware/config.txt
+fi
+if ! grep -q '^dtoverlay=pi3-disable-bt' /boot/firmware/config.txt;
+then
+	echo -e 'dtoverlay=pi3-disable-bt' >> /boot/firmware/config.txt
 fi
 
 
