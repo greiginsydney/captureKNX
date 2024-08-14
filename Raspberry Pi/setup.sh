@@ -200,22 +200,19 @@ then
 fi
 
 
-#Extract the current values:
+# Customise knxd.conf:
 echo -e "\n"$GREEN"Customising the config."$RESET""
 echo 'If any value is unknown, just hit Enter'
 
-#Extract the current values:
+# Extract the current values:
 OLD_MYADDRESS=$(sed -n -E 's/^KNXD_OPTS.*-e ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
 
 read -e -i "$OLD_MYADDRESS" -p     'KNX network client address = ' MYADDRESS
 
 #Paste in the new settings:
 sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\1$MYADDRESS\3|" /etc/knxd.conf
-
 echo ''
 echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
-
-
 
 
 echo -e "\n"$GREEN"Customising the telegraph.conf file."$RESET""
