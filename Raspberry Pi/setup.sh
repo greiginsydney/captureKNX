@@ -101,17 +101,23 @@ else
         echo -e "\n"$GREEN"influx is already installed - skipping"$RESET""
 fi
 
+isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
+if [[ ! $isGrafana ]];
+then
+	echo -e "\n"$GREEN"Installing grafana"$RESET""
+	apt-get install -y apt-transport-https software-properties-common wget
+	mkdir -p /etc/apt/keyrings/
+	wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+	echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+	apt-get update
+	apt-get install grafana-enterprise -y
+	sudo systemctl daemon-reload
+	sudo systemctl start grafana-server # TODO: don't start until the config has been customised
+	sudo systemctl enable grafana-server
+else
+        echo -e "\n"$GREEN"grafana is already installed - skipping"$RESET""
+fi
 
-echo -e "\n"$GREEN"Installing grafana"$RESET""
-apt-get install -y apt-transport-https software-properties-common wget
-mkdir -p /etc/apt/keyrings/
-wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
-echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
-apt-get update
-apt-get install grafana-enterprise -y
-sudo systemctl daemon-reload
-sudo systemctl start grafana-server # TODO: don't start until the config has been customised
-sudo systemctl enable grafana-server
 
 echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
 sudo rm influxdb2_2.7.8-1_arm64.deb
