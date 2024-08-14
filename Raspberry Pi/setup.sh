@@ -68,6 +68,48 @@ then
 	exit
 fi
 
+mkdir -pv /home/$SUDO_USER/knxLogger
+cd /home/$SUDO_USER/knxLogger
+
+if [[ -d /home/${SUDO_USER}/knxLogger/Raspberry\ Pi ]];
+then
+	echo -e ""$GREEN"Moving repo files."$RESET""
+	# Copy the knxLogger.py file across, if required:
+	if [ -f /home/${SUDO_USER}/knxLogger/Raspberry\ Pi/knxLogger.py ];
+	then
+		if cmp -s /home/${SUDO_USER}/knxLogger/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py;
+		then
+			echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/knxLogger.py' already exists & the new version is unchanged"
+   			rm -fr /home/${SUDO_USER}/knxLogger/knxLogger.py
+		else
+			mv -fv /home/${SUDO_USER}/knxLogger/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py
+		fi
+	fi
+
+	# Copy the knxLogger.service file across, if required:
+	if [ -f /home/${SUDO_USER}/knxLogger/Raspberry\ Pi/knxLogger.service ];
+	then
+		if cmp -s /home/${SUDO_USER}/knxLogger/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service;
+		then
+			echo "Skipped: the file '/etc/systemd/system/knxLogger.service' already exists & the new version is unchanged"
+    			rm -fr /home/${SUDO_USER}/knxLogger/knxLogger.service
+		else
+			echo -e "\n"$GREEN"Moving knxLogger.service."$RESET""
+			mv -fv /home/${SUDO_USER}/knxLogger/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service
+		fi
+	fi
+	# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
+	echo -e ""$GREEN"Enabling knxLogger.service"$RESET""
+	systemctl enable knxLogger.service
+
+
+	#TODO: once all wanted files are removed, delete the Pi folder: 
+	# rm -fr /home/${SUDO_USER}/knxLogger/
+else
+	echo -e "\n"$YELLOW"No repo files to move."$RESET""
+fi;
+
+
 echo -e "\n"$GREEN"Installing git python3-pip knxd knxd-tools"$RESET""
 apt-get install git python3-pip knxd knxd-tools -y
 echo -e "\n"$GREEN"Installing rsyslog"$RESET""
@@ -101,6 +143,7 @@ else
         echo -e "\n"$GREEN"influx is already installed - skipping"$RESET""
 fi
 
+
 isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
 if [[ ! $isGrafana ]];
 then
@@ -124,37 +167,6 @@ sudo rm influxdb2_2.7.8-1_arm64.deb
 sudo rm grafana-enterprise_11.1.3_arm64.deb
 
 
-
-
-mkdir -pv /home/$SUDO_USER/knxLogger
-cd /home/$SUDO_USER/knxLogger
-
-# Copy the knxLogger.py file across, if required:
-if [ -f knxLogger.py ];
-then
-	if cmp -s knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py;
-	then
-		echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/knxLogger.py' already exists & the new version is unchanged"
-	else
-		mv -fv knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py
-	fi
-fi
-
-# Copy the knxLogger.service file across, if required:
-if [ -f knxLogger.service ];
-	then
-		if cmp -s knxLogger.service /etc/systemd/system/knxLogger.service;
-		then
-			echo "Skipped: the file '/etc/systemd/system/knxLogger.service' already exists & the new version is unchanged"
-		else
-			echo -e "\n"$GREEN"Moving knxLogger.service."$RESET""
-			mv -fv knxLogger.service /etc/systemd/system/knxLogger.service
-		fi
-fi
-# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
-echo -e ""$GREEN"Enabling knxLogger.service"$RESET""
-systemctl enable knxLogger.service
-
 # Customise /boot/firmware/config.txt:
 if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
 	then
@@ -166,8 +178,6 @@ if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
 		echo -e 'enable_uart=1\ndtoverlay=disable-bt' >> /boot/firmware/config.txt
 		echo -e "\n"$GREEN"Added UART changes to config.txt OK"$RESET""
 fi
-
-
 
 
 #Extract the current values:
