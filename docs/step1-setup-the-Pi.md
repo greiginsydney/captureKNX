@@ -144,7 +144,7 @@ sudo apt-get install git -y
 
 ```txt
 cd ~
-sudo rm -rfd /staging/
+sudo rm -rfd staging
 git clone --depth=3 https://github.com/greiginsydney/knxLogger staging
 ```
 
