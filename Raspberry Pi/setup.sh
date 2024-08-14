@@ -114,10 +114,6 @@ echo -e "\n"$GREEN"Installing rsyslog"$RESET""
 sudo apt install rsyslog -y
 echo -e "\n"$GREEN"Installing requests"$RESET""
 apt-get install python3-requests
-# TODO: is this working or not??
-# echo -e "\n"$GREEN"Installing knxdclient"$RESET""
-# sudo pip3 install knxdclient
-echo ''
 
 
 isKnxd=$(command -v knxd)
@@ -129,7 +125,12 @@ then
 	sh knxd/install-debian.sh
 else
 	echo -e "\n"$GREEN"knxd is already installed - skipping"$RESET""
+	# TODO: Check version and update if there's newer.
 fi
+
+
+# echo -e "\n"$GREEN"Installing knxdclient"$RESET""
+# sudo pip3 install knxdclient
 
 
 isTelegraf=$(dpkg -s telegraf 2>/dev/null)
@@ -141,7 +142,8 @@ then
 	echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
 	apt-get update && sudo apt-get install telegraf -y
 else
-        echo -e "\n"$GREEN"telegraf is already installed - skipping"$RESET""
+	echo -e "\n"$GREEN"telegraf is already installed - skipping"$RESET""
+	# TODO: Check version and update if there's newer.
 fi
 
 
@@ -153,7 +155,8 @@ then
 	dpkg -i influxdb2_2.7.8-1_arm64.deb
 	systemctl start influxdb # TODO: don't start until the config has been customised
 else
-        echo -e "\n"$GREEN"influx is already installed - skipping"$RESET""
+	echo -e "\n"$GREEN"influx is already installed - skipping"$RESET""
+	# TODO: Check version and update if there's newer.
 fi
 
 
@@ -171,9 +174,9 @@ then
 	sudo systemctl start grafana-server # TODO: don't start until the config has been customised
 	sudo systemctl enable grafana-server
 else
-        echo -e "\n"$GREEN"grafana is already installed - skipping"$RESET""
+	echo -e "\n"$GREEN"grafana is already installed - skipping"$RESET""
+	# TODO: Check version and update if there's newer.
 fi
-
 
 # Customise /boot/firmware/config.txt:
 if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
