@@ -103,8 +103,8 @@ then
 	systemctl enable knxLogger.service
 
 
-	#TODO: once all wanted files are removed, delete the Pi folder: 
-	# rm -fr /home/${SUDO_USER}/knxLogger/
+	#TODO: once all wanted files are removed, delete the Pi folder - this needs to take place at the END of the script.
+	# rm -fr /home/${SUDO_USER}/knxLogger/ NOT HERE
 else
 	echo -e "\n"$YELLOW"No repo files to move."$RESET""
 fi;
@@ -233,6 +233,8 @@ sed -i -E "$SocketLine,$ s/^\s*#*\s*#*\s*(data_format = \"influx\")(.*)/\\1/" /h
 echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
 
 
+echo -e "\n"$GREEN"Removing any leftover Pi repo files"$RESET""
+# rm -fr /home/${SUDO_USER}/knxLogger/
 
 echo ''
 echo -e "\n"$GREEN"Done!"$RESET""
