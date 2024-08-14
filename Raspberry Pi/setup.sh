@@ -163,10 +163,6 @@ else
 fi
 
 
-echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
-sudo rm influxdb2_2.7.8-1_arm64.deb
-sudo rm grafana-enterprise_11.1.3_arm64.deb
-
 
 # Customise /boot/firmware/config.txt:
 if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
@@ -234,7 +230,9 @@ sed -i -E "$SocketLine,$ s/^\s*#*\s*#*\s*(data_format = \"influx\")(.*)/\\1/" /h
 echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
 
 
-echo -e "\n"$GREEN"Removing any leftover Pi repo files"$RESET""
+echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
+sudo rm -f influxdb2_2.7.8-1_arm64.deb
+sudo rm -f grafana-enterprise_11.1.3_arm64.deb
 # rm -fr /home/${SUDO_USER}/staging/
 
 echo ''
