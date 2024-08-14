@@ -112,8 +112,11 @@ echo -e "\n"$GREEN"Installing git python3-pip knxd knxd-tools"$RESET""
 apt-get install git python3-pip knxd knxd-tools -y
 echo -e "\n"$GREEN"Installing rsyslog"$RESET""
 sudo apt install rsyslog -y
-echo -e "\n"$GREEN"Installing knxdclient requests"$RESET""
-pip3 install knxdclient requests
+echo -e "\n"$GREEN"Installing requests"$RESET""
+apt-get install python3-requests
+# TODO: is this working or not??
+# echo -e "\n"$GREEN"Installing knxdclient"$RESET""
+# sudo pip3 install knxdclient
 echo ''
 
 
