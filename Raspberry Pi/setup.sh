@@ -71,31 +71,29 @@ fi
 mkdir -pv /home/$SUDO_USER/knxLogger
 cd /home/$SUDO_USER/knxLogger
 
-if [[ -d /home/${SUDO_USER}/knxLogger/Raspberry\ Pi ]];
+if [[ -d /home/${SUDO_USER}/staging/Raspberry\ Pi ]];
 then
 	echo -e ""$GREEN"Moving repo files."$RESET""
 	# Copy the knxLogger.py file across, if required:
-	if [ -f /home/${SUDO_USER}/knxLogger/Raspberry\ Pi/knxLogger.py ];
+	if [ -f /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.py ];
 	then
-		if cmp -s /home/${SUDO_USER}/knxLogger/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py;
+		if cmp -s /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py;
 		then
 			echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/knxLogger.py' already exists & the new version is unchanged"
-   			rm -fr /home/${SUDO_USER}/knxLogger/knxLogger.py
 		else
-			mv -fv /home/${SUDO_USER}/knxLogger/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py
+			mv -fv /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py
 		fi
 	fi
 
 	# Copy the knxLogger.service file across, if required:
-	if [ -f /home/${SUDO_USER}/knxLogger/Raspberry\ Pi/knxLogger.service ];
+	if [ -f /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.service ];
 	then
-		if cmp -s /home/${SUDO_USER}/knxLogger/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service;
+		if cmp -s /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service;
 		then
 			echo "Skipped: the file '/etc/systemd/system/knxLogger.service' already exists & the new version is unchanged"
-    			rm -fr /home/${SUDO_USER}/knxLogger/knxLogger.service
 		else
 			echo -e "\n"$GREEN"Moving knxLogger.service."$RESET""
-			mv -fv /home/${SUDO_USER}/knxLogger/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service
+			mv -fv /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service
 		fi
 	fi
 	# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
@@ -103,8 +101,8 @@ then
 	systemctl enable knxLogger.service
 
 
-	#TODO: once all wanted files are removed, delete the Pi folder - this needs to take place at the END of the script.
-	# rm -fr /home/${SUDO_USER}/knxLogger/ NOT HERE
+	#TODO: once all wanted files are removed, delete the staging folder - this needs to take place at the END of the script.
+	# rm -fr /home/${SUDO_USER}/staging/ NOT HERE
 else
 	echo -e "\n"$YELLOW"No repo files to move."$RESET""
 fi;
@@ -234,7 +232,7 @@ echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
 
 
 echo -e "\n"$GREEN"Removing any leftover Pi repo files"$RESET""
-# rm -fr /home/${SUDO_USER}/knxLogger/
+# rm -fr /home/${SUDO_USER}/staging/
 
 echo ''
 echo -e "\n"$GREEN"Done!"$RESET""
