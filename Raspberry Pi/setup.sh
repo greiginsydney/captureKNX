@@ -186,42 +186,21 @@ fi
 
 
 #Extract the current values:
-OLD_USERNAME=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_USERNAME=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
-OLD_PASSWORD=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_PASSWORD=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
-OLD_TOKEN=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
-OLD_ORG=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_ORG=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
-OLD_BUCKET=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_BUCKET=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
-OLD_RETENTION=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_RETENTION=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
-OLD_INFLUX_PORT=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_PORT=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
-OLD_HOST=$(sed -n -E 's/^\s*DOCKER_INFLUXDB_INIT_HOST=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
-OLD_PATH=$(sed -n -E 's/^\s*TELEGRAF_CFG_PATH=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
-OLD_GRAFANA_PORT=$(sed -n -E 's/^\s*GRAFANA_PORT=(.*)$/\1/p' /home/$SUDO_USER/tig-stack/.env)
+echo -e "\n"$GREEN"Customising the config."$RESET""
+echo 'If any value is unknown, just hit Enter'
 
-read -e -i "$OLD_USERNAME" -p     'DOCKER_INFLUXDB_INIT_USERNAME    = ' USERNAME
-read -e -i "$OLD_PASSWORD" -p     'DOCKER_INFLUXDB_INIT_PASSWORD    = ' PASSWORD
-read -e -i "$OLD_TOKEN" -p        'DOCKER_INFLUXDB_INIT_ADMIN_TOKEN = ' TOKEN
-read -e -i "$OLD_ORG" -p          'DOCKER_INFLUXDB_INIT_ORG         = ' ORG
-read -e -i "$OLD_BUCKET" -p       'DOCKER_INFLUXDB_INIT_BUCKET      = ' BUCKET
-read -e -i "$OLD_RETENTION" -p    'DOCKER_INFLUXDB_INIT_RETENTION   = ' RETENTION
-read -e -i "$OLD_INFLUX_PORT" -p  'DOCKER_INFLUXDB_INIT_PORT        = ' INFLUX_PORT
-read -e -i "$OLD_HOST" -p         'DOCKER_INFLUXDB_INIT_HOST        = ' HOST
-read -e -i "$OLD_PATH" -p         'TELEGRAF_CFG_PATH                = ' TELEGRAF_CFG_PATH # PATH is a reserved word
-read -e -i "$OLD_GRAFANA_PORT" -p 'GRAFANA_PORT                     = ' GRAFANA_PORT
+#Extract the current values:
+OLD_MYADDRESS=$(sed -n -E 's/^KNXD_OPTS.*-e ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
 
-#Paste in the new settings. (I used "|" as the delimiter for all, as "/" is in the replacement for the path
-sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_USERNAME=)(.*)|\1$USERNAME|" /home/$SUDO_USER/tig-stack/.env
-sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_PASSWORD=)(.*)|\1$PASSWORD|" /home/$SUDO_USER/tig-stack/.env
-sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=)(.*)|\1$TOKEN|" /home/$SUDO_USER/tig-stack/.env
-sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_ORG=)(.*)|\1$ORG|" /home/$SUDO_USER/tig-stack/.env
-sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_BUCKET=)(.*)|\1$BUCKET|" /home/$SUDO_USER/tig-stack/.env
-sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_RETENTION=)(.*)|\1$RETENTION|" /home/$SUDO_USER/tig-stack/.env
-sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_PORT=)(.*)|\1$INFLUX_PORT|" /home/$SUDO_USER/tig-stack/.env
-sed -i -E "s|^(\s*DOCKER_INFLUXDB_INIT_HOST=)(.*)|\1$HOST|" /home/$SUDO_USER/tig-stack/.env
-sed -i -E "s|^(\s*TELEGRAF_CFG_PATH=)(.*)|\1$TELEGRAF_CFG_PATH|" /home/$SUDO_USER/tig-stack/.env
-sed -i -E "s|^(\s*GRAFANA_PORT=)(.*)|\1$GRAFANA_PORT|" /home/$SUDO_USER/tig-stack/.env
+read -e -i "$OLD_MYADDRESS" -p     'KNX network client address = ' MYADDRESS
+
+#Paste in the new settings:
+sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\1$MYADDRESS\3|" /etc/knxd.conf
 
 echo ''
 echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
+
+
 
 
 echo -e "\n"$GREEN"Customising the telegraph.conf file."$RESET""
