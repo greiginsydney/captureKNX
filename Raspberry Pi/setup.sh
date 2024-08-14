@@ -108,8 +108,8 @@ else
 fi;
 
 
-echo -e "\n"$GREEN"Installing git python3-pip knxd knxd-tools"$RESET""
-apt-get install git python3-pip knxd knxd-tools -y
+echo -e "\n"$GREEN"Installing git python3-pip"$RESET""
+apt-get install git python3-pip -y
 echo -e "\n"$GREEN"Installing rsyslog"$RESET""
 sudo apt install rsyslog -y
 echo -e "\n"$GREEN"Installing requests"$RESET""
@@ -118,6 +118,18 @@ apt-get install python3-requests
 # echo -e "\n"$GREEN"Installing knxdclient"$RESET""
 # sudo pip3 install knxdclient
 echo ''
+
+
+isKnxd=$(command -v knxd)
+if [[ ! $isKnxd ]];
+then
+	echo -e "\n"$GREEN"Installing knxd "$RESET""
+	apt-get install git-core -y
+	git clone -b debian https://github.com/knxd/knxd.git
+	sh knxd/install-debian.sh
+else
+	echo -e "\n"$GREEN"knxd is already installed - skipping"$RESET""
+fi
 
 
 isTelegraf=$(dpkg -s telegraf 2>/dev/null)
