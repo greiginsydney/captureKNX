@@ -140,12 +140,12 @@ pi@BenchPi3BPlus:~ $
 sudo apt-get install git -y
 ```
 
-33. This downloads the repo, dropping the structure into a subdirectory called `knxLogger`:
+33. This downloads the repo, dropping the structure into a subdirectory called `staging`:
 
 ```txt
 cd ~
-sudo rm -rfd /knxLogger/
-git clone --depth=3 https://github.com/greiginsydney/knxLogger
+sudo rm -rfd /staging/
+git clone --depth=3 https://github.com/greiginsydney/knxLogger staging
 ```
 
 > Advanced tip: if you're testing code and want to install a new branch direct from the repo, add `-b <branchName>` on the end of the line.
@@ -154,7 +154,7 @@ git clone --depth=3 https://github.com/greiginsydney/knxLogger
 34. Now we need to move the setup.sh script file into its final location:
 
 ```txt
-mv -fv "knxLogger/Raspberry Pi/setup.sh" ~
+mv -fv "staging/Raspberry Pi/setup.sh" ~
 ``` 
 
 35. All the hard work is done by the script, but it needs to be made executable first:
