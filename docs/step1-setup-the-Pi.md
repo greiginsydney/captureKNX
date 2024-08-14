@@ -151,8 +151,6 @@ git clone --depth=3 https://github.com/greiginsydney/knxLogger
 > Advanced tip: if you're testing code and want to install a new branch direct from the repo, add `-b <branchName>` on the end of the line.
 
 
-# TODO: Is this step redundant?
-
 34. Now we need to move the setup.sh script file into its final location:
 
 ```txt
@@ -167,5 +165,5 @@ sudo chmod +x setup.sh
 
 36. Now run it! (Be careful here: the switches are critical. "-E" ensures your user path is passed to the script. Without it the software will be moved to the wrong location, or not at all. "-H" passes the Pi user's home directory.)
 ```txt
-sudo -E -H ./setup.sh start
+sudo -E -H ./setup.sh
 ```
