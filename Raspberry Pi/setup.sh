@@ -77,7 +77,7 @@ pip3 install knxdclient requests
 echo ''
 
 
-isTelegraf=$(dpkg -L telegraf 2>/dev/null)
+isTelegraf=$(dpkg -s telegraf 2>/dev/null)
 if [[ ! $isTelegraf  ]];
 then
         echo -e "\n"$GREEN"Installing telegraf"$RESET""
