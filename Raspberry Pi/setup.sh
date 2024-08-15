@@ -286,13 +286,22 @@ test_install()
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" 32-bit OS"
 	fi
-
+	echo '-------------------------------------'
 	isKnxd=$(command -v knxd)
 	if [[ $isKnxd ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" knxd installed"
 	else
-		echo -e ""$YELLOW"PASS:"$RESET" knxd NOT installed"
+		echo -e ""$YELLOW"FAIL:"$RESET" knxd NOT installed"
+	fi
+
+	# TODO: this is broken!!
+	# isKnxdClient=$(dpkg -s knxdclient 2>/dev/null)
+	if [[ $isKnxdClient ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" knxdclient installed"
+	else
+		echo -e ""$YELLOW"FAIL:"$RESET" knxdclient NOT installed"
 	fi
 
 	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
@@ -300,7 +309,7 @@ test_install()
 	then
 		echo -e ""$GREEN"PASS:"$RESET" telegraf installed"
 	else
-		echo -e ""$YELLOW"PASS:"$RESET" telegraf NOT installed"
+		echo -e ""$YELLOW"FAIL:"$RESET" telegraf NOT installed"
 	fi
 
 	isInfluxd=$(command -v influxd)
@@ -308,7 +317,7 @@ test_install()
 	then
 		echo -e ""$GREEN"PASS:"$RESET" influxd installed"
 	else
-		echo -e ""$YELLOW"PASS:"$RESET" influxd NOT installed"
+		echo -e ""$YELLOW"FAIL:"$RESET" influxd NOT installed"
 	fi
 
 	isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
@@ -316,18 +325,22 @@ test_install()
 	then
 		echo -e ""$GREEN"PASS:"$RESET" grafana installed"
 	else
-		echo -e ""$YELLOW"PASS:"$RESET" grafana NOT installed"
+		echo -e ""$YELLOW"FAIL:"$RESET" grafana NOT installed"
 	fi
-
-	systemctl is-active --quiet knxd.service && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" knxd.service || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" knxd.service
-	systemctl is-active --quiet knxd.socket  && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" knxd.socket  || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" knxd.socket
-	systemctl is-active --quiet knxdclient   && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" knxdclient   || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" knxdclient
-	systemctl is-active --quiet telegraf     && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" telegraf     || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" telegraf
-	systemctl is-active --quiet influxd      && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" influxd      || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" influxd
-	systemctl is-active --quiet grafana      && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" grafana      || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" grafana
+	echo '-------------------------------------'
+	if [[ $isKnxd ]]; then
+		systemctl is-active --quiet knxd.service && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" knxd.service || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" knxd.service
+		systemctl is-active --quiet knxd.socket  && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" knxd.socket  || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" knxd.socket; fi
+	if [[ $isKnxdClient ]]; then
+		systemctl is-active --quiet knxdclient   && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" knxdclient   || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" knxdclient; fi
+	if [[ $isTelegraf  ]]; then
+		systemctl is-active --quiet telegraf     && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" telegraf     || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" telegraf; fi
+	if [[ $isInfluxd ]]; then
+		systemctl is-active --quiet influxd      && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" influxd      || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" influxd; fi
+	if [[ $isGrafana ]]; then
+		systemctl is-active --quiet grafana      && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" grafana      || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" grafana; fi
 	echo''
 }
-
 
 test_64bit()
 {
