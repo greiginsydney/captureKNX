@@ -39,200 +39,337 @@ RESET="\033[0m"
 # LET'S GO!
 # -----------------------------------
 
-while true;
-	do
-		if [[ "$VIRTUAL_ENV" != "" ]];
-		then
-			VENV_ACTIVE=1
-			echo -e ""$GREEN"Virtual environment active."$RESET""
-			break
-		else
-			if [[ ! $TRIED ]];
+# The main menu is at the bottom (as it needs to follow all of the functions)
+
+# -----------------------------------
+# START FUNCTIONS
+# -----------------------------------
+
+
+setup()
+{
+
+	RESULT=$(test_64bit)
+	if [[ $RESULT != "64" ]];
+	then
+		echo -e "\n"$YELLOW"This device is running a 32-bit operating system, which is not supported."$RESET""
+		echo -e "\n"$YELLOW"(InfluxDB requires a 64-bit OS)"$RESET""
+		echo -e "\n"$YELLOW"Check the docos and re-flash your memory card/SSH"$RESET""
+		exit 1
+	fi
+
+	while true;
+		do
+			if [[ "$VIRTUAL_ENV" != "" ]];
 			then
-				echo -e "\n"$YELLOW"Virtual environment NOT active. Attempting to activate."$RESET""
-				source "venv/bin/activate"
-				TRIED==1
-			else
-				VENV_ACTIVE=0
+				VENV_ACTIVE=1
+				echo -e ""$GREEN"Virtual environment active."$RESET""
 				break
-				fi;
-		fi;
-	done
+			else
+				if [[ ! $TRIED ]];
+				then
+					echo -e "\n"$YELLOW"Virtual environment NOT active. Attempting to activate."$RESET""
+					source "venv/bin/activate"
+					TRIED==1
+				else
+					VENV_ACTIVE=0
+					break
+					fi;
+			fi;
+		done
 
-if [[ ($VENV_ACTIVE == 0) ]];
-then
-	echo -e "\n"$YELLOW"The required virtual environment could not be activated"$RESET""
-	echo "Please execute the command 'source venv/bin/activate' and re-run the script."
-	echo -e "If that fails, check you have correctly created the required VENV. Review \nReview \nhttps://github.com/greiginsydney/knxLogger/blob/bookworm/docs/step1-setup-the-Pi.md"
+	if [[ ($VENV_ACTIVE == 0) ]];
+	then
+		echo -e "\n"$YELLOW"The required virtual environment could not be activated"$RESET""
+		echo "Please execute the command 'source venv/bin/activate' and re-run the script."
+		echo -e "If that fails, check you have correctly created the required VENV. Review \nReview \nhttps://github.com/greiginsydney/knxLogger/blob/bookworm/docs/step1-setup-the-Pi.md"
+		echo ''
+		exit
+	fi
+
+	mkdir -pv /home/$SUDO_USER/knxLogger
+	cd /home/$SUDO_USER/knxLogger
+
+	if [[ -d /home/${SUDO_USER}/staging/Raspberry\ Pi ]];
+	then
+		echo -e ""$GREEN"Moving repo files."$RESET""
+		# Copy the knxLogger.py file across, if required:
+		if [ -f /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.py ];
+		then
+			if cmp -s /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py;
+			then
+				echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/knxLogger.py' already exists & the new version is unchanged"
+			else
+				mv -fv /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py
+			fi
+		fi
+
+		# Copy the knxLogger.service file across, if required:
+		if [ -f /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.service ];
+		then
+			if cmp -s /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service;
+			then
+				echo "Skipped: the file '/etc/systemd/system/knxLogger.service' already exists & the new version is unchanged"
+			else
+				echo -e "\n"$GREEN"Moving knxLogger.service."$RESET""
+				mv -fv /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service
+			fi
+		fi
+		# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
+		echo -e ""$GREEN"Enabling knxLogger.service"$RESET""
+		systemctl enable knxLogger.service
+
+
+		#TODO: once all wanted files are removed, delete the staging folder - this needs to take place at the END of the script.
+		# rm -fr /home/${SUDO_USER}/staging/ NOT HERE
+	else
+		echo -e "\n"$YELLOW"No repo files to move."$RESET""
+	fi;
+
+
+	echo -e "\n"$GREEN"Installing git python3-pip"$RESET""
+	apt-get install git python3-pip -y
+	echo -e "\n"$GREEN"Installing rsyslog"$RESET""
+	sudo apt install rsyslog -y
+	echo -e "\n"$GREEN"Installing requests"$RESET""
+	apt-get install python3-requests
+
+
+	isKnxd=$(command -v knxd)
+	if [[ ! $isKnxd ]];
+	then
+		echo -e "\n"$GREEN"Installing knxd "$RESET""
+		apt-get install git-core -y
+		git clone -b debian https://github.com/knxd/knxd.git
+		sh knxd/install-debian.sh
+	else
+		echo -e "\n"$GREEN"knxd is already installed - skipping"$RESET""
+		# TODO: Check version and update if there's newer.
+	fi
+
+
+	# echo -e "\n"$GREEN"Installing knxdclient"$RESET""
+	# sudo pip3 install knxdclient
+
 	echo ''
-	exit
-fi
 
-mkdir -pv /home/$SUDO_USER/knxLogger
-cd /home/$SUDO_USER/knxLogger
 
-if [[ -d /home/${SUDO_USER}/staging/Raspberry\ Pi ]];
-then
-	echo -e ""$GREEN"Moving repo files."$RESET""
-	# Copy the knxLogger.py file across, if required:
-	if [ -f /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.py ];
+	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
+	if [[ ! $isTelegraf  ]];
 	then
-		if cmp -s /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py;
-		then
-			echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/knxLogger.py' already exists & the new version is unchanged"
-		else
-			mv -fv /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py
-		fi
+			echo -e "\n"$GREEN"Installing telegraf"$RESET""
+		curl -s https://repos.influxdata.com/influxdata-archive.key > influxdata-archive.key
+		echo '943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515 influxdata-archive.key' | sha256sum -c && cat influxdata-archive.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null
+		echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
+		apt-get update && sudo apt-get install telegraf -y
+	else
+		echo -e "\n"$GREEN"telegraf is already installed - skipping"$RESET""
+		# TODO: Check version and update if there's newer.
 	fi
 
-	# Copy the knxLogger.service file across, if required:
-	if [ -f /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.service ];
+
+	isInfluxd=$(command -v influxd)
+	if [[ ! $isInfluxd ]];
 	then
-		if cmp -s /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service;
-		then
-			echo "Skipped: the file '/etc/systemd/system/knxLogger.service' already exists & the new version is unchanged"
-		else
-			echo -e "\n"$GREEN"Moving knxLogger.service."$RESET""
-			mv -fv /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service
-		fi
+		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
+		curl -LO https://download.influxdata.com/influxdb/releases/influxdb2_2.7.8-1_arm64.deb
+		dpkg -i influxdb2_2.7.8-1_arm64.deb
+		systemctl start influxdb # TODO: don't start until the config has been customised
+	else
+		echo -e "\n"$GREEN"influx is already installed - skipping"$RESET""
+		# TODO: Check version and update if there's newer.
 	fi
-	# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
-	echo -e ""$GREEN"Enabling knxLogger.service"$RESET""
-	systemctl enable knxLogger.service
 
 
-	#TODO: once all wanted files are removed, delete the staging folder - this needs to take place at the END of the script.
-	# rm -fr /home/${SUDO_USER}/staging/ NOT HERE
-else
-	echo -e "\n"$YELLOW"No repo files to move."$RESET""
-fi;
+	isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
+	if [[ ! $isGrafana ]];
+	then
+		echo -e "\n"$GREEN"Installing grafana"$RESET""
+		apt-get install -y apt-transport-https software-properties-common wget
+		mkdir -p /etc/apt/keyrings/
+		wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+		echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+		apt-get update
+		apt-get install grafana-enterprise -y
+		sudo systemctl daemon-reload
+		sudo systemctl start grafana-server # TODO: don't start until the config has been customised
+		sudo systemctl enable grafana-server
+	else
+		echo -e "\n"$GREEN"grafana is already installed - skipping"$RESET""
+		# TODO: Check version and update if there's newer.
+	fi
 
 
-echo -e "\n"$GREEN"Installing git python3-pip"$RESET""
-apt-get install git python3-pip -y
-echo -e "\n"$GREEN"Installing rsyslog"$RESET""
-sudo apt install rsyslog -y
-echo -e "\n"$GREEN"Installing requests"$RESET""
-apt-get install python3-requests
+	# Customise /boot/firmware/config.txt:
+	if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
+	then
+		echo -e "\n"$GREEN"UART changes to config.txt already exist"$RESET""
+	else
+		echo -e "\n"$GREEN"Adding UART changes to config.txt"$RESET""
+		echo -e '\n# Added by setup.sh for the knxLogger' >> /boot/firmware/config.txt
+	fi
+
+	if ! grep -q '^enable_uart=1' /boot/firmware/config.txt;
+	then
+		echo -e 'enable_uart=1' >> /boot/firmware/config.txt
+	fi
+
+	if ! grep -q '^dtoverlay=disable-bt' /boot/firmware/config.txt;
+	then
+		echo -e 'dtoverlay=disable-bt' >> /boot/firmware/config.txt
+	fi
+
+	if ! grep -q '^dtoverlay=pi3-disable-bt' /boot/firmware/config.txt;
+	then
+		echo -e 'dtoverlay=pi3-disable-bt' >> /boot/firmware/config.txt
+	fi
 
 
-isKnxd=$(command -v knxd)
-if [[ ! $isKnxd ]];
+	# Customise knxf.conf:
+	#Extract the current values:
+	echo -e "\n"$GREEN"Customising the config."$RESET""
+	echo 'If any value is unknown, just hit Enter'
+
+	# KNXD_OPTS="-e 1.1.15 -E 1.1.240:4 -n knxLogger -D -T -R -S -i  --layer2=tpuarts:/dev/ttyKNX1"
+
+	#Extract the current values:
+	OLD_MYADDRESS=$(sed -n -E 's/^KNXD_OPTS.*-e ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
+	OLD_CLTADDR =$(sed -n -E 's/^KNXD_OPTS.* -e ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+):.*$/\1/p' /etc/knxd.conf)
+	OLD_CLTNBR =$(sed -n -E 's/^KNXD_OPTS.* -e [[:digit:]]+.[[:digit:]]+.[[:digit:]]+:([[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
+
+	read -e -i "$OLD_MYADDRESS" -p 'My KNX network client address            = ' MYADDRESS
+	read -e -i "$OLD_CLTADDR"   -p 'Sending KNX network client start address = ' CLIENTADDR
+	read -e -i "$OLD_CLTNBR"    -p 'Sending KNX network client count         = ' CLIENTNBR
+
+
+	#Paste in the new settings:
+	sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\1$MYADDRESS\3|" /etc/knxd.conf
+
+	echo ''
+	echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
+
+
+
+
+
+	echo -e "\n"$GREEN"Customising the telegraph.conf file."$RESET""
+	# These 3 lines need to be un-commented, and the port number changed:
+	# [[inputs.socket_listener]]
+	#   # service_address = "tcp://:8094"
+	#   # data_format = "influx"
+
+	sed -i -E 's/^\s*#\s*(\[\[inputs.socket_listener\]\])/\1/g' /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf #Un-comments the socket line
+	#Find the line number that 'inputs.socket_listener' starts at:
+	SocketLine=$(sed -n '/\[\[inputs.socket_listener\]\]/=' /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf)
+	sed -i -E "$SocketLine,$ s|^\s*#*\s*#*\s*(service_address = \"tcp://:)(.*)\"(.*)|\\17654\"|" /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf
+	sed -i -E "$SocketLine,$ s/^\s*#*\s*#*\s*(data_format = \"influx\")(.*)/\\1/" /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf
+	echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
+
+
+	echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
+	sudo rm -f influxdb2_2.7.8-1_arm64.deb
+	sudo rm -f grafana-enterprise_11.1.3_arm64.deb
+	# rm -fr /home/${SUDO_USER}/staging/
+
+	echo ''
+	echo -e "\n"$GREEN"Done!"$RESET""
+}
+
+
+test_install()
+{
+	echo''
+	RESULT=$(test_64bit)
+	if [[ $RESULT == "64" ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" 64-bit OS"
+	else
+		echo -e ""$YELLOW"FAIL:"$RESET" 32-bit OS"
+	fi
+
+	isKnxd=$(command -v knxd)
+	if [[ $isKnxd ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" knxd installed"
+	else
+		echo -e ""$YELLOW"PASS:"$RESET" knxd NOT installed"
+	fi
+
+	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
+	if [[ $isTelegraf  ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" telegraf installed"
+	else
+		echo -e ""$YELLOW"PASS:"$RESET" telegraf NOT installed"
+	fi
+
+	isInfluxd=$(command -v influxd)
+	if [[ $isInfluxd ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" influxd installed"
+	else
+		echo -e ""$YELLOW"PASS:"$RESET" influxd NOT installed"
+	fi
+
+	isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
+	if [[ $isGrafana ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" grafana installed"
+	else
+		echo -e ""$YELLOW"PASS:"$RESET" grafana NOT installed"
+	fi
+
+	systemctl is-active --quiet knxd.service && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" knxd.service || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" knxd.service
+	systemctl is-active --quiet knxd.socket  && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" knxd.socket  || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" knxd.socket
+	systemctl is-active --quiet knxdclient   && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" knxdclient   || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" knxdclient
+	systemctl is-active --quiet telegraf     && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" telegraf     || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" telegraf
+	systemctl is-active --quiet influxd      && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" influxd      || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" influxd
+	systemctl is-active --quiet grafana      && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" grafana      || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" grafana
+	echo''
+}
+
+
+test_64bit()
+{
+	UNAME=$(uname -a)
+	if [[ $UNAME == *"aarch64"* ]];
+	then
+		echo "64"
+	else
+		echo "32"
+	fi
+}
+
+# -----------------------------------
+# START FUNCTIONS
+# -----------------------------------
+
+# -----------------------------------
+# MENU
+# -----------------------------------
+
+
+if [ "$EUID" -ne 0 ];
 then
-	echo -e "\n"$GREEN"Installing knxd "$RESET""
-	apt-get install git-core -y
-	git clone -b debian https://github.com/knxd/knxd.git
-	sh knxd/install-debian.sh
-else
-	echo -e "\n"$GREEN"knxd is already installed - skipping"$RESET""
-	# TODO: Check version and update if there's newer.
+	echo -e "\nPlease re-run as 'sudo -E -H ./setup.sh'"
+	echo -e '(Add "test" on the end to test the system)'
+	exit 1
 fi
 
 
-# echo -e "\n"$GREEN"Installing knxdclient"$RESET""
-# sudo pip3 install knxdclient
+case "$1" in
+	
+	('test')
+		test_install
+		;;
+	('')
+		setup
+		;;
+	(*)
+		echo -e "\nThe switch '$1' is invalid. Try again.\n"
+		exit 1
+		;;
+esac
 
-
-isTelegraf=$(dpkg -s telegraf 2>/dev/null)
-if [[ ! $isTelegraf  ]];
-then
-        echo -e "\n"$GREEN"Installing telegraf"$RESET""
-	curl -s https://repos.influxdata.com/influxdata-archive.key > influxdata-archive.key
-	echo '943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515 influxdata-archive.key' | sha256sum -c && cat influxdata-archive.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null
-	echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
-	apt-get update && sudo apt-get install telegraf -y
-else
-	echo -e "\n"$GREEN"telegraf is already installed - skipping"$RESET""
-	# TODO: Check version and update if there's newer.
-fi
-
-
-isInfluxd=$(command -v influxd)
-if [[ ! $isInfluxd ]];
-then
-	echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
-	curl -LO https://download.influxdata.com/influxdb/releases/influxdb2_2.7.8-1_arm64.deb
-	dpkg -i influxdb2_2.7.8-1_arm64.deb
-	systemctl start influxdb # TODO: don't start until the config has been customised
-else
-	echo -e "\n"$GREEN"influx is already installed - skipping"$RESET""
-	# TODO: Check version and update if there's newer.
-fi
-
-
-isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
-if [[ ! $isGrafana ]];
-then
-	echo -e "\n"$GREEN"Installing grafana"$RESET""
-	apt-get install -y apt-transport-https software-properties-common wget
-	mkdir -p /etc/apt/keyrings/
-	wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
-	echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
-	apt-get update
-	apt-get install grafana-enterprise -y
-	sudo systemctl daemon-reload
-	sudo systemctl start grafana-server # TODO: don't start until the config has been customised
-	sudo systemctl enable grafana-server
-else
-	echo -e "\n"$GREEN"grafana is already installed - skipping"$RESET""
-	# TODO: Check version and update if there's newer.
-fi
-
-# Customise /boot/firmware/config.txt:
-if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
-then
-	echo -e "\n"$GREEN"UART changes to config.txt already exist"$RESET""
-else
-	echo -e "\n"$GREEN"Adding UART changes to config.txt"$RESET""
-	echo -e '\n# Added by setup.sh for the knxLogger' >> /boot/firmware/config.txt
-fi
-if ! grep -q '^enable_uart=1' /boot/firmware/config.txt;
-then
-	echo -e 'enable_uart=1' >> /boot/firmware/config.txt
-fi
-if ! grep -q '^dtoverlay=disable-bt' /boot/firmware/config.txt;
-then
-	echo -e 'dtoverlay=disable-bt' >> /boot/firmware/config.txt
-fi
-if ! grep -q '^dtoverlay=pi3-disable-bt' /boot/firmware/config.txt;
-then
-	echo -e 'dtoverlay=pi3-disable-bt' >> /boot/firmware/config.txt
-fi
-
-
-# Customise knxd.conf:
-echo -e "\n"$GREEN"Customising the config."$RESET""
-echo 'If any value is unknown, just hit Enter'
-
-# Extract the current values:
-OLD_MYADDRESS=$(sed -n -E 's/^KNXD_OPTS.*-e ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
-
-read -e -i "$OLD_MYADDRESS" -p     'KNX network client address = ' MYADDRESS
-
-#Paste in the new settings:
-sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\1$MYADDRESS\3|" /etc/knxd.conf
-echo ''
-echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
-
-
-echo -e "\n"$GREEN"Customising the telegraph.conf file."$RESET""
-# These 3 lines need to be un-commented, and the port number changed:
-# [[inputs.socket_listener]]
-#   # service_address = "tcp://:8094"
-#   # data_format = "influx"
-
-sed -i -E 's/^\s*#\s*(\[\[inputs.socket_listener\]\])/\1/g' /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf #Un-comments the socket line
-#Find the line number that 'inputs.socket_listener' starts at:
-SocketLine=$(sed -n '/\[\[inputs.socket_listener\]\]/=' /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf)
-sed -i -E "$SocketLine,$ s|^\s*#*\s*#*\s*(service_address = \"tcp://:)(.*)\"(.*)|\\17654\"|" /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf
-sed -i -E "$SocketLine,$ s/^\s*#*\s*#*\s*(data_format = \"influx\")(.*)/\\1/" /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf
-echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
-
-
-echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
-sudo rm -f influxdb2_2.7.8-1_arm64.deb
-sudo rm -f grafana-enterprise_11.1.3_arm64.deb
-# rm -fr /home/${SUDO_USER}/staging/
-
-echo ''
-echo -e "\n"$GREEN"Done!"$RESET""
+# Exit from the script with success (0)
+exit 0
