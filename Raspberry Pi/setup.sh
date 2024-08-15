@@ -45,19 +45,8 @@ RESET="\033[0m"
 # START FUNCTIONS
 # -----------------------------------
 
-
-setup()
+activate_venv()
 {
-
-	RESULT=$(test_64bit)
-	if [[ $RESULT != "64" ]];
-	then
-		echo -e "\n"$YELLOW"This device is running a 32-bit operating system, which is not supported."$RESET""
-		echo -e "\n"$YELLOW"(InfluxDB requires a 64-bit OS)"$RESET""
-		echo -e "\n"$YELLOW"Check the docos and re-flash your memory card/SSH"$RESET""
-		exit 1
-	fi
-
 	while true;
 		do
 			if [[ "$VIRTUAL_ENV" != "" ]];
@@ -85,6 +74,19 @@ setup()
 		echo -e "If that fails, check you have correctly created the required VENV. Review \nReview \nhttps://github.com/greiginsydney/knxLogger/blob/bookworm/docs/step1-setup-the-Pi.md"
 		echo ''
 		exit
+	fi
+}
+
+
+setup()
+{
+	RESULT=$(test_64bit)
+	if [[ $RESULT != "64" ]];
+	then
+		echo -e "\n"$YELLOW"This device is running a 32-bit operating system, which is not supported."$RESET""
+		echo -e "\n"$YELLOW"(InfluxDB requires a 64-bit OS)"$RESET""
+		echo -e "\n"$YELLOW"Check the docos and re-flash your memory card/SSH"$RESET""
+		exit 1
 	fi
 
 	mkdir -pv /home/$SUDO_USER/knxLogger
@@ -225,31 +227,29 @@ setup()
 	fi
 
 
-	# Customise knxf.conf:
-	#Extract the current values:
-	echo -e "\n"$GREEN"Customising the config."$RESET""
-	echo 'If any value is unknown, just hit Enter'
+	# Customise knxf.conf
+	# Extract the current values:
+	echo -e "\n"$GREEN"Customising knxd config."$RESET""
+	echo "If you're unsure, just hit Enter/Return"
 
 	# KNXD_OPTS="-e 1.1.15 -E 1.1.240:4 -n knxLogger -D -T -R -S -i  --layer2=tpuarts:/dev/ttyKNX1"
 
 	#Extract the current values:
 	OLD_MYADDRESS=$(sed -n -E 's/^KNXD_OPTS.*-e ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
-	OLD_CLTADDR =$(sed -n -E 's/^KNXD_OPTS.* -e ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+):.*$/\1/p' /etc/knxd.conf)
-	OLD_CLTNBR =$(sed -n -E 's/^KNXD_OPTS.* -e [[:digit:]]+.[[:digit:]]+.[[:digit:]]+:([[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
+	OLD_CLTADDR=$(sed -n -E 's/^KNXD_OPTS.* -E ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+):.*$/\1/p' /etc/knxd.conf)
+	OLD_CLTNBR=$(sed -n -E 's/^KNXD_OPTS.* -E [[:digit:]]+.[[:digit:]]+.[[:digit:]]+:([[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
 
 	read -e -i "$OLD_MYADDRESS" -p 'My KNX network client address            = ' MYADDRESS
 	read -e -i "$OLD_CLTADDR"   -p 'Sending KNX network client start address = ' CLIENTADDR
 	read -e -i "$OLD_CLTNBR"    -p 'Sending KNX network client count         = ' CLIENTNBR
 
-
 	#Paste in the new settings:
 	sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\1$MYADDRESS\3|" /etc/knxd.conf
+	sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)(:.*$)|\1$CLIENTADDR\3|" /etc/knxd.conf
+	sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+:)([[:digit:]]+)( .*$)|\1\2$CLIENTNBR\4|" /etc/knxd.conf
 
 	echo ''
 	echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
-
-
-
 
 
 	echo -e "\n"$GREEN"Customising the telegraph.conf file."$RESET""
@@ -342,6 +342,7 @@ test_install()
 	echo''
 }
 
+
 test_64bit()
 {
 	UNAME=$(uname -a)
@@ -373,9 +374,11 @@ fi
 case "$1" in
 	
 	('test')
+		activate_venv
 		test_install
 		;;
 	('')
+		activate_venv
 		setup
 		;;
 	(*)
