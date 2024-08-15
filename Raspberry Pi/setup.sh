@@ -329,17 +329,50 @@ test_install()
 	fi
 	echo '-------------------------------------'
 	if [[ $isKnxd ]]; then
-		systemctl is-active --quiet knxd.service && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" knxd.service || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" knxd.service
-		systemctl is-active --quiet knxd.socket  && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" knxd.socket  || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" knxd.socket; fi
+		systemctl is-active --quiet knxd.service && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxd.service        || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxd.service
+		systemctl is-active --quiet knxd.socket  && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxd.socket         || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxd.socket; fi
 	if [[ $isKnxdClient ]]; then
-		systemctl is-active --quiet knxdclient   && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" knxdclient   || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" knxdclient; fi
+		systemctl is-active --quiet knxdclient   && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxdclient          || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxdclient; fi
 	if [[ $isTelegraf  ]]; then
-		systemctl is-active --quiet telegraf     && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" telegraf     || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" telegraf; fi
+		systemctl is-active --quiet telegraf     && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" telegraf            || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" telegraf; fi
 	if [[ $isInfluxd ]]; then
-		systemctl is-active --quiet influxd      && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" influxd      || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" influxd; fi
+		systemctl is-active --quiet influxd      && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" influxd             || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" influxd; fi
 	if [[ $isGrafana ]]; then
-		systemctl is-active --quiet grafana      && printf ""$GREEN"PASS:"$RESET" %-12s service is running\n" grafana      || printf ""$YELLOW"FAIL:"$RESET" %-12s service is dead\n" grafana; fi
-	echo''
+		systemctl is-active --quiet grafana      && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" grafana             || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" grafana; fi
+	systemctl is-active --quiet knxLogger        && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxLogger           || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxLogger
+	systemctl is-active --quiet hciuart.service  && printf ""$YELLOW"FAIL:"$RESET" %-15s service is RUNNING\n" hciuart.service    || printf ""$GREEN"PASS:"$RESET" %-15s service is dead\n" hciuart.service
+	
+	echo '-------------------------------------'
+	test_config=0
+	if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt; then
+		((test_config=test_config+1)); fi
+	if grep -q '^enable_uart=1' /boot/firmware/config.txt; then
+		((test_config=test_config+2)); fi
+	if grep -q '^dtoverlay=disable-bt' /boot/firmware/config.txt; then
+		((test_config=test_config+4)); fi
+	if grep -q '^dtoverlay=pi3-disable-bt' /boot/firmware/config.txt; then
+		((test_config=test_config+8)); fi
+	case $test_config in
+		(15)
+			echo -e ""$GREEN"PASS:"$RESET" /boot/firmware/config.txt is good"
+			;;
+		(*)
+			echo -e ""$YELLOW"FAIL:"$RESET" /boot/firmware/config.txt is missing required config. Re-run setup."
+			;;
+	esac
+	
+	test_udev=0
+	if [ -f /etc/udev/rules.d/80-knxd.rules ]; then
+		((test_udev=test_udev+1)); fi
+	
+	case $test_udev in
+		(15)
+			echo -e ""$GREEN"PASS:"$RESET" /etc/udev/rules.d/80-knxd.rules is good"
+			;;
+		(*)
+			echo -e ""$YELLOW"FAIL:"$RESET" /etc/udev/rules.d/80-knxd.rules is missing required config. Re-run setup."
+			;;
+	esac
 }
 
 
