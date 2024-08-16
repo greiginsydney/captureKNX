@@ -153,8 +153,6 @@ setup()
 	# echo -e "\n"$GREEN"Installing knxdclient"$RESET""
 	# sudo pip3 install knxdclient
 
-	echo ''
-
 
 	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
 	if [[ ! $isTelegraf  ]];
@@ -227,9 +225,35 @@ setup()
 	fi
 
 
+	serial=""
+	id=""
+	eval $(read_TTYs)
+	if [[ $serial && $id ]];
+	then
+		newLine="ACTION==\"add\", SUBSYSTEM==\"tty\", ATTRS{id}==\"$id\", KERNELS==\"$serial\", SYMLINK+=\"ttyKNX1\", OWNER=\"knxd\""
+		if [ -f /etc/udev/rules.d/80-knxd.rules ];
+		then
+			# File already exists. We might be able to skip this if it's been completed previously.
+			if [ "$newLine" == "$(cat /etc/udev/rules.d/80-knxd.rules)" ] ;
+			then
+				# There's only one line in the file and it == 'newLine'
+				echo -e "\n"$GREEN"Correct UDEV rule/file already exists. No change required"$RESET""
+			else
+				sed -i -E "s/^([^#])/#\1/" /etc/udev/rules.d/80-knxd.rules # Comment-out any existing lines	- even if they're correct (a kludge after hours of blood/forehead)
+				echo -e "\n"$GREEN"Updated existing UDEV rule/file with new values"$RESET""
+				echo -e $newLine >> /etc/udev/rules.d/80-knxd.rules
+			fi
+		else
+			echo -e $newLine >> /etc/udev/rules.d/80-knxd.rules
+			echo -e "\n"$GREEN"Created UDEV rule/file OK"$RESET""
+		fi
+	else
+		echo -e "\n"$YELLOW"Failed to find a serial port for UDEV rule creation"$RESET""
+	fi
+
 	# Customise knxf.conf
 	# Extract the current values:
-	echo -e "\n"$GREEN"Customising knxd config."$RESET""
+	echo -e "\n"$GREEN"Customising knxd config."$RESET"\n"
 	echo "If you're unsure, just hit Enter/Return"
 
 	# KNXD_OPTS="-e 1.1.15 -E 1.1.240:4 -n knxLogger -D -T -R -S -i  --layer2=tpuarts:/dev/ttyKNX1"
@@ -251,6 +275,10 @@ setup()
 	echo ''
 	echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
 
+
+
+	# TODO: temporarily exit here. More to come.
+	exit 0
 
 	echo -e "\n"$GREEN"Customising the telegraph.conf file."$RESET""
 	# These 3 lines need to be un-commented, and the port number changed:
@@ -276,9 +304,33 @@ setup()
 }
 
 
+read_TTYs()
+{
+	while IFS=' ' read -ra ttyAMAs; do
+		for i in "${ttyAMAs[@]}"; do
+			#echo $i
+			serial=$(udevadm info -a $i | grep KERNELS.*serial | cut -d'=' -f3 | xargs )
+			id=$(udevadm info -a $i | grep  \{id\} | cut -d'=' -f3 | xargs )
+			if [[ $serial && $id ]];
+			then
+				#echo -e "\n"$GREEN"Using $i for UDEV rule creation"$RESET""
+				break
+			fi
+			echo ''
+		done
+	done <<< $(ls /dev/ttyAMA*)
+
+	echo "serial=$serial; id=$id"
+}
+
+
 test_install()
 {
 	echo''
+	cat /proc/device-tree/model
+	echo ''
+	release=$(sed -n -E 's/^PRETTY_NAME="(.*)"$/\1/p' /etc/os-release)
+	echo $release
 	RESULT=$(test_64bit)
 	if [[ $RESULT == "64" ]];
 	then
@@ -357,22 +409,27 @@ test_install()
 			echo -e ""$GREEN"PASS:"$RESET" /boot/firmware/config.txt is good"
 			;;
 		(*)
-			echo -e ""$YELLOW"FAIL:"$RESET" /boot/firmware/config.txt is missing required config. Re-run setup."
+			echo -e ""$YELLOW"FAIL:"$RESET" /boot/firmware/config.txt is missing required config. Re-run setup"
 			;;
 	esac
 	
-	test_udev=0
-	if [ -f /etc/udev/rules.d/80-knxd.rules ]; then
-		((test_udev=test_udev+1)); fi
-	
-	case $test_udev in
-		(15)
-			echo -e ""$GREEN"PASS:"$RESET" /etc/udev/rules.d/80-knxd.rules is good"
-			;;
-		(*)
-			echo -e ""$YELLOW"FAIL:"$RESET" /etc/udev/rules.d/80-knxd.rules is missing required config. Re-run setup."
-			;;
-	esac
+	serial=""
+	id=""
+	eval $(read_TTYs)
+	newLine="ACTION==\"add\", SUBSYSTEM==\"tty\", ATTRS{id}==\"$id\", KERNELS==\"$serial\", SYMLINK+=\"ttyKNX1\", OWNER=\"knxd\""
+	if [ -f /etc/udev/rules.d/80-knxd.rules ];
+	then
+		# File already exists. We might be able to skip this if it's been completed previously.
+		if [ "$newLine" == "$(cat /etc/udev/rules.d/80-knxd.rules)" ] ;
+		then
+			# There's only one line in the file and it == 'newLine'
+			echo -e ""$GREEN"PASS:"$RESET" UDEV rule/file is good"
+		else
+			echo -e ""$YELLOW"FAIL:"$RESET" UDEV file exists but contains either muitple lines or incorrect content"
+		fi
+	else
+		echo -e ""$YELLOW"FAIL:"$RESET" UDEV file does not exist. Re-run setup or check TTY config"
+	fi
 }
 
 
