@@ -141,14 +141,13 @@ setup()
 	set +e #Suspend the error trap
 	isKnxd=$(command -v knxd)
 	set -e #Resume the error trap
-	if [[ "$?" -ne 0 ]];
-	#if [[ ! $isKnxd ]];
+	if [[ ! $isKnxd ]];
 	then
 		echo -e "\n"$GREEN"Installing knxd "$RESET""
 		mkdir -pv /home/$SUDO_USER/staging/knxd
 		cd /home/${SUDO_USER}/staging/knxd/
 		apt-get install git-core -y
-		git clone -b debian https://github.com/knxd/knxd.git staging/knxd
+		git clone -b debian https://github.com/knxd/knxd.git
 		sh knxd/install-debian.sh
 	else
 		echo -e "\n"$GREEN"knxd is already installed - skipping"$RESET""
@@ -163,8 +162,7 @@ setup()
 	set +e #Suspend the error trap
 	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
 	set -e #Resume the error trap
-	if [[ "$?" -ne 0 ]];
-	#if [[ ! $isTelegraf  ]];
+	if [[ ! $isTelegraf  ]];
 	then
 		echo -e "\n"$GREEN"Installing telegraf"$RESET""
 		mkdir -pv /home/$SUDO_USER/staging/telegraf
@@ -182,8 +180,7 @@ setup()
 	set +e #Suspend the error trap
 	isInfluxd=$(command -v influxd)
 	set -e #Resume the error trap
-	if [[ "$?" -ne 0 ]];
-	#if [[ ! $isInfluxd ]];
+	if [[ ! $isInfluxd ]];
 	then
 		mkdir -pv /home/$SUDO_USER/staging/influxd
 		cd /home/${SUDO_USER}/staging/influxd/
@@ -200,8 +197,7 @@ setup()
 	set +e #Suspend the error trap
 	isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
 	set -e #Resume the error trap
-	if [[ "$?" -ne 0 ]];
-	#if [[ ! $isGrafana ]];
+	if [[ ! $isGrafana ]];
 	then
 		echo -e "\n"$GREEN"Installing grafana"$RESET""
 		apt-get install -y apt-transport-https software-properties-common wget
