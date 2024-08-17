@@ -146,7 +146,7 @@ sudo apt-get install git -y
 ```txt
 cd ~
 sudo rm -rfd staging
-git clone --depth=3 https://github.com/greiginsydney/knxLogger staging
+git clone --depth=3 https://github.com/greiginsydney/knxLogger staging/knxLogger
 ```
 
 > Advanced tip: if you're testing code and want to install a new branch direct from the repo, add `-b <branchName>` on the end of the line.
