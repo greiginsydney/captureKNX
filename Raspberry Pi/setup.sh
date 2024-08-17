@@ -137,8 +137,11 @@ setup()
 	apt-get install python3-requests
 
 
+	set +e #Suspend the error trap
 	isKnxd=$(command -v knxd)
-	if [[ ! $isKnxd ]];
+	set -e #Resume the error trap
+	if [[ "$?" -ne 0 ]];
+	#if [[ ! $isKnxd ]];
 	then
 		echo -e "\n"$GREEN"Installing knxd "$RESET""
 		apt-get install git-core -y
@@ -154,8 +157,11 @@ setup()
 	# sudo pip3 install knxdclient
 
 
+	set +e #Suspend the error trap
 	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
-	if [[ ! $isTelegraf  ]];
+	set -e #Resume the error trap
+	if [[ "$?" -ne 0 ]];
+	#if [[ ! $isTelegraf  ]];
 	then
 			echo -e "\n"$GREEN"Installing telegraf"$RESET""
 		curl -s https://repos.influxdata.com/influxdata-archive.key > influxdata-archive.key
@@ -168,8 +174,11 @@ setup()
 	fi
 
 
+	set +e #Suspend the error trap
 	isInfluxd=$(command -v influxd)
-	if [[ ! $isInfluxd ]];
+	set -e #Resume the error trap
+	if [[ "$?" -ne 0 ]];
+	#if [[ ! $isInfluxd ]];
 	then
 		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
 		curl -LO https://download.influxdata.com/influxdb/releases/influxdb2_2.7.8-1_arm64.deb
@@ -181,8 +190,11 @@ setup()
 	fi
 
 
+	set +e #Suspend the error trap
 	isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
-	if [[ ! $isGrafana ]];
+	set -e #Resume the error trap
+	if [[ "$?" -ne 0 ]];
+	#if [[ ! $isGrafana ]];
 	then
 		echo -e "\n"$GREEN"Installing grafana"$RESET""
 		apt-get install -y apt-transport-https software-properties-common wget
