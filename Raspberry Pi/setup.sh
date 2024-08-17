@@ -349,7 +349,9 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" 32-bit OS"
 	fi
 	echo '-------------------------------------'
+	set +e #Suspend the error trap
 	isKnxd=$(command -v knxd)
+	set -e #Resume the error trap
 	if [[ $isKnxd ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" knxd installed"
@@ -366,7 +368,9 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" knxdclient NOT installed"
 	fi
 
+	set +e #Suspend the error trap
 	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
+	set -e #Resume the error trap
 	if [[ $isTelegraf  ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" telegraf installed"
@@ -374,7 +378,9 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" telegraf NOT installed"
 	fi
 
+	set +e #Suspend the error trap
 	isInfluxd=$(command -v influxd)
+	set -e #Resume the error trap
 	if [[ $isInfluxd ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" influxd installed"
@@ -382,7 +388,9 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" influxd NOT installed"
 	fi
 
+	set +e #Suspend the error trap
 	isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
+	set -e #Resume the error trap
 	if [[ $isGrafana ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" grafana installed"
@@ -438,6 +446,7 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" UDEV file does not exist. Re-run setup or check TTY config"
 	fi
 }
+
 
 
 test_64bit()
