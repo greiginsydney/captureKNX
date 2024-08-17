@@ -90,31 +90,32 @@ setup()
 	fi
 
 	mkdir -pv /home/$SUDO_USER/knxLogger
-	cd /home/$SUDO_USER/knxLogger
+ 	mkdir -pv /home/$SUDO_USER/staging
+	#cd /home/$SUDO_USER/knxLogger
 
-	if [[ -d /home/${SUDO_USER}/staging/Raspberry\ Pi ]];
+	if [[ -d /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi ]];
 	then
 		echo -e ""$GREEN"Moving repo files."$RESET""
 		# Copy the knxLogger.py file across, if required:
-		if [ -f /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.py ];
+		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.py ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py;
+			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py;
 			then
 				echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/knxLogger.py' already exists & the new version is unchanged"
 			else
-				mv -fv /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py
+				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py
 			fi
 		fi
 
 		# Copy the knxLogger.service file across, if required:
-		if [ -f /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.service ];
+		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service;
+			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service;
 			then
 				echo "Skipped: the file '/etc/systemd/system/knxLogger.service' already exists & the new version is unchanged"
 			else
 				echo -e "\n"$GREEN"Moving knxLogger.service."$RESET""
-				mv -fv /home/${SUDO_USER}/staging/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service
+				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service
 			fi
 		fi
 		# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
