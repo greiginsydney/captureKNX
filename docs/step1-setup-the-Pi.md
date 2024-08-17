@@ -121,17 +121,18 @@ Your SSH session will end here. Wait for the Pi to reboot, sign back in again an
 30. Confirm your current version of python:
 
 ```
-pi@BenchPi3BPlus:~ $ python3 --version
+pi@knxLoggerPi5:~ $ python3 --version
 Python 3.11.2
-pi@BenchPi3BPlus:~ $
+pi@knxLoggerPi5:~ $
 ```
 
 31. Update the following command if required with that of the same version number:
 
 ```
-pi@BenchPi3BPlus:~ $ sudo apt install python3.11-venv -y
-pi@BenchPi3BPlus:~ $ python3 -m venv venv
-pi@BenchPi3BPlus:~ $
+pi@knxLoggerPi5:~ $ sudo apt install python3.11-venv -y
+pi@knxLoggerPi5:~ $ python3 -m venv venv
+pi@knxLoggerPi5:~ $ source venv/bin/activate
+pi@knxLoggerPi5:
 ```
 
 32. We need to install git so we can download the repo from GitHub:
