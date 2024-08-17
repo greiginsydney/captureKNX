@@ -118,10 +118,6 @@ setup()
 				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service
 			fi
 		fi
-		# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
-		echo -e ""$GREEN"Enabling knxLogger.service"$RESET""
-		systemctl enable knxLogger.service
-
 
 		#TODO: once all wanted files are removed, delete the staging folder - this needs to take place at the END of the script.
 		# rm -fr /home/${SUDO_USER}/staging/ NOT HERE
@@ -307,10 +303,19 @@ setup()
 	echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
 
 
+	# -----------------------------------
+	# LET'S START IT UP!
+	# -----------------------------------
+
+	# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
+	echo -e ""$GREEN"TODO - Enabling knxLogger.service"$RESET""
+	#systemctl enable knxLogger.service
+
+
 	echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
 	sudo rm -f influxdb2_2.7.8-1_arm64.deb
 	sudo rm -f grafana-enterprise_11.1.3_arm64.deb
-	# rm -fr /home/${SUDO_USER}/staging/
+	rm -rfd /home/${SUDO_USER}/staging/
 
 	echo ''
 	echo -e "\n"$GREEN"Done!"$RESET""
