@@ -225,12 +225,9 @@ setup()
 	fi
 
 
-	serial=""
-	id=""
-	eval $(read_TTYs)
-	if [[ $serial && $id ]];
+	newLine=$(read_TTY)
+	if [[ $newLine ]];
 	then
-		newLine="ACTION==\"add\", SUBSYSTEM==\"tty\", ATTRS{id}==\"$id\", KERNELS==\"$serial\", SYMLINK+=\"ttyKNX1\", OWNER=\"knxd\""
 		if [ -f /etc/udev/rules.d/80-knxd.rules ];
 		then
 			# File already exists. We might be able to skip this if it's been completed previously.
@@ -250,6 +247,7 @@ setup()
 	else
 		echo -e "\n"$YELLOW"Failed to find a serial port for UDEV rule creation"$RESET""
 	fi
+
 
 	# Customise knxf.conf
 	# Extract the current values:
@@ -304,23 +302,20 @@ setup()
 }
 
 
-read_TTYs()
+read_TTY()
 {
-	while IFS=' ' read -ra ttyAMAs; do
-		for i in "${ttyAMAs[@]}"; do
-			#echo $i
-			serial=$(udevadm info -a $i | grep KERNELS.*serial | cut -d'=' -f3 | xargs )
-			id=$(udevadm info -a $i | grep  \{id\} | cut -d'=' -f3 | xargs )
-			if [[ $serial && $id ]];
-			then
-				#echo -e "\n"$GREEN"Using $i for UDEV rule creation"$RESET""
-				break
-			fi
-			echo ''
-		done
-	done <<< $(ls /dev/ttyAMA*)
-
-	echo "serial=$serial; id=$id"
+	serial=$(udevadm info -a /dev/ttyAMA0  | grep KERNELS.*serial | cut -d'=' -f3 | xargs )
+	id=$(udevadm info -a /dev/ttyAMA0  | grep  \{id\} | cut -d'=' -f3 | xargs )
+	if [[ $serial ]];
+	then
+		if [[ $id ]];
+		then
+			newLine="ACTION==\"add\", SUBSYSTEM==\"tty\", ATTRS{id}==\"$id\", KERNELS==\"$serial\", SYMLINK+=\"ttyKNX1\", OWNER=\"knxd\""
+		else
+			newLine="ACTION==\"add\", SUBSYSTEM==\"tty\", KERNELS==\"$serial\", SYMLINK+=\"ttyKNX1\", OWNER=\"knxd\""
+		fi
+	fi
+	echo $newLine
 }
 
 
@@ -413,10 +408,7 @@ test_install()
 			;;
 	esac
 	
-	serial=""
-	id=""
-	eval $(read_TTYs)
-	newLine="ACTION==\"add\", SUBSYSTEM==\"tty\", ATTRS{id}==\"$id\", KERNELS==\"$serial\", SYMLINK+=\"ttyKNX1\", OWNER=\"knxd\""
+	newLine=$(read_TTY)
 	if [ -f /etc/udev/rules.d/80-knxd.rules ];
 	then
 		# File already exists. We might be able to skip this if it's been completed previously.
