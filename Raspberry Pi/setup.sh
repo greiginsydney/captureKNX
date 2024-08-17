@@ -223,6 +223,10 @@ setup()
 	if ! grep -q '^enable_uart=1' /boot/firmware/config.txt;
 	then
 		echo -e 'enable_uart=1' >> /boot/firmware/config.txt
+  		echo ''
+    		read -p 'A reboot is required before continuing. Reboot and simply re-run the script'
+      		echo ''
+		exit 0
 	fi
 
 	if ! grep -q '^dtoverlay=disable-bt' /boot/firmware/config.txt;
