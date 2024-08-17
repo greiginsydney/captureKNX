@@ -145,8 +145,10 @@ setup()
 	#if [[ ! $isKnxd ]];
 	then
 		echo -e "\n"$GREEN"Installing knxd "$RESET""
+		mkdir -pv /home/$SUDO_USER/staging/knxd
+		cd /home/${SUDO_USER}/staging/knxd/
 		apt-get install git-core -y
-		git clone -b debian https://github.com/knxd/knxd.git
+		git clone -b debian https://github.com/knxd/knxd.git staging/knxd
 		sh knxd/install-debian.sh
 	else
 		echo -e "\n"$GREEN"knxd is already installed - skipping"$RESET""
@@ -164,7 +166,9 @@ setup()
 	if [[ "$?" -ne 0 ]];
 	#if [[ ! $isTelegraf  ]];
 	then
-			echo -e "\n"$GREEN"Installing telegraf"$RESET""
+		echo -e "\n"$GREEN"Installing telegraf"$RESET""
+		mkdir -pv /home/$SUDO_USER/staging/telegraf
+		cd /home/${SUDO_USER}/staging/telegraf/
 		curl -s https://repos.influxdata.com/influxdata-archive.key > influxdata-archive.key
 		echo '943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515 influxdata-archive.key' | sha256sum -c && cat influxdata-archive.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null
 		echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
@@ -181,6 +185,8 @@ setup()
 	if [[ "$?" -ne 0 ]];
 	#if [[ ! $isInfluxd ]];
 	then
+		mkdir -pv /home/$SUDO_USER/staging/influxd
+		cd /home/${SUDO_USER}/staging/influxd/
 		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
 		curl -LO https://download.influxdata.com/influxdb/releases/influxdb2_2.7.8-1_arm64.deb
 		dpkg -i influxdb2_2.7.8-1_arm64.deb
