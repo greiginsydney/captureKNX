@@ -155,7 +155,7 @@ git clone --depth=3 https://github.com/greiginsydney/knxLogger staging/knxLogger
 34. Now we need to move the setup.sh script file into its final location:
 
 ```txt
-mv -fv "staging/Raspberry Pi/setup.sh" ~
+mv -fv "staging/knxLogger/Raspberry Pi/setup.sh" ~
 ``` 
 
 35. All the hard work is done by the script, but it needs to be made executable first:
