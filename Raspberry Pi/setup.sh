@@ -90,7 +90,7 @@ setup()
 	fi
 
 	mkdir -pv /home/$SUDO_USER/knxLogger
- 	mkdir -pv /home/$SUDO_USER/staging
+	mkdir -pv /home/$SUDO_USER/staging
 	#cd /home/$SUDO_USER/knxLogger
 
 	if [[ -d /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi ]];
@@ -223,10 +223,10 @@ setup()
 	if ! grep -q '^enable_uart=1' /boot/firmware/config.txt;
 	then
 		echo -e 'enable_uart=1' >> /boot/firmware/config.txt
-  		echo ''
-    		read -p 'A reboot is required before continuing. Reboot and simply re-run the script'
-      		echo ''
-		exit 0
+		echo ''
+  		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
+		echo ''
+  		exit 0
 	fi
 
 	if ! grep -q '^dtoverlay=disable-bt' /boot/firmware/config.txt;
@@ -240,6 +240,7 @@ setup()
 	fi
 
 
+	NEEDS_REBOOT=''
 	newLine=$(read_TTY)
 	if [[ $newLine ]];
 	then
@@ -254,13 +255,22 @@ setup()
 				sed -i -E "s/^([^#])/#\1/" /etc/udev/rules.d/80-knxd.rules # Comment-out any existing lines	- even if they're correct (a kludge after hours of blood/forehead)
 				echo -e "\n"$GREEN"Updated existing UDEV rule/file with new values"$RESET""
 				echo -e $newLine >> /etc/udev/rules.d/80-knxd.rules
+				$NEEDS_REBOOT='yes'
 			fi
 		else
 			echo -e $newLine >> /etc/udev/rules.d/80-knxd.rules
 			echo -e "\n"$GREEN"Created UDEV rule/file OK"$RESET""
+			$NEEDS_REBOOT='yes'
 		fi
 	else
 		echo -e "\n"$YELLOW"Failed to find a serial port for UDEV rule creation"$RESET""
+	fi
+	if [[ $NEEDS_REBOOT ]];
+	then
+		echo ''
+  		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
+		echo ''
+  		exit 0
 	fi
 
 
@@ -269,7 +279,8 @@ setup()
 	echo -e "\n"$GREEN"Customising knxd config."$RESET"\n"
 	echo "If you're unsure, just hit Enter/Return"
 
-	# KNXD_OPTS="-e 1.1.15 -E 1.1.240:4 -n knxLogger -D -T -R -S -i  --layer2=tpuarts:/dev/ttyKNX1"
+	# This is the default: KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -u /tmp/eib -b ip:"
+	# Needs to look like:  KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -n knxLogger --layer2=tpuarts:/dev/ttyKNX1"
 
 	#Extract the current values:
 	OLD_MYADDRESS=$(sed -n -E 's/^KNXD_OPTS.*-e ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
@@ -294,28 +305,22 @@ setup()
 	fi
 	# Set data source to be ttyKNX1:
 	sed -i -E "s|^(KNXD_OPTS=.*)( -b ip:)(.*)|\1 --layer2=tpuarts:/dev/ttyKNX1\3|" /etc/knxd.conf
-
 	echo ''
-	echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
+	echo -e ""$GREEN"Changed values written to file OK."$RESET""
 
 
-
-	# TODO: temporarily exit here. More to come.
-	exit 0
-
-	echo -e "\n"$GREEN"Customising the telegraph.conf file."$RESET""
+	echo -e "\n"$GREEN"TODO - Customising the telegraph.conf file."$RESET""
 	# These 3 lines need to be un-commented, and the port number changed:
 	# [[inputs.socket_listener]]
 	#   # service_address = "tcp://:8094"
 	#   # data_format = "influx"
 
-	sed -i -E 's/^\s*#\s*(\[\[inputs.socket_listener\]\])/\1/g' /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf #Un-comments the socket line
+	#sed -i -E 's/^\s*#\s*(\[\[inputs.socket_listener\]\])/\1/g' /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf #Un-comments the socket line
 	#Find the line number that 'inputs.socket_listener' starts at:
-	SocketLine=$(sed -n '/\[\[inputs.socket_listener\]\]/=' /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf)
-	sed -i -E "$SocketLine,$ s|^\s*#*\s*#*\s*(service_address = \"tcp://:)(.*)\"(.*)|\\17654\"|" /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf
-	sed -i -E "$SocketLine,$ s/^\s*#*\s*#*\s*(data_format = \"influx\")(.*)/\\1/" /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf
-	echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
-
+	#SocketLine=$(sed -n '/\[\[inputs.socket_listener\]\]/=' /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf)
+	#sed -i -E "$SocketLine,$ s|^\s*#*\s*#*\s*(service_address = \"tcp://:)(.*)\"(.*)|\\17654\"|" /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf
+	#sed -i -E "$SocketLine,$ s/^\s*#*\s*#*\s*(data_format = \"influx\")(.*)/\\1/" /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf
+	#echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
 
 	# -----------------------------------
 	# LET'S START IT UP!
@@ -333,6 +338,7 @@ setup()
 
 	echo ''
 	echo -e "\n"$GREEN"Done!"$RESET""
+	echo ''
 }
 
 
@@ -355,7 +361,9 @@ read_TTY()
 
 test_install()
 {
-	echo''
+	echo ''
+	HOSTNAME=$(uname -n)
+	echo $HOSTNAME
 	cat /proc/device-tree/model
 	echo ''
 	release=$(sed -n -E 's/^PRETTY_NAME="(.*)"$/\1/p' /etc/os-release)
@@ -430,7 +438,7 @@ test_install()
 		systemctl is-active --quiet grafana      && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" grafana             || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" grafana; fi
 	systemctl is-active --quiet knxLogger        && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxLogger           || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxLogger
 	systemctl is-active --quiet hciuart.service  && printf ""$YELLOW"FAIL:"$RESET" %-15s service is RUNNING\n" hciuart.service    || printf ""$GREEN"PASS:"$RESET" %-15s service is dead\n" hciuart.service
-	
+
 	echo '-------------------------------------'
 	test_config=0
 	if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt; then
@@ -449,7 +457,7 @@ test_install()
 			echo -e ""$YELLOW"FAIL:"$RESET" /boot/firmware/config.txt is missing required config. Re-run setup"
 			;;
 	esac
-	
+
 	newLine=$(read_TTY)
 	if [ -f /etc/udev/rules.d/80-knxd.rules ];
 	then
@@ -464,7 +472,7 @@ test_install()
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" UDEV file does not exist. Re-run setup or check TTY config"
 	fi
-	
+
 	if grep -q -E " -n $HOSTNAME (.*) --layer2=tpuarts:/dev/ttyKNX1" /etc/knxd.conf;
 	then
 		echo -e ""$GREEN"PASS:"$RESET" /etc/knxd.conf is good"
@@ -472,9 +480,9 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" /etc/knxd.conf is missing required config. Re-run setup"
 	fi
 
- 	echo ''
-  	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
-   	echo ''
+	echo ''
+	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
+	echo ''
 }
 
 
@@ -508,7 +516,7 @@ fi
 
 
 case "$1" in
-	
+
 	('test')
 		activate_venv
 		test_install
