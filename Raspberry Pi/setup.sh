@@ -471,6 +471,10 @@ test_install()
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" /etc/knxd.conf is missing required config. Re-run setup"
 	fi
+
+ 	echo ''
+  	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
+   	echo ''
 }
 
 
