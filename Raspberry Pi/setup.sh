@@ -255,12 +255,12 @@ setup()
 				sed -i -E "s/^([^#])/#\1/" /etc/udev/rules.d/80-knxd.rules # Comment-out any existing lines	- even if they're correct (a kludge after hours of blood/forehead)
 				echo -e "\n"$GREEN"Updated existing UDEV rule/file with new values"$RESET""
 				echo -e $newLine >> /etc/udev/rules.d/80-knxd.rules
-				$NEEDS_REBOOT='yes'
+				NEEDS_REBOOT='yes'
 			fi
 		else
 			echo -e $newLine >> /etc/udev/rules.d/80-knxd.rules
 			echo -e "\n"$GREEN"Created UDEV rule/file OK"$RESET""
-			$NEEDS_REBOOT='yes'
+			NEEDS_REBOOT='yes'
 		fi
 	else
 		echo -e "\n"$YELLOW"Failed to find a serial port for UDEV rule creation"$RESET""
