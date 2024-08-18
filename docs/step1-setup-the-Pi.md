@@ -112,7 +112,7 @@ sudo apt-get update && sudo apt-get upgrade -y
 
 > If this ends with an error "Some index files failed to download. They have been ignored, or old ones used instead." just press up-arrow and return to retry the command. You want to be sure the Pi is healthy and updated before continuing.
 
-> If however you encounter an error saying a certificate is out of date or not valid yet, check that the Pi's real-time clock is correct. `date` on its own will show the date, and you'll set it with this syntax: `sudo date -s '2024-01-09 11:04:00 AEDT'`.
+> If however you encounter an error saying a certificate is out of date or not valid yet, check that the Pi's real-time clock is correct. `date` on its own will show the date, and you'll set it with this syntax: `sudo date -s '2024-12-25 11:04:00 AEDT'`.
 
 29. `sudo reboot`
 
@@ -151,20 +151,25 @@ git clone --depth=3 https://github.com/greiginsydney/knxLogger staging/knxLogger
 
 > Advanced tip: if you're testing code and want to install a new branch direct from the repo, add `-b <branchName>` on the end of the line.
 
+34. The knxdclient goes in here:
 
-34. Now we need to move the setup.sh script file into its final location:
+```
+pip3 install knxdclient
+```
+
+35. Now we need to move the setup.sh script file into its final location:
 
 ```txt
 mv -fv "staging/knxLogger/Raspberry Pi/setup.sh" ~
 ``` 
 
-35. All the hard work is done by the script, but it needs to be made executable first:
+36. All the hard work is done by the script, but it needs to be made executable first:
 
 ```txt
 sudo chmod +x setup.sh
 ```
 
-36. Now run it! (Be careful here: the switches are critical. "-E" ensures your user path is passed to the script. Without it the software will be moved to the wrong location, or not at all. "-H" passes the Pi user's home directory.)
+37. Now run it! (Be careful here: the switches are critical. "-E" ensures your user path is passed to the script. Without it the software will be moved to the wrong location, or not at all. "-H" passes the Pi user's home directory.)
 ```txt
 sudo -E -H ./setup.sh
 ```
