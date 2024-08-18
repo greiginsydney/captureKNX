@@ -284,6 +284,16 @@ setup()
 	sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\1$MYADDRESS\3|" /etc/knxd.conf
 	sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)(:.*$)|\1$CLIENTADDR\3|" /etc/knxd.conf
 	sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+:)([[:digit:]]+)( .*$)|\1\2$CLIENTNBR\4|" /etc/knxd.conf
+	# Delete "-u /tmp/eib":
+	sed -i -E "s|^(KNXD_OPTS=.*)( -u /tmp/eib)(.*)|\1\3|" /etc/knxd.conf
+	# Insert hostname:
+	HOSTNAME=$(uname -n)
+	if ! grep -q " -n $HOSTNAME " /etc/knxd.conf;
+	then
+		sed -i -E "s|^(KNXD_OPTS=.*)( -E [[:digit:]]+.[[:digit:]]+.[[:digit:]]+:[[:digit:]]+)(.*)$|\1\2 -n $HOSTNAME\3|" /etc/knxd.conf
+	fi
+	# Set data source to be ttyKNX1:
+	sed -i -E "s|^(KNXD_OPTS=.*)( -b ip:)(.*)|\1 --layer2=tpuarts:/dev/ttyKNX1\3|" /etc/knxd.conf
 
 	echo ''
 	echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
