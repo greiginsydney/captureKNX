@@ -457,12 +457,19 @@ test_install()
 		if [ "$newLine" == "$(cat /etc/udev/rules.d/80-knxd.rules)" ] ;
 		then
 			# There's only one line in the file and it == 'newLine'
-			echo -e ""$GREEN"PASS:"$RESET" UDEV rule/file is good"
+			echo -e ""$GREEN"PASS:"$RESET" /etc/udev/rules.d/80-knxd.rules is good"
 		else
-			echo -e ""$YELLOW"FAIL:"$RESET" UDEV file exists but contains either muitple lines or incorrect content"
+			echo -e ""$YELLOW"FAIL:"$RESET" /etc/udev/rules.d/80-knxd.rules exists but contains either muitple lines or incorrect content"
 		fi
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" UDEV file does not exist. Re-run setup or check TTY config"
+	fi
+	
+	if grep -q " -n $HOSTNAME --layer2=tpuarts:/dev/ttyKNX1" /etc/knxd.conf;
+	then
+		echo -e ""$GREEN"PASS:"$RESET" /etc/knxd.conf is good"
+	else
+		echo -e ""$YELLOW"FAIL:"$RESET" /etc/knxd.conf is missing required config. Re-run setup"
 	fi
 }
 
