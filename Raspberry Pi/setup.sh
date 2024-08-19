@@ -377,9 +377,23 @@ setup()
 	# LET'S START IT UP!
 	# -----------------------------------
 
+	systemctl daemon-reload
+	if [[ $NEW_KNXD_CHECKSUM != $OLD_KNXD_CHECKSUM ]];
+	then
+		# The config has changed. Restart the services to pickup the new values
+		echo -e ""$GREEN"Config has changed. Restarting knxd.socket"$RESET""
+		systemctl restart knxd.socket
+		echo -e ""$GREEN"Config has changed. Restarting knxd.service"$RESET""
+		systemctl restart knxd.service
+	else
+		if [[ ! systemctl is-active --quiet knxd.socket ]];  then echo "Starting knxd.socket";  systemctl start knxd.socket; fi
+		if [[ ! systemctl is-active --quiet knxd.service ]]; then echo "Starting knxd.service"; systemctl start knxd.service; fi
+	fi
+
 	# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
 	echo -e ""$GREEN"TODO - Enabling knxLogger.service"$RESET""
 	#systemctl enable knxLogger.service
+	#systemctl start knxLogger.service
 
 
 	echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
