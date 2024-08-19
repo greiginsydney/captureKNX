@@ -316,18 +316,6 @@ setup()
 	echo ''
 
 
-	echo -e "\n"$GREEN"TODO - Customising the telegraph.conf file."$RESET""
-	# These 3 lines need to be un-commented, and the port number changed:
-	# [[inputs.socket_listener]]
-	#   # service_address = "tcp://:8094"
-	#   # data_format = "influx"
-
-	#sed -i -E 's/^\s*#\s*(\[\[inputs.socket_listener\]\])/\1/g' /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf #Un-comments the socket line
-	#Find the line number that 'inputs.socket_listener' starts at:
-	#SocketLine=$(sed -n '/\[\[inputs.socket_listener\]\]/=' /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf)
-	#sed -i -E "$SocketLine,$ s|^\s*#*\s*#*\s*(service_address = \"tcp://:)(.*)\"(.*)|\\17654\"|" /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf
-	#sed -i -E "$SocketLine,$ s/^\s*#*\s*#*\s*(data_format = \"influx\")(.*)/\\1/" /home/$SUDO_USER/tig-stack/telegraf/telegraf.conf
-	#echo -e "\n"$GREEN"Changed values written to file OK."$RESET""
 
 	# -----------------------------------
 	# LET'S START IT UP!
