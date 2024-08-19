@@ -291,6 +291,7 @@ setup()
 	read -e -i "$OLD_CLTADDR"   -p 'Sending KNX network client start address = ' CLIENTADDR
 	read -e -i "$OLD_CLTNBR"    -p 'Sending KNX network client count         = ' CLIENTNBR
 
+	OLD_FILE_CHECKSUM=$(md5sum /etc/knxd.conf)
 	#Paste in the new settings:
 	sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\1$MYADDRESS\3|" /etc/knxd.conf
 	sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)(:.*$)|\1$CLIENTADDR\3|" /etc/knxd.conf
@@ -305,8 +306,14 @@ setup()
 	fi
 	# Set data source to be ttyKNX1:
 	sed -i -E "s|^(KNXD_OPTS=.*)( -b ip:)(.*)|\1 --layer2=tpuarts:/dev/ttyKNX1\3|" /etc/knxd.conf
+	NEW_FILE_CHECKSUM=$(md5sum /etc/knxd.conf)
+	if [[ $NEW_FILE_CHECKSUM != $OLD_FILE_CHECKSUM ]];
+	then
+		echo -e ""$GREEN"Changed values written to file OK"$RESET""
+	else
+		echo -e ""$GREEN"No changes made"$RESET""
+	fi
 	echo ''
-	echo -e ""$GREEN"Changed values written to file OK."$RESET""
 
 
 	echo -e "\n"$GREEN"TODO - Customising the telegraph.conf file."$RESET""
