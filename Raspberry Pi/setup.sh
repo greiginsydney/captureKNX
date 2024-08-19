@@ -89,10 +89,9 @@ setup()
 		exit 1
 	fi
 
-	mkdir -pv /home/$SUDO_USER/knxLogger
-	mkdir -pv /home/$SUDO_USER/staging
+	mkdir -p /home/$SUDO_USER/knxLogger
+	mkdir -p /home/$SUDO_USER/staging
 	#cd /home/$SUDO_USER/knxLogger
-
 	if [[ -d /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi ]];
 	then
 		echo -e ""$GREEN"Moving repo files."$RESET""
@@ -116,6 +115,20 @@ setup()
 			else
 				echo -e "\n"$GREEN"Moving knxLogger.service."$RESET""
 				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service
+			fi
+		fi
+
+		# Copy the telegraf.conf file across, if required:
+		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/telegraf.conf ];
+		then
+			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf;
+			then
+				echo "Skipped: the file '/etc/telegraf/telegraf.conf' already exists & the new version is unchanged"
+			else
+				[ -f /etc/telegraf/telegraf.conf ] && mv -fv /etc/telegraf/telegraf.conf /etc/telegraf/telegraf.conf.old
+				echo -e "\n"$GREEN"Moving telegraf.conf"$RESET""
+				mkdir -p /etc/telegraf/
+				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf
 			fi
 		fi
 
