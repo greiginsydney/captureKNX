@@ -437,13 +437,20 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" knxd NOT installed"
 	fi
 
-	# TODO: this is broken!!
-	# isKnxdClient=$(dpkg -s knxdclient 2>/dev/null)
-	if [[ $isKnxdClient ]];
+	PIP_LIST=$(pip list)
+	echo $PIP_LIST
+	# TODO: This bit's still broken, always reports FALSE
+	if [[ $PIP_LIST == *"knxdclient"* ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" knxdclient installed"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" knxdclient NOT installed"
+	fi
+	if [[ $PIP_LIST == *"requests"* ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" requests installed"
+	else
+		echo -e ""$YELLOW"FAIL:"$RESET" requests NOT installed"
 	fi
 
 	set +e #Suspend the error trap
