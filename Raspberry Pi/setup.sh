@@ -386,8 +386,8 @@ setup()
 		echo -e ""$GREEN"Config has changed. Restarting knxd.service"$RESET""
 		systemctl restart knxd.service
 	else
-		if [[ ! systemctl is-active --quiet knxd.socket ]];  then echo "Starting knxd.socket";  systemctl start knxd.socket; fi
-		if [[ ! systemctl is-active --quiet knxd.service ]]; then echo "Starting knxd.service"; systemctl start knxd.service; fi
+		if ! systemctl is-active --quiet knxd.socket;  then echo "Starting knxd.socket";  systemctl start knxd.socket; fi
+		if ! systemctl is-active --quiet knxd.service; then echo "Starting knxd.service"; systemctl start knxd.service; fi
 	fi
 
 	# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
