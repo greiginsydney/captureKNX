@@ -450,7 +450,6 @@ test_install()
 	fi
 
 	PIP_LIST=$(pip list)
-	echo $PIP_LIST
 	# TODO: This bit's still broken, always reports FALSE
 	if [[ $PIP_LIST == *"knxdclient"* ]];
 	then
