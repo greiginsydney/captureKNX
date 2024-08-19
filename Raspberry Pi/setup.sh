@@ -316,6 +316,49 @@ setup()
 	echo ''
 
 
+	# Customise influxDB
+	# Extract the current values:
+	echo -e "\n"$GREEN"Customising influxDB config."$RESET"\n"
+	echo "If you're unsure, just hit Enter/Return"
+
+	#Extract the current values:
+	OLD_USERNAME=$(sed -n -E 's/^\s*INFLUXDB_INIT_USERNAME=(.*)$/\1/p' /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
+	OLD_PASSWORD=$(sed -n -E 's/^\s*INFLUXDB_INIT_PASSWORD=(.*)$/\1/p' /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
+	OLD_TOKEN=$(sed -n -E 's/^\s*INFLUXDB_INIT_ADMIN_TOKEN=(.*)$/\1/p' /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
+	OLD_ORG=$(sed -n -E 's/^\s*INFLUXDB_INIT_ORG=(.*)$/\1/p' /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
+	OLD_BUCKET=$(sed -n -E 's/^\s*INFLUXDB_INIT_BUCKET=(.*)$/\1/p' /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
+	OLD_RETENTION=$(sed -n -E 's/^\s*INFLUXDB_INIT_RETENTION=(.*)$/\1/p' /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
+	OLD_HOST=$(sed -n -E 's/^\s*INFLUXDB_INIT_HOST=(.*)$/\1/p' /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
+	OLD_PORT=$(sed -n -E 's/^\s*GRAFANA_PORT=(.*)$/\1/p' /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
+
+	read -e -i "$OLD_USERNAME" -p   'INFLUXDB_INIT_USERNAME    = ' USERNAME
+	read -e -i "$OLD_PASSWORD" -p   'INFLUXDB_INIT_PASSWORD    = ' PASSWORD
+	read -e -i "$OLD_TOKEN" -p      'INFLUXDB_INIT_ADMIN_TOKEN = ' TOKEN
+	read -e -i "$OLD_ORG" -p        'INFLUXDB_INIT_ORG         = ' ORG
+	read -e -i "$OLD_BUCKET" -p     'INFLUXDB_INIT_BUCKET      = ' BUCKET
+	read -e -i "$OLD_RETENTION" -p  'INFLUXDB_INIT_RETENTION   = ' RETENTION
+	read -e -i "$OLD_HOST" -p       'INFLUXDB_INIT_HOST        = ' HOST
+	read -e -i "$OLD_PORT" -p       'GRAFANA_PORT              = ' PORT
+
+	OLD_FILE_CHECKSUM=$(md5sum /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
+	#Paste in the new settings. (I used "|" as the delimiter for all, as "/" is in the replacement for the path
+	sed -i -E "s|^(\s*INFLUXDB_INIT_USERNAME=)(.*)|\1$USERNAME|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
+	sed -i -E "s|^(\s*INFLUXDB_INIT_PASSWORD=)(.*)|\1$PASSWORD|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
+	sed -i -E "s|^(\s*INFLUXDB_INIT_ADMIN_TOKEN=)(.*)|\1$TOKEN|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
+	sed -i -E "s|^(\s*INFLUXDB_INIT_ORG=)(.*)|\1$ORG|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
+	sed -i -E "s|^(\s*INFLUXDB_INIT_BUCKET=)(.*)|\1$BUCKET|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
+	sed -i -E "s|^(\s*INFLUXDB_INIT_RETENTION=)(.*)|\1$RETENTION|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
+	sed -i -E "s|^(\s*INFLUXDB_INIT_HOST=)(.*)|\1$HOST|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
+	sed -i -E "s|^(\s*GRAFANA_PORT=)(.*)|\1$PORT|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
+	NEW_FILE_CHECKSUM=$(md5sum /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
+	if [[ $NEW_FILE_CHECKSUM != $OLD_FILE_CHECKSUM ]];
+	then
+		echo -e ""$GREEN"Changed values written to file OK."$RESET""
+	else
+		echo -e ""$GREEN"No changes made"$RESET""
+	fi
+	echo ''
+
 
 	# -----------------------------------
 	# LET'S START IT UP!
