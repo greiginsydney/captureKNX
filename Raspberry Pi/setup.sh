@@ -141,8 +141,14 @@ setup()
 				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.logrotate /etc/logrotate.d/knxLogger.logrotate
 			fi
 		fi
-		chown root /etc/logrotate.d/knxLogger.logrotate
-		chgrp root /etc/logrotate.d/knxLogger.logrotate
+		if ! chown --quiet root /etc/logrotate.d/knxLogger.logrotate ;
+		then
+			echo -e "\n"$YELLOW"Error trying to 'chown' logrotate"$RESET""
+		fi
+		if ! chgrp --quiet root /etc/logrotate.d/knxLogger.logrotate ;
+		then
+			echo -e "\n"$YELLOW"Error trying to 'chgrp' logrotate"$RESET""
+		fi
 
 
 		#TODO: once all wanted files are removed, delete the staging folder - this needs to take place at the END of the script.
