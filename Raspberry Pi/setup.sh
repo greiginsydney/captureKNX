@@ -95,7 +95,7 @@ setup()
 	if [[ -d /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi ]];
 	then
 		echo -e "\n"$GREEN"Moving repo files."$RESET""
-		# Copy the knxLogger.py file across, if required:
+		# knxLogger.py:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.py ];
 		then
 			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py;
@@ -106,7 +106,7 @@ setup()
 			fi
 		fi
 
-		# Copy the knxLogger.service file across, if required:
+		# knxLogger.service:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service ];
 		then
 			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service;
@@ -117,7 +117,7 @@ setup()
 			fi
 		fi
 
-		# Copy the telegraf.conf file across, if required:
+		# telegraf.conf:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/telegraf.conf ];
 		then
 			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf;
@@ -129,6 +129,20 @@ setup()
 				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf
 			fi
 		fi
+
+		# knxLogger.logrotate:
+		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.logrotate ];
+		then
+			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.logrotate /etc/logrotate.d/knxLogger.logrotate;
+			then
+				echo "Skipped: the file '/etc/logrotate.d/knxLogger.logrotate' already exists & the new version is unchanged"
+			else
+				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.logrotate /etc/logrotate.d/knxLogger.logrotate
+			fi
+		fi
+		chown root /etc/logrotate.d/knxLogger.logrotate
+		chgrp root /etc/logrotate.d/knxLogger.logrotate
+
 
 		#TODO: once all wanted files are removed, delete the staging folder - this needs to take place at the END of the script.
 		# rm -fr /home/${SUDO_USER}/staging/ NOT HERE
