@@ -403,8 +403,13 @@ setup()
 	else
 		echo -e ""$GREEN"No changes made"$RESET""
 	fi
-	echo ''
 
+	# Add our custom .env to the service:
+	if ! grep -q '^EnvironmentFile=-/etc/influxdb/knxLogger.env' /lib/systemd/system/influxdb.service;
+	then
+		sed -i '/EnvironmentFile=-\/etc\/default\/influxdb2/a EnvironmentFile=-/etc/influxdb/knxLogger.env' /lib/systemd/system/influxdb.service
+	fi
+ 	echo ''
 
 	# -----------------------------------
 	# LET'S START IT UP!
