@@ -92,6 +92,7 @@ setup()
 	mkdir -p /home/$SUDO_USER/knxLogger
 	mkdir -p /home/$SUDO_USER/staging
 	#cd /home/$SUDO_USER/knxLogger
+
 	if [[ -d /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi ]];
 	then
 		echo -e "\n"$GREEN"Moving repo files."$RESET""
@@ -249,9 +250,9 @@ setup()
 	then
 		echo -e 'enable_uart=1' >> /boot/firmware/config.txt
 		echo ''
-  		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
+		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
 		echo ''
-  		exit 0
+		exit 0
 	fi
 
 	if ! grep -q '^dtoverlay=disable-bt' /boot/firmware/config.txt;
@@ -293,9 +294,9 @@ setup()
 	if [[ $NEEDS_REBOOT ]];
 	then
 		echo ''
-  		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
+		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
 		echo ''
-  		exit 0
+		exit 0
 	fi
 
 
@@ -316,7 +317,7 @@ setup()
 	read -e -i "$OLD_CLTADDR"   -p 'Sending KNX network client start address = ' CLIENTADDR
 	read -e -i "$OLD_CLTNBR"    -p 'Sending KNX network client count         = ' CLIENTNBR
 
-	OLD_FILE_CHECKSUM=$(md5sum /etc/knxd.conf)
+	OLD_KNXD_CHECKSUM=$(md5sum /etc/knxd.conf)
 	#Paste in the new settings:
 	sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\1$MYADDRESS\3|" /etc/knxd.conf
 	sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)(:.*$)|\1$CLIENTADDR\3|" /etc/knxd.conf
@@ -331,14 +332,15 @@ setup()
 	fi
 	# Set data source to be ttyKNX1:
 	sed -i -E "s|^(KNXD_OPTS=.*)( -b ip:)(.*)|\1 --layer2=tpuarts:/dev/ttyKNX1\3|" /etc/knxd.conf
-	NEW_FILE_CHECKSUM=$(md5sum /etc/knxd.conf)
-	if [[ $NEW_FILE_CHECKSUM != $OLD_FILE_CHECKSUM ]];
+	NEW_KNXD_CHECKSUM=$(md5sum /etc/knxd.conf)
+	if [[ $NEW_KNXD_CHECKSUM != $OLD_KNXD_CHECKSUM ]];
 	then
 		echo -e ""$GREEN"Changed values written to file OK"$RESET""
 	else
 		echo -e ""$GREEN"No changes made"$RESET""
 	fi
 	echo ''
+
 
 
 	# Customise influxDB
@@ -365,7 +367,7 @@ setup()
 	read -e -i "$OLD_HOST" -p       'INFLUXDB_INIT_HOST        = ' HOST
 	read -e -i "$OLD_PORT" -p       'GRAFANA_PORT              = ' PORT
 
-	OLD_FILE_CHECKSUM=$(md5sum /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
+	OLD_INFLUX_CHECKSUM=$(md5sum /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
 	#Paste in the new settings. (I used "|" as the delimiter for all, as "/" is in the replacement for the path
 	sed -i -E "s|^(\s*INFLUXDB_INIT_USERNAME=)(.*)|\1$USERNAME|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
 	sed -i -E "s|^(\s*INFLUXDB_INIT_PASSWORD=)(.*)|\1$PASSWORD|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
@@ -375,8 +377,8 @@ setup()
 	sed -i -E "s|^(\s*INFLUXDB_INIT_RETENTION=)(.*)|\1$RETENTION|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
 	sed -i -E "s|^(\s*INFLUXDB_INIT_HOST=)(.*)|\1$HOST|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
 	sed -i -E "s|^(\s*GRAFANA_PORT=)(.*)|\1$PORT|" /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env
-	NEW_FILE_CHECKSUM=$(md5sum /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
-	if [[ $NEW_FILE_CHECKSUM != $OLD_FILE_CHECKSUM ]];
+	NEW_INFLUX_CHECKSUM=$(md5sum /home/$SUDO_USER/staging/knxLogger/Raspberry\ Pi/influxDB.env)
+	if [[ $NEW_INFLUX_CHECKSUM != $OLD_INFLUX_CHECKSUM ]];
 	then
 		echo -e ""$GREEN"Changed values written to file OK."$RESET""
 	else
@@ -401,6 +403,8 @@ setup()
 		if ! systemctl is-active --quiet knxd.socket;  then echo "Starting knxd.socket";  systemctl start knxd.socket; fi
 		if ! systemctl is-active --quiet knxd.service; then echo "Starting knxd.service"; systemctl start knxd.service; fi
 	fi
+
+
 
 	# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
 	echo -e ""$GREEN"TODO - Enabling knxLogger.service"$RESET""
@@ -478,6 +482,7 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" requests NOT installed"
 	fi
 
+
 	set +e #Suspend the error trap
 	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
 	set -e #Resume the error trap
@@ -520,7 +525,7 @@ test_install()
 	if [[ $isGrafana ]]; then
 		systemctl is-active --quiet grafana      && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" grafana             || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" grafana; fi
 	systemctl is-active --quiet knxLogger        && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxLogger           || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxLogger
-	systemctl is-active --quiet hciuart.service  && printf ""$YELLOW"FAIL:"$RESET" %-15s service is RUNNING. (That's bad)\n" hciuart.service    || printf ""$GREEN"PASS:"$RESET" %-15s service is dead - which is good\n"
+	systemctl is-active --quiet hciuart.service  && printf ""$YELLOW"FAIL:"$RESET" %-15s service is RUNNING. (That's bad)\n" hciuart.service    || printf ""$GREEN"PASS:"$RESET" %-15s service is dead - which is good\n" hciuart.service
 
 	echo '-------------------------------------'
 	test_config=0
