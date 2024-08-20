@@ -131,6 +131,19 @@ setup()
 			fi
 		fi
 
+  		# knxLogger.env:
+		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env ];
+		then
+			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env /etc/influxdb/knxLogger.env;
+			then
+				echo "Skipped: the file '/etc/influxdb/knxLogger.env' already exists & the new version is unchanged"
+			else
+				[ -f /etc/influxdb/knxLogger.env ] && mv -fv /etc/influxdb/knxLogger.env /etc/influxdb/knxLogger.env.old
+				mkdir -p /etc/influxdb/
+				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env /etc/influxdb/knxLogger.env
+			fi
+		fi
+
 		# knxLogger.logrotate:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.logrotate ];
 		then
