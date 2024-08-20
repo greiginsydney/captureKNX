@@ -1,0 +1,13 @@
+#Global settings:
+
+    weekly
+    missingok
+    rotate 3
+    size=200k
+    compress
+    delaycompress
+    dateext
+    notifempty
+    copytruncate
+
+/var/log/telegraf/telegraf.log {}
