@@ -520,7 +520,7 @@ test_install()
 	if [[ $isGrafana ]]; then
 		systemctl is-active --quiet grafana      && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" grafana             || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" grafana; fi
 	systemctl is-active --quiet knxLogger        && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxLogger           || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxLogger
-	systemctl is-active --quiet hciuart.service  && printf ""$YELLOW"FAIL:"$RESET" %-15s service is RUNNING\n" hciuart.service    || printf ""$GREEN"PASS:"$RESET" %-15s service is dead\n" hciuart.service
+	systemctl is-active --quiet hciuart.service  && printf ""$YELLOW"FAIL:"$RESET" %-15s service is RUNNING. (That's bad)\n" hciuart.service    || printf ""$GREEN"PASS:"$RESET" %-15s service is dead - which is good\n"
 
 	echo '-------------------------------------'
 	test_config=0
