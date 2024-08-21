@@ -230,7 +230,7 @@ setup()
 		dpkg -i influxdb2_2.7.8-1_arm64.deb
 		systemctl start influxdb # TODO: don't start until the config has been customised
 	else
-		echo -e "\n"$GREEN"influx is already installed - skipping"$RESET""
+		echo -e "\n"$GREEN"InfluxDB is already installed - skipping"$RESET""
 		# TODO: Check version and update if there's newer.
 	fi
 
@@ -547,9 +547,19 @@ test_install()
 	set -e #Resume the error trap
 	if [[ $isInfluxd ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET" influxd installed"
+		echo -e ""$GREEN"PASS:"$RESET" InfluxDB installed"
 	else
-		echo -e ""$YELLOW"FAIL:"$RESET" influxd NOT installed"
+		echo -e ""$YELLOW"FAIL:"$RESET" InfluxDB NOT installed"
+	fi
+
+	set +e #Suspend the error trap
+	isInfluxCLI=$(command -v influx)
+	set -e #Resume the error trap
+	if [[ $isInfluxd ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" InfluxCLI installed"
+	else
+		echo -e ""$YELLOW"FAIL:"$RESET" InfluxCLI NOT installed"
 	fi
 
 	set +e #Suspend the error trap
