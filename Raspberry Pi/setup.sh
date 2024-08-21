@@ -236,6 +236,24 @@ setup()
 
 
 	set +e #Suspend the error trap
+	isInfluxCLI=$(command -v influx)
+	set -e #Resume the error trap
+	if [[ ! $isInfluxCLI ]];
+	then
+		mkdir -pv /home/$SUDO_USER/staging/influxd
+		cd /home/${SUDO_USER}/staging/influxd/
+		echo -e "\n"$GREEN"Installing InfluxCLI "$RESET""
+		wget https://download.influxdata.com/influxdb/releases/influxdb2-client-2.7.5-linux-arm64.tar.gz
+		tar xvzf influxdb2-client-2.7.5-linux-arm64.tar.gz
+		dest=${isInfluxd%/*}/
+		cp influx $dest
+	else
+		echo -e "\n"$GREEN"InfluxCLI is already installed - skipping"$RESET""
+		# TODO: Check version and update if there's newer.
+	fi
+ 
+
+	set +e #Suspend the error trap
 	isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
 	set -e #Resume the error trap
 	if [[ ! $isGrafana ]];
