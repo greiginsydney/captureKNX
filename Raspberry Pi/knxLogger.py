@@ -2,7 +2,7 @@ import asyncio
 import json                         # For sending to telegraf
 import knxdclient
 import math                         # Sending the 'floor' (main DPT) value to knclient
-#import re                          # Regex transformation of the xml from ETS
+import re                           # Used to escape text fields send to telegraf
 import requests                     # To push the values to telegraf
 from xml.dom.minidom import parse   # Decoding the ETS XML file
 
@@ -84,9 +84,9 @@ async def main() -> None:
                 
                 telegram = {}
                 telegram['source_address'] = ".".join(map(str,packet.src))
-                telegram['source_name'] = ''
+                telegram['source_name'] = re.escape('Unknown') # TODO: Paste source name here. NB: it's invalid to send an empty tag to Influx
                 telegram['destination'] = "/".join(map(str,packet.dst))
-                telegram['destination_name'] = ''
+                telegram['destination_name'] = re.escape('Unknown') # TODO: Paste dest name here. NB: it's invalid to send an empty tag to Influx
                 telegram['dpt'] = DPT # We send DPT_main to the knxdclient but the full numerical DPT to Influx
                 
                 #Ugh! The value could be one of MANY types:
