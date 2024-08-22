@@ -337,7 +337,7 @@ setup()
 	fi
 
 
-	# Customise knxf.conf
+	# Customise knxd.conf
 	# Extract the current values:
 	echo -e "\n"$GREEN"Customising knxd config."$RESET"\n"
 	echo "If you're unsure, just hit Enter/Return"
@@ -372,12 +372,10 @@ setup()
 	NEW_KNXD_CHECKSUM=$(md5sum /etc/knxd.conf)
 	if [[ $NEW_KNXD_CHECKSUM != $OLD_KNXD_CHECKSUM ]];
 	then
-		echo -e ""$GREEN"Changed values written to file OK"$RESET""
+		echo -e ""$GREEN"Changed values written to /etc/knxd.conf OK"$RESET""
 	else
-		echo -e ""$GREEN"No changes made"$RESET""
+		echo -e ""$GREEN"No changes made to /etc/knxd.conf"$RESET""
 	fi
-	echo ''
-
 
 
 	# Customise influxDB
@@ -393,6 +391,8 @@ setup()
 	if grep -q "INFLUXDB_INIT_ADMIN_TOKEN=changeme" /etc/influxdb/knxLogger.env;
 	then
 		TOKEN=$(openssl rand -hex 32)
+	else
+		TOKEN=$(sed -n -E 's/^\s*INFLUXDB_INIT_ADMIN_TOKEN=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
 	fi
 	
 	OLD_ORG=$(sed -n -E 's/^\s*INFLUXDB_INIT_ORG=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
@@ -423,11 +423,40 @@ setup()
 	NEW_INFLUX_CHECKSUM=$(md5sum /etc/influxdb/knxLogger.env)
 	if [[ $NEW_INFLUX_CHECKSUM != $OLD_INFLUX_CHECKSUM ]];
 	then
-		echo -e ""$GREEN"Changed values written to file OK."$RESET""
+		echo -e ""$GREEN"Changed values written to /etc/influxdb/knxLogger.env OK."$RESET""
 	else
-		echo -e ""$GREEN"No changes made"$RESET""
+		echo -e ""$GREEN"No changes made to /etc/influxdb/knxLogger.env"$RESET""
 	fi
-	echo ''
+
+	# Paste the values into telegraf.conf:
+	outputLine=$(sed -n '/^\[\[outputs.influxdb_v2\]\]/=' /etc/telegraf/telegraf.conf) #This is the line number that the output plugin starts at
+	if [[ $outputLine ]];
+	then
+		# Make sure telegraf is using the same values. (These override anything in telegraf.conf)
+		if ! grep -q "^token = \"$TOKEN\"$" /etc/telegraf/telegraf.conf;
+		then
+			sed -i -E "$outputLine,$ s|^(^token = \")(.*)$|\1$TOKEN\"|"   /etc/telegraf/telegraf.conf
+			restartTelegraf='true'
+		fi
+		if ! grep -q "^organization = \"$ORG\"$" /etc/telegraf/telegraf.conf;
+		then
+			sed -i -E "$outputLine,$ s|^(^organization = \")(.*)$|\1$ORG\"|"   /etc/telegraf/telegraf.conf
+			restartTelegraf='true'
+		fi
+		if ! grep -q "^bucket = \"$BUCKET\"$" /etc/telegraf/telegraf.conf;
+		then
+			sed -i -E "$outputLine,$ s|^(^bucket = \")(.*)$|\1$BUCKET\"|"   /etc/telegraf/telegraf.conf
+			restartTelegraf='true'
+		fi
+	else
+		echo -e ""$YELLOW"Failed to find [[outputs.influxdb_v2]] in /etc/telegraf/telegraf.conf"$RESET""
+	fi
+	if [[ $restartTelegraf ]]
+	then
+		echo -e ""$GREEN"Changed values written to /etc/telegraf/telegraf.conf OK."$RESET""
+	else
+		echo -e ""$GREEN"No changes made to /etc/telegraf/telegraf.conf"$RESET""
+	fi
 
 	# Add our custom .env to the service:
 	if ! grep -q '^EnvironmentFile=-/etc/influxdb/knxLogger.env' /lib/systemd/system/influxdb.service;
