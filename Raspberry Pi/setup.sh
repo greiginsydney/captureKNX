@@ -495,7 +495,10 @@ setup()
 	sudo rm -f grafana-enterprise_11.1.3_arm64.deb
 	rm -rfd /home/${SUDO_USER}/staging/
 
-	echo ''
+	# Add a shortcut for the logs folder:
+	ln -sfnv /var/log/ /home/${SUDO_USER}/log
+
+ 	echo ''
 	echo -e "\n"$GREEN"Done!"$RESET""
 	echo ''
 }
