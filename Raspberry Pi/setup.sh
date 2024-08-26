@@ -288,8 +288,7 @@ setup()
 		echo -e 'enable_uart=1' >> /boot/firmware/config.txt
 		echo ''
 		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
-		echo ''
-		exit 0
+		prompt_for_reboot
 	fi
 
 	if ! grep -q '^dtoverlay=disable-bt' /boot/firmware/config.txt;
@@ -332,8 +331,7 @@ setup()
 	then
 		echo ''
 		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
-		echo ''
-		exit 0
+		prompt_for_reboot
 	fi
 
 
@@ -475,7 +473,8 @@ setup()
 	else
 		echo -e "\n"$GREEN"Performed initial influxdb setup OK. (TODO: are you SURE?)"$RESET""
 	fi
- 
+
+
 	# -----------------------------------
 	# LET'S START IT UP!
 	# -----------------------------------
@@ -675,6 +674,21 @@ test_install()
 	echo ''
 }
 
+
+prompt_for_reboot()
+{
+	echo ''
+	read -p 'Reboot now? [Y/n]: ' rebootResponse
+	case $rebootResponse in
+		(y|Y|"")
+			echo 'Bye!'
+			exec reboot now
+			;;
+		(*)
+			return
+			;;
+	esac
+}
 
 
 test_64bit()
