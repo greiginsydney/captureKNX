@@ -478,6 +478,19 @@ setup()
 		echo -e "\n"$GREEN"Performed initial influxdb setup OK. (TODO: are you SURE?)"$RESET""
 	fi
 
+	# Create initial influxdb *telegraf* config:
+	set +e #Suspend the error trap
+	isTelegrafConfiguration=$(influx telegrafs create -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf )
+	set -e #Resume the error trap
+	echo '---------' # TODO: remove these debug lines once this is full tested and confirmed 100%
+	echo $isTelegrafConfiguration
+	echo '---------'
+	if [[ $isTelegrafConfiguration =~ *"has already been set up"* ]];
+	then
+		echo -e "\n"$GREEN"isTelegrafConfiguration has already been set up"$RESET""
+	else
+		echo -e "\n"$GREEN"Performed initial isTelegrafConfiguration setup OK. (TODO: are you SURE?)"$RESET""
+	fi
 
 	# -----------------------------------
 	# LET'S START IT UP!
