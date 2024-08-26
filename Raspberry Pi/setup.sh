@@ -273,7 +273,11 @@ setup()
 		# TODO: Check version and update if there's newer.
 	fi
 
-
+	# hciuart needs to be stopped and disabled before we can control the TTY port
+	systemctl stop hciuart.service
+	systemctl disable hciuart.service
+	systemctl mask hciuart.service
+ 
 	# Customise /boot/firmware/config.txt:
 	if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
 	then
