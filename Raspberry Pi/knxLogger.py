@@ -52,12 +52,12 @@ def decode_ETS_Export(filename):
             # A broken DPT? Discard the whole GA
             continue
         DPT = int(DPT_split[1]) + sub_dpt
-        data[knxdclient.GroupAddress(int(address[0]), int(address[1]), int(address[2]))] = DPT
+        data[knxdclient.GroupAddress(int(address[0]), int(address[1]), int(address[2]))] = (DPT, name)
 
     return data
 
-GA_Data = decode_ETS_Export(ETS_ExportFile)
 
+GA_Data = decode_ETS_Export(ETS_ExportFile)
 
 
 async def main() -> None:
