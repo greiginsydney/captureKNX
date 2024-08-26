@@ -73,20 +73,30 @@ async def main() -> None:
         async for packet in connection.iterate_group_telegrams():
             if packet.payload.type in (knxdclient.KNXDAPDUType.WRITE, knxdclient.KNXDAPDUType.RESPONSE):
                 # Decode and log incoming group WRITE and RESPONSE telegrams
-                if packet.dst in GA_Data:
-                    DPT = GA_Data[packet.dst]
+                # Decode the SOURCE (from the Topology):
+                    # TODO
+                    
+                # Decode the DESTINATION (a Group Address):
+                try:
+                    DPT, GA_name = GA_Data[packet.dst]
                     DPT_main = math.floor(DPT)
+                except:
+                    # We failed to match on the destination.
+                    # Discard this, as we don't know how to decode the data
+                    continue
                 try:
                     value = knxdclient.decode_value(packet.payload.value, knxdclient.KNXDPT(DPT_main))
                 except:
-                    value = "unknown"
-                #print(f'Telegram from {packet.src} to GAD {packet.dst}: {value}')
+                    # We failed to match on the destination.
+                    # Discard this, as we don't know how to decode the data
+                    continue
+                print(f'Telegram from {packet.src} to GAD {packet.dst}: {value}')
 
                 telegram = {}
                 telegram['source_address'] = ".".join(map(str,packet.src))
                 telegram['source_name'] = re.escape('Unknown') # TODO: Paste source name here. NB: it's invalid to send an empty tag to Influx
                 telegram['destination'] = "/".join(map(str,packet.dst))
-                telegram['destination_name'] = re.escape('Unknown') # TODO: Paste dest name here. NB: it's invalid to send an empty tag to Influx
+                telegram['destination_name'] = GA_name if (GA_name) else 'Unknown' # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
                 telegram['dpt'] = DPT # We send DPT_main to the knxdclient but the full numerical DPT to Influx
 
                 #Ugh! The value could be one of MANY types:
@@ -108,12 +118,11 @@ async def main() -> None:
                     status_code = response.status_code
                     reason = response.reason
                     if response.ok:
-                        print(f'Telegram from {packet.src} to GAD {packet.dst}: {value}.')
+                        print(f'Telegram from {packet.src} to GAD {packet.dst} ({GA_name}): {value}.')
                     else:
-                        print(f'Telegram from {packet.src} to GAD {packet.dst}: {value} - failed with {status_code}, {reason}.')
+                        print(f'Telegram from {packet.src} to GAD {packet.dst} ({GA_name}): {value} - failed with {status_code}, {reason}.')
                 except Exception as e:
                     print(f'Exception POSTing: {e}')
-
     except Exception as e:
         print(f'Exception in main: {e}\nDestination was {packet.dst}')
 
