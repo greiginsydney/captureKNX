@@ -15,7 +15,9 @@
 import asyncio
 import json                         # For sending to telegraf
 import knxdclient
+import logging
 import math                         # Sending the 'floor' (main DPT) value to knclient
+import os                           # Path manipulation
 import re                           # Used to escape text fields send to telegraf
 import requests                     # To push the values to telegraf
 from xml.dom.minidom import parse   # Decoding the ETS XML file
@@ -40,6 +42,15 @@ PATH               = "/knxd"
 URL_STR            = "http://{}:{}{}".format(HOST, PORT, PATH)
 HEADERS            = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
+logging.basicConfig(filename=LOGFILE_NAME, filemode='a', format='{asctime} {message}', style='{', datefmt='%Y/%m/%d %H:%M:%S', level=logging.DEBUG)
+
+def log(message):
+    try:
+        logging.info(message)
+    except Exception as e:
+        #print(f'error: {e}')
+        pass
+
 
 # Decode this:
 #
@@ -58,12 +69,15 @@ def decode_ETS_GA_Export(filename):
     for GA in GAs:
         # discard those with any empty values. (Mostly likely only the DPT type for an unused GA)
         if not GA.hasAttribute('Name'):
+            log(f'decode_ETS_GA_Export: Group Address {GA} has no Name and was discarded')
             continue
         if not GA.hasAttribute('Address'):
+            log(f'decode_ETS_GA_Export: Group Address {GA} has no Address and was discarded')
             continue
         if not GA.hasAttribute('DPTs'):
+            log(f'decode_ETS_GA_Export: Group Address {GA} has no DPT and was discarded')
             continue
-        name = GA.getAttribute('Name')
+        name = GA.getAttribute('Name') # TODO: will this fall over if there's a quotation mark in the name?
         address = (GA.getAttribute('Address')).split('/')
 
         #Turn the DPT back into a float: "DPST-5-1" becomes 5.001
@@ -78,6 +92,7 @@ def decode_ETS_GA_Export(filename):
             # A broken DPT? Discard the whole GA
             continue
         DPT = int(DPT_split[1]) + sub_dpt
+
         data[knxdclient.GroupAddress(int(address[0]), int(address[1]), int(address[2]))] = (DPT, name)
 
     return data
@@ -101,22 +116,24 @@ async def main() -> None:
                 # Decode and log incoming group WRITE and RESPONSE telegrams
                 # Decode the SOURCE (from the Topology):
                     # TODO
-                    
+
                 # Decode the DESTINATION (a Group Address):
                 try:
                     DPT, GA_name = GA_Data[packet.dst]
                     DPT_main = math.floor(DPT)
                 except:
-                    # We failed to match on the destination.
+                    # We failed to match on the destination
                     # Discard this, as we don't know how to decode the data
+                    print(f'main: Exception decoding a telegram to packet.dst {packet.dst}. The telegram has been discarded')
                     continue
                 try:
                     value = knxdclient.decode_value(packet.payload.value, knxdclient.KNXDPT(DPT_main))
                 except:
-                    # We failed to match on the destination.
+                    # We failed to decode the payload
                     # Discard this, as we don't know how to decode the data
+                    print(f'main: Exception decoding the payload of a telegram to packet.dst {packet.dst}. The telegram has been discarded')
                     continue
-                print(f'Telegram from {packet.src} to GAD {packet.dst}: {value}')
+                # print(f'Telegram from {packet.src} to GAD {packet.dst}: {value}') # Raw data, retained here for debugging
 
                 telegram = {}
                 telegram['source_address'] = ".".join(map(str,packet.src))
@@ -149,6 +166,7 @@ async def main() -> None:
                         print(f'Telegram from {packet.src} to GAD {packet.dst} ({GA_name}): {value} - failed with {status_code}, {reason}.')
                 except Exception as e:
                     print(f'Exception POSTing: {e}')
+
     except Exception as e:
         print(f'Exception in main: {e}\nDestination was {packet.dst}')
 
