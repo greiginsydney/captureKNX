@@ -59,6 +59,10 @@ def log(message):
 # <GroupAddress Name="Bedroom LX DIM value %" Address="0/0/4" DPTs="DPST-5-1" />
 
 def decode_ETS_GA_Export(filename):
+    if not os.path.isfile(filename):
+        log(f"decode_ETS_GA_Export: file '{filename}' not found. Aborting")
+        print(f"decode_ETS_GA_Export: file '{filename}' not found. Aborting")
+        return
     # Parse XML from a file object
     try:
         with open(filename) as file:
