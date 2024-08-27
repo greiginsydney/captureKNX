@@ -92,7 +92,9 @@ def decode_ETS_GA_Export(filename):
             # A broken DPT? Discard the whole GA
             continue
         DPT = int(DPT_split[1]) + sub_dpt
-
+        if not isinstance(DPT, float):
+            # It *should* be a float by now. If not, discard it
+            continue
         data[knxdclient.GroupAddress(int(address[0]), int(address[1]), int(address[2]))] = (DPT, name)
 
     return data
