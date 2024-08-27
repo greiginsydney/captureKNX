@@ -60,9 +60,12 @@ def log(message):
 
 def decode_ETS_GA_Export(filename):
     # Parse XML from a file object
-    with open(filename) as file:
-        document = parse(file)
-    GAs = document.getElementsByTagName('GroupAddress')
+    try:
+        with open(filename) as file:
+            document = parse(file)
+        GAs = document.getElementsByTagName('GroupAddress')
+    except Exception as e:
+        log(f"decode_ETS_GA_Export: Exception thrown trying to read file '{filename}'. {e}")
 
     data = {}
 
