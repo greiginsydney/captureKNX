@@ -1,6 +1,6 @@
 #Global settings:
 
-    weekly
+    daily
     missingok
     rotate 3
     size=200k
@@ -11,3 +11,4 @@
     copytruncate
 
 /var/log/telegraf/telegraf.log {}
+/home/pi/knxLogger/knxLogger.log {}
