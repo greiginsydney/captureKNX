@@ -90,10 +90,12 @@ def decode_ETS_GA_Export(filename):
             sub_dpt = float((DPT_split)[2]) / 1000
         else:
             # A broken DPT? Discard the whole GA
+            log(f"decode_ETS_GA_Export: Failed to decode sub-type from '{DPT_split}' for Group Address {GA}. The GA has been discarded")
             continue
         DPT = int(DPT_split[1]) + sub_dpt
         if not isinstance(DPT, float):
             # It *should* be a float by now. If not, discard it
+            log(f"decode_ETS_GA_Export: DPT '{DPT}' for Group Address {GA} is not a float. The GA has been discarded")
             continue
         data[knxdclient.GroupAddress(int(address[0]), int(address[1]), int(address[2]))] = (DPT, name)
 
