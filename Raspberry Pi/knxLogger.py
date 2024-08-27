@@ -20,24 +20,36 @@ import re                           # Used to escape text fields send to telegra
 import requests                     # To push the values to telegraf
 from xml.dom.minidom import parse   # Decoding the ETS XML file
 
+
+# ////////////////////////////////
+# /////////// STATICS ////////////
+# ////////////////////////////////
+
+sudo_username = os.getenv("SUDO_USER")
+if sudo_username:
+    PI_USER_HOME = os.path.expanduser('~' + sudo_username + '/')
+else:
+    PI_USER_HOME = os.path.expanduser('~')
+KNXLOGGER_DIR    = os.path.join(PI_USER_HOME, 'knxLogger')
+LOGFILE_NAME     = os.path.join(KNXLOGGER_DIR, 'knxLogger.log')
+ETS_GA_FILE      = os.path.join(KNXLOGGER_DIR, 'GroupExport.xml')
+
+HOST               = "localhost"
+PORT               = 8080
+PATH               = "/knxd"
+URL_STR            = "http://{}:{}{}".format(HOST, PORT, PATH)
+HEADERS            = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+
+
 # Decode this:
 #
 # <GroupAddress Name="Bedroom LX SW FB" Address="0/0/2" DPTs="DPST-1-1" />
 # <GroupAddress Name="Bedroom LX rel DIM" Address="0/0/3" DPTs="DPST-3-7" />
 # <GroupAddress Name="Bedroom LX DIM value %" Address="0/0/4" DPTs="DPST-5-1" />
 
-host = "localhost"
-port = 8080
-path = "/knxd"
-url_str = "http://{}:{}{}".format(host, port, path)
-headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-
-
-ETS_ExportFile = 'GroupExport.xml'
-
-def decode_ETS_Export(filename):
+def decode_ETS_GA_Export(filename):
     # Parse XML from a file object
-    with open("GroupExport.xml") as file:
+    with open(filename) as file:
         document = parse(file)
     GAs = document.getElementsByTagName('GroupAddress')
 
@@ -71,7 +83,7 @@ def decode_ETS_Export(filename):
     return data
 
 
-GA_Data = decode_ETS_Export(ETS_ExportFile)
+GA_Data = decode_ETS_GA_Export(ETS_GA_FILE)
 
 
 async def main() -> None:
@@ -128,7 +140,7 @@ async def main() -> None:
 
                 # Post it to telegraf:
                 try:
-                    response = requests.post(url=url_str, json=message)
+                    response = requests.post(url=URL_STR, json=message)
                     status_code = response.status_code
                     reason = response.reason
                     if response.ok:
