@@ -150,7 +150,7 @@ async def main() -> None:
                 telegram['source_address'] = ".".join(map(str,packet.src))
                 telegram['source_name'] = re.escape('Unknown') # TODO: Paste source name here. NB: it's invalid to send an empty tag to Influx
                 telegram['destination'] = "/".join(map(str,packet.dst))
-                telegram['destination_name'] = GA_name if (GA_name) else 'Unknown' # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
+                telegram['destination_name'] = re.escape(GA_name) if (GA_name) else 'Unknown' # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
                 telegram['dpt'] = DPT # We send DPT_main to the knxdclient but the full numerical DPT to Influx
 
                 #Ugh! The value could be one of MANY types:
