@@ -1,7 +1,10 @@
 # Setup the Pi
 
-If you're starting from scratch, start here at Step 1.
+If you're starting a Pi build from scratch, start here at Step 1.
 
+If you're upgrading or re-running the setup script, you should be able to SSH to the Pi and jump to Step 37.
+
+<hr />
 
 1. Prepare the memory card with the [64-bit Raspberry Pi OS 'Lite'](https://www.raspberrypi.org/software/operating-systems/) image.
 
