@@ -13,12 +13,13 @@
 
 
 import asyncio
+import csv                          # Reading the topology export
 import json                         # For sending to telegraf
 import knxdclient
 import logging
 import math                         # Sending the 'floor' (main DPT) value to knclient
 import os                           # Path manipulation
-import re                           # Used to escape text fields send to telegraf
+import re                           # Used to decode the topology + escape text fields sent to telegraf
 import requests                     # To push the values to telegraf
 from xml.dom.minidom import parse   # Decoding the ETS XML file
 
@@ -34,6 +35,7 @@ else:
     PI_USER_HOME = os.path.expanduser('~')
 KNXLOGGER_DIR    = os.path.join(PI_USER_HOME, 'knxLogger')
 LOGFILE_NAME     = os.path.join(KNXLOGGER_DIR, 'knxLogger.log')
+ETS_TOPO_FILE    = os.path.join(KNXLOGGER_DIR, 'TopoExport.csv')
 ETS_GA_FILE      = os.path.join(KNXLOGGER_DIR, 'GroupExport.xml')
 
 HOST               = "localhost"
@@ -52,18 +54,67 @@ def log(message):
         pass
 
 
-# Decode this:
+# Decode this Topology data (NB: this is an edited extract):
+#
+# ,,Installation Notes,,,,,,,,,,,,,,,,,,,,
+# ,,1.1,,,TP,,TP line,,,,,,,,,,,,,,, 
+# ,,1.1.-,,,MEAN WELL Enterprises Co. Ltd.,,,,,KNX-20E-640,,KNX-20E-640 Power Supply (230V/640mA),,,,,,,,, ,
+# ,,1.1.0,,,Weinzierl Engineering GmbH,,,,,KNX IP Router 752 secure,,KNX IP Router 752 secure,,,,,,,KNX IP Router 752 secure,,Accepted,
+# ,,,1.1.1 KNXnet/IP tunneling interface,,,,,,,,,,,,,,,,,,,
+# ,,,1.1.2 KNXnet/IP tunneling interface,,,,,,,,,,,,,,,,,,,
+# ,,1.1.12,,,ABB,,,,,2CDG 110 273 R0011,,"DG/S1.64.5.1 DALI Gateway,Premium,1f,MDRC",,,,,,,DALI Premium 1f/1.4,, ,
+# ,,1.1.130,,,Hager Electro,,,,,TXB322,,2-fold input / 2-fold output Status indication,,,,,,,SXB322,, ,
+
+def decode_ETS_Topology_Export(filename):
+    # Parse XML from a file object
+    if not os.path.isfile(filename):
+        log(f"decode_ETS_Topology_Export: file '{filename}' not found. Aborting")
+        print(f"decode_ETS_Topology_Export: file '{filename}' not found. Aborting")
+        return
+    data = {}
+    try:
+        with open(filename, 'rt', encoding="utf-8") as f:
+            reader = csv.reader(f, delimiter=',', quotechar='"')
+            for line in reader:
+                # The device ID will be in one of these two columns:
+                deviceAddress = None
+                for eitherOr in (line[2], line[3]):
+                    matched = re.match("^([0-9]\.[0-9]{1,2}\.[0-9]{1,3})", eitherOr)
+                    if matched:
+                        deviceAddress = matched.group(1)
+                        break
+                if deviceAddress == None: continue
+                # We matched on a device. Pull its description - column M, split index 12.
+                description = line[12]
+                if not description:
+                    # It might be a supplementary address in column 3, appended after the address itself
+                    try:
+                        description = line[3].split(' ', 1)[1]
+                    except IndexError as e:
+                        log(f"decode_ETS_Topology_Export: Unable to find a description for the device at address '{deviceAddress}'")
+                        description = ''
+                data[deviceAddress] = description
+
+    except Exception as e:
+        print(f"decode_ETS_Topology_Export: Exception thrown trying to read file '{filename}'. {e}")
+        log(f"decode_ETS_Topology_Export: Exception thrown trying to read file '{filename}'. {e}")
+
+    return data
+
+
+
+# Decode this Group Address data:
 #
 # <GroupAddress Name="Bedroom LX SW FB" Address="0/0/2" DPTs="DPST-1-1" />
 # <GroupAddress Name="Bedroom LX rel DIM" Address="0/0/3" DPTs="DPST-3-7" />
 # <GroupAddress Name="Bedroom LX DIM value %" Address="0/0/4" DPTs="DPST-5-1" />
 
 def decode_ETS_GA_Export(filename):
+    # Parse XML from a file object
     if not os.path.isfile(filename):
         log(f"decode_ETS_GA_Export: file '{filename}' not found. Aborting")
         print(f"decode_ETS_GA_Export: file '{filename}' not found. Aborting")
         return
-    # Parse XML from a file object
     try:
         with open(filename) as file:
             document = parse(file)
@@ -109,7 +160,9 @@ def decode_ETS_GA_Export(filename):
     return data
 
 
-GA_Data = decode_ETS_GA_Export(ETS_GA_FILE)
+Topo_Data = decode_ETS_Topology_Export(ETS_TOPO_FILE)
+
+GA_Data   = decode_ETS_GA_Export(ETS_GA_FILE)
 
 
 async def main() -> None:
@@ -125,43 +178,51 @@ async def main() -> None:
         async for packet in connection.iterate_group_telegrams():
             if packet.payload.type in (knxdclient.KNXDAPDUType.WRITE, knxdclient.KNXDAPDUType.RESPONSE):
                 # Decode and log incoming group WRITE and RESPONSE telegrams
+
                 # Decode the SOURCE (from the Topology):
-                    # TODO
+                source_name = None
+                try:
+                    source_name = Topo_Data[str(packet.src)]
+                except Exception as e:
+                    # We failed to ID the source. Not fatal, it will be sent as 'Unknown'
+                    source_name = None
+                    print(f'main: Exception decoding a telegram from packet.src {packet.src} - {e}')
 
                 # Decode the DESTINATION (a Group Address):
                 try:
                     DPT, GA_name = GA_Data[packet.dst]
                     DPT_main = math.floor(DPT)
-                except:
+                except Exception as e:
                     # We failed to match on the destination
-                    # Discard this, as we don't know how to decode the data
+                    # Discard this telegram as we don't know how to decode the data
                     print(f'main: Exception decoding a telegram to packet.dst {packet.dst}. The telegram has been discarded')
                     continue
+
                 try:
                     value = knxdclient.decode_value(packet.payload.value, knxdclient.KNXDPT(DPT_main))
-                except:
+                except Exception as e:
                     # We failed to decode the payload
-                    # Discard this, as we don't know how to decode the data
+                    # Discard this telegram as we don't know how to decode the data
                     print(f'main: Exception decoding the payload of a telegram to packet.dst {packet.dst}. The telegram has been discarded')
                     continue
                 # print(f'Telegram from {packet.src} to GAD {packet.dst}: {value}') # Raw data, retained here for debugging
 
                 telegram = {}
                 telegram['source_address'] = ".".join(map(str,packet.src))
-                telegram['source_name'] = re.escape('Unknown') # TODO: Paste source name here. NB: it's invalid to send an empty tag to Influx
+                telegram['source_name'] = re.escape(source_name) if (source_name) else 'Unknown' # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
                 telegram['destination'] = "/".join(map(str,packet.dst))
                 telegram['destination_name'] = re.escape(GA_name) if (GA_name) else 'Unknown' # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
                 telegram['dpt'] = DPT # We send DPT_main to the knxdclient but the full numerical DPT to Influx
-
+                #telegram['value'] = 'discardme'
                 #Ugh! The value could be one of MANY types:
                 # TODO: is this where we define EVERY sub-type??
                 if isinstance(value, str):
-                    telegram['info'] = "'" + value + "'"
+                    telegram[str(DPT)] = "'" + value + "'"
                 elif isinstance(value, (float, int, bool)):
-                    telegram['info'] = value
+                    telegram[str(DPT)] = value
                 elif isinstance(value, tuple):
                     print('-- TUPLE COMING THROUGH ')
-                    telegram['info'] = "-".join(map(str,value))
+                    telegram[str(DPT)] = "-".join(map(str,value))
                 else:
                     print(f'Unhandled object type. Value is {type(value)}')
                 message = {"telegram" : telegram}
@@ -172,9 +233,9 @@ async def main() -> None:
                     status_code = response.status_code
                     reason = response.reason
                     if response.ok:
-                        print(f'Telegram from {packet.src} to GAD {packet.dst} ({GA_name}): {value}.')
+                        print(f'Telegram from {packet.src} ({source_name}) to GAD {packet.dst} ({GA_name}): {value}.')
                     else:
-                        print(f'Telegram from {packet.src} to GAD {packet.dst} ({GA_name}): {value} - failed with {status_code}, {reason}.')
+                        print(f'Telegram from {packet.src} ({source_name}) to GAD {packet.dst} ({GA_name}): {value} - failed with {status_code}, {reason}.')
                 except Exception as e:
                     print(f'Exception POSTing: {e}')
 
