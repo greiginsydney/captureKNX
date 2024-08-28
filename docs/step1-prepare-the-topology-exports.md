@@ -26,7 +26,12 @@ The Topology provides us with the details of each (sending) device.
 > ETS exports this text in a 16-bit character format that's 'challenging' to read, so we need to cycle the file through a program to convert it to `utf-8'. I use [Notepad++](https://notepad-plus-plus.org/downloads/) and I heartily recommend it to everyone as a brilliant and powerful freeware text editor. The next steps assume you're doing same. If you're using a different editor the process will be similar.
 
 8. Open TopoExport.csv in Notepad-++.
-9. Click `Encoding` in the menu at the top. You should see the current formatting highlighted by the dot as `UTF-16 LE BOM`. Change it to `UTF-8`.
+9. Click `Encoding` in the menu at the top. You should see the current formatting highlighted by the dot as `UTF-16 LE BOM`. Select `Convert to UTF-8`:
+
+<p align="center">
+<img src="https://github.com/user-attachments/assets/9a20d1df-e280-42ad-8bf1-2fc931cf1224" width="40%">
+</p>
+
 10. Save the file and exit NP++.
 11. Copy this file to the /home/pi/knxLogger directory on the Pi.
 
@@ -44,7 +49,7 @@ The Group Address export tells knxLogger both the name and the DPT type for each
 
 <p align="center">
 <img src="https://github.com/user-attachments/assets/56c282c7-6646-4c4a-b25f-134875ccb9c4" width="40%">
- </p>
+</p>
 
 
 
