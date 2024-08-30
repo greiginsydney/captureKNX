@@ -14,6 +14,7 @@
 
 import asyncio
 import csv                          # Reading the topology export
+import glob                         # Finding the most recent (youngest) topo file
 import json                         # For sending to telegraf
 import knxdclient
 import logging
@@ -22,6 +23,7 @@ import os                           # Path manipulation
 import re                           # Used to decode the topology + escape text fields sent to telegraf
 import requests                     # To push the values to telegraf
 from xml.dom.minidom import parse   # Decoding the ETS XML file
+import zipfile                      # Reading the topology file (it's just a ZIP file!)
 
 
 # ////////////////////////////////
@@ -52,6 +54,27 @@ def log(message):
     except Exception as e:
         #print(f'error: {e}')
         pass
+
+
+def unzip_topo_archive():
+    '''
+    Walk through the user's root folder recursively in search of the most recent (youngest) topo file.
+    If found, extract \P-00B8\0.xml and exit.
+    If not found, just exit, as a previous 0.xml may already exist.
+    '''
+    try:
+        topo_files = glob.glob(PI_USER_HOME + "/**/*.knxproj", recursive = True)
+        if topo_files:
+            topo_file = max(topo_files, key=os.path.getctime)
+            with zipfile.ZipFile(topo_file) as z:
+                with open(PI_USER_HOME +'/knxLogger/0.xml', 'wb') as f:
+                    f.write(z.read('P-00B8/0.xml'))
+        else:
+            log(f'unzip_topo_archive: No topology file found')
+    except Exception as e:
+        log(f'unzip_topo_archive: Exception thrown trying to unzip archive: {e}')
+
+    return
 
 
 # Decode this Topology data (NB: this is an edited extract):
@@ -161,6 +184,8 @@ def decode_ETS_GA_Export(filename):
 
     return data
 
+
+unzip_topo_archive()
 
 Topo_Data = decode_ETS_Topology_Export(ETS_TOPO_FILE)
 
