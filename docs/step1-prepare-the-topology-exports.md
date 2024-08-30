@@ -11,29 +11,35 @@ For knxLogger to 'capture' this information, we need to extract it from the Topo
 
 ## Topology Report
 
-The Topology provides us with the details of each (sending) device.
+The Topology provides us with the details of each (sending) device, although perhaps counter-intuitively, we get more data in a `Group Addresses` report.
 
 ### Short version:
 
 1. In ETS6, open a `Reports` pane.
-2. Navigate to Project Structure / Topology.
-3. Click the Export button.
-4. Browse to the folder you want the file to go.
-5. Set the file name as `TopoExport.csv'.
-6. Change the `Save as type` to be `CSV files (*.csv)`.
-7. Click Save.
+2. Navigate to Project Structure / Group Addresses.
+3. Click `Objects` in the menu bar at the top of the report, so it's selected:
 
-> ETS exports this text in a 16-bit character format that's 'challenging' to read, so we need to cycle the file through a program to convert it to `utf-8'. I use [Notepad++](https://notepad-plus-plus.org/downloads/) and I heartily recommend it to everyone as a brilliant and powerful freeware text editor. The next steps assume you're doing same. If you're using a different editor the process will be similar.
+<p align="center">
+<img src="https://github.com/user-attachments/assets/75b920e1-201a-47f5-bea5-e836edf07830" width="80%">
+</p>
+  
+4. Click the Export button.
+5. Browse to the folder you want the file to go.
+6. Set the file name as `TopoExport.csv'.
+7. Change the `Save as type` to be `CSV files (*.csv)`.
+8. Click Save.
 
-8. Open TopoExport.csv in Notepad-++.
-9. Click `Encoding` in the menu at the top. You should see the current formatting highlighted by the dot as `UTF-16 LE BOM`. Select `Convert to UTF-8`:
+> ETS exports this text in a 16-bit character format that's 'challenging' to read, so we need to cycle the file through a program to convert it to 'utf-8'. I use [Notepad++](https://notepad-plus-plus.org/downloads/) and I heartily recommend it to everyone as a brilliant and powerful freeware text editor. The next steps assume you're doing same. If you're using a different editor the process will be similar.
+
+9. Open TopoExport.csv in Notepad++.
+10. Click `Encoding` in the menu at the top. You should see the current formatting highlighted by the dot as `UTF-16 LE BOM`. Select `Convert to UTF-8`:
 
 <p align="center">
 <img src="https://github.com/user-attachments/assets/9a20d1df-e280-42ad-8bf1-2fc931cf1224" width="40%">
 </p>
 
-10. Save the file and exit NP++.
-11. Copy this file to the /home/pi/knxLogger directory on the Pi.
+11. Save the file and exit NP++.
+12. Copy this file to the /home/pi/knxLogger directory on the Pi.
 
 TODO: flesh this out and add screen grabs.
 TODO: add an alternative text editor??
@@ -44,8 +50,8 @@ The Group Address export tells knxLogger both the name and the DPT type for each
 
 > If the file's missing knxLogger won't run, and if a telegram is received for a GA that isn't in the file, that telegram will be discarded.
 
-12. In ETS6, open a `Group Addresses` pane.
-13. Right-click on the root node of the Group Addresses and select Export:
+13. In ETS6, open a `Group Addresses` pane.
+14. Right-click on the root node of the Group Addresses and select Export:
 
 <p align="center">
 <img src="https://github.com/user-attachments/assets/56c282c7-6646-4c4a-b25f-134875ccb9c4" width="40%">
