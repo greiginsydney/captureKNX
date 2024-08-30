@@ -78,14 +78,20 @@ def decode_ETS_Topology_Export(filename):
             for line in reader:
                 # The device ID will be in one of these two columns:
                 deviceAddress = None
+                description = None
+                room = None
                 for eitherOr in (line[2], line[3]):
                     matched = re.match("^([0-9]\.[0-9]{1,2}\.[0-9]{1,3})", eitherOr)
                     if matched:
                         deviceAddress = matched.group(1)
                         break
                 if deviceAddress == None: continue
+                room = line[12]
+                if not room:
+                    # TODO: can I find the room elsewhere?
+                    pass
                 # We matched on a device. Pull its description - column M, split index 12.
-                description = line[12]
+                description = line[4]
                 if not description:
                     # It might be a supplementary address in column 3, appended after the address itself
                     try:
@@ -93,7 +99,9 @@ def decode_ETS_Topology_Export(filename):
                     except IndexError as e:
                         log(f"decode_ETS_Topology_Export: Unable to find a description for the device at address '{deviceAddress}'")
                         description = ''
-                data[deviceAddress] = description
+
+                if deviceAddress not in data:
+                    data[deviceAddress] = (room, description)
 
     except Exception as e:
         print(f"decode_ETS_Topology_Export: Exception thrown trying to read file '{filename}'. {e}")
@@ -181,8 +189,9 @@ async def main() -> None:
 
                 # Decode the SOURCE (from the Topology):
                 source_name = None
+                room = None
                 try:
-                    source_name = Topo_Data[str(packet.src)]
+                    room, source_name = Topo_Data[str(packet.src)]
                 except Exception as e:
                     # We failed to ID the source. Not fatal, it will be sent as 'Unknown'
                     source_name = None
@@ -209,6 +218,7 @@ async def main() -> None:
 
                 telegram = {}
                 telegram['source_address'] = ".".join(map(str,packet.src))
+                telegram['source_room'] = room if (room) else 'Unknown'
                 telegram['source_name'] = re.escape(source_name) if (source_name) else 'Unknown' # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
                 telegram['destination'] = "/".join(map(str,packet.dst))
                 telegram['destination_name'] = re.escape(GA_name) if (GA_name) else 'Unknown' # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
