@@ -57,7 +57,7 @@ def log(message):
 # Decode this Topology data (NB: this is an edited extract):
 #
 # ,,Installation Notes,,,,,,,,,,,,,,,,,,,,
-# ,,1.1,,,TP,,TP line,,,,,,,,,,,,,,, 
+# ,,1.1,,,TP,,TP line,,,,,,,,,,,,,,,
 # ,,1.1.-,,,MEAN WELL Enterprises Co. Ltd.,,,,,KNX-20E-640,,KNX-20E-640 Power Supply (230V/640mA),,,,,,,,, ,
 # ,,1.1.0,,,Weinzierl Engineering GmbH,,,,,KNX IP Router 752 secure,,KNX IP Router 752 secure,,,,,,,KNX IP Router 752 secure,,Accepted,
 # ,,,1.1.1 KNXnet/IP tunneling interface,,,,,,,,,,,,,,,,,,,
@@ -80,25 +80,19 @@ def decode_ETS_Topology_Export(filename):
                 deviceAddress = None
                 description = None
                 room = None
-                for eitherOr in (line[2], line[3]):
-                    matched = re.match("^([0-9]\.[0-9]{1,2}\.[0-9]{1,3})", eitherOr)
-                    if matched:
-                        deviceAddress = matched.group(1)
-                        break
+                matched = re.match("([0-9]\.[0-9]{1,2}\.[0-9]{1,3})", line[2])
+                if matched:
+                    deviceAddress = matched.group(1)
                 if deviceAddress == None: continue
                 room = line[12]
                 if not room:
                     # TODO: can I find the room elsewhere?
                     pass
                 # We matched on a device. Pull its description - column M, split index 12.
-                description = line[4]
+                description = line[3]
                 if not description:
-                    # It might be a supplementary address in column 3, appended after the address itself
-                    try:
-                        description = line[3].split(' ', 1)[1]
-                    except IndexError as e:
-                        log(f"decode_ETS_Topology_Export: Unable to find a description for the device at address '{deviceAddress}'")
-                        description = ''
+                    # TODO: can I find the description elsewhere?
+                    pass
 
                 if deviceAddress not in data:
                     data[deviceAddress] = (room, description)
