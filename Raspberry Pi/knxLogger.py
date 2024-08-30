@@ -37,8 +37,8 @@ else:
     PI_USER_HOME = os.path.expanduser('~')
 KNXLOGGER_DIR    = os.path.join(PI_USER_HOME, 'knxLogger')
 LOGFILE_NAME     = os.path.join(KNXLOGGER_DIR, 'knxLogger.log')
-ETS_TOPO_FILE    = os.path.join(KNXLOGGER_DIR, 'TopoExport.csv')
-ETS_GA_FILE      = os.path.join(KNXLOGGER_DIR, 'GroupExport.xml')
+ETS_XML_FILE    = os.path.join(KNXLOGGER_DIR, '0.xml')
+
 
 HOST               = "localhost"
 PORT               = 8080
@@ -88,44 +88,53 @@ def unzip_topo_archive():
 # ,,1.1.12,,,ABB,,,,,2CDG 110 273 R0011,,"DG/S1.64.5.1 DALI Gateway,Premium,1f,MDRC",,,,,,,DALI Premium 1f/1.4,, ,
 # ,,1.1.130,,,Hager Electro,,,,,TXB322,,2-fold input / 2-fold output Status indication,,,,,,,SXB322,, ,
 
-def decode_ETS_Topology_Export(filename):
+def decode_Individual_Addresses(filename):
+    '''
+    Decodes individual addresses from 0.xml. Aborts if file not found: its existence at this stage ISN'T mandatory
+    TODO: Loop through again and extract the Location information
+    '''
+    data = {}
     # Parse XML from a file object
     if not os.path.isfile(filename):
-        log(f"decode_ETS_Topology_Export: file '{filename}' not found. Aborting")
-        print(f"decode_ETS_Topology_Export: file '{filename}' not found. Aborting")
+        log(f"decode_Addresses: file '{filename}' not found. Aborting")
+        print(f"decode_Addresses: file '{filename}' not found. Aborting")
         return
-    data = {}
     try:
-        with open(filename, 'rt', encoding="utf-8") as f:
-            reader = csv.reader(f, delimiter=',', quotechar='"')
-            for line in reader:
-                # The device ID will be in one of these two columns:
-                deviceAddress = None
-                description = None
-                room = None
-                matched = re.match("([0-9]\.[0-9]{1,2}\.[0-9]{1,3})", line[2])
-                if matched:
-                    deviceAddress = matched.group(1)
-                if deviceAddress == None: continue
-                room = line[12]
-                if not room:
-                    # TODO: can I find the room elsewhere?
-                    pass
-                # We matched on a device. Pull its description - column M, split index 12.
-                description = line[3]
-                if not description:
-                    # TODO: can I find the description elsewhere?
-                    pass
+        with open(filename) as file:
+            document = parse(file)
+    except Exception as e:
+        log(f"decode_ETS_GA_Export: Exception thrown trying to read file '{filename}'. {e}")
 
-                if deviceAddress not in data:
-                    data[deviceAddress] = (room, description)
-
+    try:
+        topo = document.getElementsByTagName('Topology')
+        for node in topo:
+            for areas in node.getElementsByTagName('Area'):
+                for lines in areas.getElementsByTagName('Line'):
+                    for segments in lines.getElementsByTagName('Segment'):
+                        for DeviceInstances in segments.getElementsByTagName('DeviceInstance'):
+                            area   = (areas.getAttribute('Address')).strip()
+                            line   = (lines.getAttribute('Address')).strip()
+                            device = (DeviceInstances.getAttribute('Address')).strip()
+                            name   = (DeviceInstances.getAttribute('Name')).strip()
+                            if device:
+                                deviceAddress = (f'{area}.{line}.{device}')
+                                print(f'{deviceAddress} - {name}')
+                                if deviceAddress not in data:
+                                    data[deviceAddress] = ('', name)
+                            # Routers and the X1 have 'additional addresses' as well:
+                            for AdditionalAddresses in DeviceInstances.getElementsByTagName('AdditionalAddresses'):
+                                for EachAddress in AdditionalAddresses.getElementsByTagName('Address'):
+                                    device = (EachAddress.getAttribute('Address')).strip()
+                                    name   = (EachAddress.getAttribute('Name')).strip()
+                                    deviceAddress = (f'{area}.{line}.{device}')
+                                    #print(f'{deviceAddress} - {name}')
+                                    if deviceAddress not in data:
+                                        data[deviceAddress] = ('', name)
     except Exception as e:
         print(f"decode_ETS_Topology_Export: Exception thrown trying to read file '{filename}'. {e}")
         log(f"decode_ETS_Topology_Export: Exception thrown trying to read file '{filename}'. {e}")
 
     return data
-
 
 
 # Decode this Group Address data:
@@ -187,7 +196,7 @@ def decode_ETS_GA_Export(filename):
 
 unzip_topo_archive()
 
-Topo_Data = decode_ETS_Topology_Export(ETS_TOPO_FILE)
+Individual_Data = decode_Individual_Addresses(ETS_XML_FILE)
 
 GA_Data   = decode_ETS_GA_Export(ETS_GA_FILE)
 
@@ -210,7 +219,7 @@ async def main() -> None:
                 source_name = None
                 room = None
                 try:
-                    room, source_name = Topo_Data[str(packet.src)]
+                    room, source_name = Individual_Data[str(packet.src)]
                 except Exception as e:
                     # We failed to ID the source. Not fatal, it will be sent as 'Unknown'
                     source_name = None
