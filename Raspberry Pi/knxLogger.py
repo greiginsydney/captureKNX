@@ -216,16 +216,15 @@ async def main() -> None:
                 # Decode and log incoming group WRITE and RESPONSE telegrams
 
                 # Decode the SOURCE (from the Topology):
-                source_name = None
-                room = None
+                room = source_name = ''
                 try:
                     room, source_name = Individual_Data[str(packet.src)]
                 except Exception as e:
                     # We failed to ID the source. Not fatal, it will be sent as 'Unknown'
-                    source_name = None
                     print(f'main: Exception decoding a telegram from packet.src {packet.src} - {e}')
 
                 # Decode the DESTINATION (a Group Address):
+                DPT = GA_name = ''
                 try:
                     DPT, GA_name = GA_Data[packet.dst]
                     DPT_main = math.floor(DPT)
