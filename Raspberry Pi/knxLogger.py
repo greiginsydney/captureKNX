@@ -25,7 +25,7 @@ import requests                     # To push the values to telegraf
 from xml.dom.minidom import parse   # Decoding the ETS XML file
 import zipfile                      # Reading the topology file (it's just a ZIP file!)
 
-import decode_dpt                   # Decodes certain DPT sub-types
+from decode_dpt import DPT1         # Decodes certain DPT sub-types
 
 
 # ////////////////////////////////
