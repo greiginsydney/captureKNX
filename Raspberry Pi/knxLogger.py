@@ -25,6 +25,8 @@ import requests                     # To push the values to telegraf
 from xml.dom.minidom import parse   # Decoding the ETS XML file
 import zipfile                      # Reading the topology file (it's just a ZIP file!)
 
+import decode_dpt                   # Decodes certain DPT sub-types
+
 
 # ////////////////////////////////
 # /////////// STATICS ////////////
@@ -301,10 +303,13 @@ async def main() -> None:
                 telegram['source_name']      = ('"' + source_name + '"') if (source_name) else ("Unknown") # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
                 telegram['destination']      = "/".join(map(str,packet.dst))
                 telegram['destination_name'] = ('"' + GA_name + '"') if (GA_name) else ("Unknown") # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
-                telegram['dpt']              = float(DPT) # We send DPT_main to the knxdclient but the full numerical DPT to Influx
-                #telegram['value'] = 'discardme'
-                #Ugh! The value could be one of MANY types:
+                telegram['dpt']              = float(DPT) # We only send DPT_main to the knxdclient but the full numerical DPT to Influx
+                
                 # TODO: is this where we define EVERY sub-type??
+                if DPT_main == 1:
+                    value_true, value_false = DPT1[sub_DPT]
+                    value = value_true if (value) else value_false
+
                 if isinstance(value, str):
                     telegram[str(DPT)] = '"' + value + '"'
                 elif isinstance(value, float):
