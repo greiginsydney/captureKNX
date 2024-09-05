@@ -325,9 +325,9 @@ async def main() -> None:
                     status_code = response.status_code
                     reason = response.reason
                     if response.ok:
-                        print(f'Telegram from {packet.src} ({source_name}) to GAD {packet.dst} ({GA_name}): {value}.')
+                        print(f'Telegram from {packet.src} ({source_name}) to GAD {packet.dst} ({GA_name}): {value}')
                     else:
-                        print(f'Telegram from {packet.src} ({source_name}) to GAD {packet.dst} ({GA_name}): {value} - failed with {status_code}, {reason}.')
+                        print(f'Telegram from {packet.src} ({source_name}) to GAD {packet.dst} ({GA_name}): {value} - failed with {status_code}, {reason}')
                 except Exception as e:
                     print(f'Exception POSTing: {e}')
 
