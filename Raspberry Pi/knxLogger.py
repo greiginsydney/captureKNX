@@ -270,16 +270,16 @@ async def main() -> None:
 
                 telegram = {}
                 telegram['source_address'] = ".".join(map(str,packet.src))
-                telegram['source_room'] = room if (room) else 'Unknown'
-                telegram['source_name'] = source_name if (source_name) else 'Unknown' # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
+                telegram['source_room'] = ('"' + room + '"') if (room) else ("Unknown")
+                telegram['source_name'] = ('"' + source_name + '"') if (source_name) else ("Unknown") # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
                 telegram['destination'] = "/".join(map(str,packet.dst))
-                telegram['destination_name'] = GA_name if (GA_name) else 'Unknown' # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
+                telegram['destination_name'] = ('"' + GA_name + '"') if (GA_name) else ("Unknown") # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
                 telegram['dpt'] = float(DPT) # We send DPT_main to the knxdclient but the full numerical DPT to Influx
                 #telegram['value'] = 'discardme'
                 #Ugh! The value could be one of MANY types:
                 # TODO: is this where we define EVERY sub-type??
                 if isinstance(value, str):
-                    telegram[str(DPT)] = "'" + value + "'"
+                    telegram[str(DPT)] = '"' + value + '"'
                 elif isinstance(value, (float, int, bool)):
                     telegram[str(DPT)] = value
                 elif isinstance(value, tuple):
