@@ -117,7 +117,6 @@ def decode_Individual_Addresses(filename):
                             floor    = (floors.getAttribute('Name')).strip()
                             room    = (rooms.getAttribute('Name')).strip()
                             RefId   = (DeviceInstances.getAttribute('RefId')).strip()
-                            #print(f'{building}.{floor}.{room} - {RefId}')
                             if RefId:
                                 if RefId not in location:
                                     location[RefId] = (building, floor, room)
@@ -133,14 +132,19 @@ def decode_Individual_Addresses(filename):
                 for lines in areas.getElementsByTagName('Line'):
                     for segments in lines.getElementsByTagName('Segment'):
                         for DeviceInstances in segments.getElementsByTagName('DeviceInstance'):
-                            area   = (areas.getAttribute('Address')).strip()
-                            line   = (lines.getAttribute('Address')).strip()
-                            device = (DeviceInstances.getAttribute('Address')).strip()
-                            name   = (DeviceInstances.getAttribute('Name')).strip()
+                            area     = (areas.getAttribute('Address')).strip()
+                            line     = (lines.getAttribute('Address')).strip()
+                            device   = (DeviceInstances.getAttribute('Address')).strip()
+                            name     = (DeviceInstances.getAttribute('Name')).strip()
+                            deviceId = (DeviceInstances.getAttribute('Id')).strip()
+                            try:
+                                device_location = location[deviceId]
+                            except:
+                                device_location = ('', '', '')
                             if device:
                                 deviceAddress = (f'{area}.{line}.{device}')
                                 if deviceAddress not in data:
-                                    data[deviceAddress] = ('', name)
+                                    data[deviceAddress] = (device_location, name)
                             # Routers and the X1 have 'additional addresses' as well:
                             for AdditionalAddresses in DeviceInstances.getElementsByTagName('AdditionalAddresses'):
                                 for EachAddress in AdditionalAddresses.getElementsByTagName('Address'):
@@ -148,7 +152,7 @@ def decode_Individual_Addresses(filename):
                                     name   = (EachAddress.getAttribute('Name')).strip()
                                     deviceAddress = (f'{area}.{line}.{device}')
                                     if deviceAddress not in data:
-                                        data[deviceAddress] = ('', name)
+                                        data[deviceAddress] = (device_location, name)
     except Exception as e:
         print(f"decode_Individual_Addresses: Exception thrown trying to read file '{filename}'. {e}")
         log(f"decode_Individual_Addresses: Exception thrown trying to read file '{filename}'. {e}")
@@ -261,9 +265,9 @@ async def main() -> None:
                 # Decode and log incoming group WRITE and RESPONSE telegrams
 
                 # Decode the SOURCE (from the Topology):
-                room = source_name = ''
+                building = floor = room = source_name = ''
                 try:
-                    room, source_name = Individual_Data[str(packet.src)]
+                    (building, floor, room), source_name = Individual_Data[str(packet.src)]
                 except Exception as e:
                     # We failed to ID the source. Not fatal, it will be sent as 'Unknown'
                     source_name = ''
@@ -290,12 +294,14 @@ async def main() -> None:
                 # print(f'Telegram from {packet.src} to GAD {packet.dst}: {value}') # Raw data, retained here for debugging
 
                 telegram = {}
-                telegram['source_address'] = ".".join(map(str,packet.src))
-                telegram['source_room'] = ('"' + room + '"') if (room) else ("Unknown")
-                telegram['source_name'] = ('"' + source_name + '"') if (source_name) else ("Unknown") # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
-                telegram['destination'] = "/".join(map(str,packet.dst))
+                telegram['source_address']   = ".".join(map(str,packet.src))
+                telegram['source_building']  = building if (building) else ("Unknown")
+                telegram['source_floor']     = floor if (floor) else ("Unknown")
+                telegram['source_room']      = room if (room) else ("Unknown")
+                telegram['source_name']      = ('"' + source_name + '"') if (source_name) else ("Unknown") # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
+                telegram['destination']      = "/".join(map(str,packet.dst))
                 telegram['destination_name'] = ('"' + GA_name + '"') if (GA_name) else ("Unknown") # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
-                telegram['dpt'] = float(DPT) # We send DPT_main to the knxdclient but the full numerical DPT to Influx
+                telegram['dpt']              = float(DPT) # We send DPT_main to the knxdclient but the full numerical DPT to Influx
                 #telegram['value'] = 'discardme'
                 #Ugh! The value could be one of MANY types:
                 # TODO: is this where we define EVERY sub-type??
