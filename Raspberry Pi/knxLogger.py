@@ -94,6 +94,7 @@ def decode_Individual_Addresses(filename):
     Returns a dictionary where the key is the individual address, and the value is a tuple of location and name
     '''
     data = {}
+    location = {}
     # Parse XML from a file object
     if not os.path.isfile(filename):
         log(f"decode_Addresses: file '{filename}' not found. Aborting")
@@ -104,6 +105,26 @@ def decode_Individual_Addresses(filename):
             document = parse(file)
     except Exception as e:
         log(f"decode_ETS_GA_Export: Exception thrown trying to read file '{filename}'. {e}")
+
+    try:
+        locations = document.getElementsByTagName('Locations')
+        for node in locations:
+            for buildings in node.getElementsByTagName('Space'):
+                for floors in buildings.getElementsByTagName('Space'):
+                    for rooms in floors.getElementsByTagName('Space'):
+                        for DeviceInstances in rooms.getElementsByTagName('DeviceInstanceRef'):
+                            building = (buildings.getAttribute('Name')).strip()
+                            floor    = (floors.getAttribute('Name')).strip()
+                            room    = (rooms.getAttribute('Name')).strip()
+                            RefId   = (DeviceInstances.getAttribute('RefId')).strip()
+                            #print(f'{building}.{floor}.{room} - {RefId}')
+                            if RefId:
+                                if RefId not in location:
+                                    location[RefId] = (building, floor, room)
+        
+    except Exception as e:
+        print(f"decode_Individual_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
+        log(f"decode_Individual_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
 
     try:
         topo = document.getElementsByTagName('Topology')
