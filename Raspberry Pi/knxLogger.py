@@ -307,7 +307,9 @@ async def main() -> None:
                 # TODO: is this where we define EVERY sub-type??
                 if isinstance(value, str):
                     telegram[str(DPT)] = '"' + value + '"'
-                elif isinstance(value, (float, int, bool)):
+                elif isinstance(value, float):
+                    telegram[str(DPT)] = round(value, 2)
+                elif isinstance(value, (int, bool)):
                     telegram[str(DPT)] = value
                 elif isinstance(value, tuple):
                     print('-- TUPLE COMING THROUGH ')
