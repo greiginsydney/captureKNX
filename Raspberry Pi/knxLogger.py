@@ -14,6 +14,7 @@
 
 import asyncio
 import csv                          # Reading the topology export
+import glob                         # Finding the most recent (youngest) topo file
 import json                         # For sending to telegraf
 import knxdclient
 import logging
@@ -22,6 +23,7 @@ import os                           # Path manipulation
 import re                           # Used to decode the topology + escape text fields sent to telegraf
 import requests                     # To push the values to telegraf
 from xml.dom.minidom import parse   # Decoding the ETS XML file
+import zipfile                      # Reading the topology file (it's just a ZIP file!)
 
 
 # ////////////////////////////////
@@ -35,8 +37,10 @@ else:
     PI_USER_HOME = os.path.expanduser('~')
 KNXLOGGER_DIR    = os.path.join(PI_USER_HOME, 'knxLogger')
 LOGFILE_NAME     = os.path.join(KNXLOGGER_DIR, 'knxLogger.log')
-ETS_TOPO_FILE    = os.path.join(KNXLOGGER_DIR, 'TopoExport.csv')
-ETS_GA_FILE      = os.path.join(KNXLOGGER_DIR, 'GroupExport.xml')
+ETS_XML_FILE     = os.path.join(KNXLOGGER_DIR, '0.xml')
+
+GA_LEVELS        = 3 # Set as 2 or 3 depending on your implementation. (Read by decode_Group_Addresses)
+
 
 HOST               = "localhost"
 PORT               = 8080
@@ -54,120 +58,174 @@ def log(message):
         pass
 
 
+def unzip_topo_archive():
+    '''
+    Walk through the user's root folder recursively in search of the most recent (youngest) topo file.
+    If found, extract \P-00B8\0.xml and exit.
+    If not found, just exit, as a previous 0.xml may already exist.
+    '''
+    try:
+        topo_files = glob.glob(PI_USER_HOME + "/**/*.knxproj", recursive = True)
+        if topo_files:
+            topo_file = max(topo_files, key=os.path.getctime)
+            with zipfile.ZipFile(topo_file) as z:
+                with open(PI_USER_HOME +'/knxLogger/0.xml', 'wb') as f:
+                    f.write(z.read('P-00B8/0.xml'))
+        else:
+            log(f'unzip_topo_archive: No topology file found')
+    except Exception as e:
+        log(f'unzip_topo_archive: Exception thrown trying to unzip archive: {e}')
+
+    return
+
+
 # Decode this Topology data (NB: this is an edited extract):
 #
-# ,,Installation Notes,,,,,,,,,,,,,,,,,,,,
-# ,,1.1,,,TP,,TP line,,,,,,,,,,,,,,,
-# ,,1.1.-,,,MEAN WELL Enterprises Co. Ltd.,,,,,KNX-20E-640,,KNX-20E-640 Power Supply (230V/640mA),,,,,,,,, ,
-# ,,1.1.0,,,Weinzierl Engineering GmbH,,,,,KNX IP Router 752 secure,,KNX IP Router 752 secure,,,,,,,KNX IP Router 752 secure,,Accepted,
-# ,,,1.1.1 KNXnet/IP tunneling interface,,,,,,,,,,,,,,,,,,,
-# ,,,1.1.2 KNXnet/IP tunneling interface,,,,,,,,,,,,,,,,,,,
-# ,,1.1.12,,,ABB,,,,,2CDG 110 273 R0011,,"DG/S1.64.5.1 DALI Gateway,Premium,1f,MDRC",,,,,,,DALI Premium 1f/1.4,, ,
-# ,,1.1.130,,,Hager Electro,,,,,TXB322,,2-fold input / 2-fold output Status indication,,,,,,,SXB322,, ,
+#  <Topology>
+#    <Area Id="P-00B8-0_A-2" Address="1" Puid="4">
+#      <Line Id="P-00B8-0_L-5" Address="1" Puid="596">
+#        <Segment Id="P-00B8-0_S-5" Number="0" MediumTypeRefId="MT-0" Puid="597">
+#          <DeviceInstance Id="P-00B8-0_DI-3" Address="20" Name="Garage - DIMMER - DM 4-2 T (4 x dimming actuator, 200 W)"
 
-def decode_ETS_Topology_Export(filename):
-    # Parse XML from a file object
-    if not os.path.isfile(filename):
-        log(f"decode_ETS_Topology_Export: file '{filename}' not found. Aborting")
-        print(f"decode_ETS_Topology_Export: file '{filename}' not found. Aborting")
-        return
+def decode_Individual_Addresses(filename):
+    '''
+    Decodes individual addresses from 0.xml. Aborts if file not found: its existence at this stage ISN'T mandatory
+    TODO: Loop through again and extract the Location information
+    Returns a dictionary where the key is the individual address, and the value is a tuple of location and name
+    '''
     data = {}
-    try:
-        with open(filename, 'rt', encoding="utf-8") as f:
-            reader = csv.reader(f, delimiter=',', quotechar='"')
-            for line in reader:
-                # The device ID will be in one of these two columns:
-                deviceAddress = None
-                description = None
-                room = None
-                matched = re.match("([0-9]\.[0-9]{1,2}\.[0-9]{1,3})", line[2])
-                if matched:
-                    deviceAddress = matched.group(1)
-                if deviceAddress == None: continue
-                room = line[12]
-                if not room:
-                    # TODO: can I find the room elsewhere?
-                    pass
-                # We matched on a device. Pull its description - column M, split index 12.
-                description = line[3]
-                if not description:
-                    # TODO: can I find the description elsewhere?
-                    pass
-
-                if deviceAddress not in data:
-                    data[deviceAddress] = (room, description)
-
-    except Exception as e:
-        print(f"decode_ETS_Topology_Export: Exception thrown trying to read file '{filename}'. {e}")
-        log(f"decode_ETS_Topology_Export: Exception thrown trying to read file '{filename}'. {e}")
-
-    return data
-
-
-
-# Decode this Group Address data:
-#
-# <GroupAddress Name="Bedroom LX SW FB" Address="0/0/2" DPTs="DPST-1-1" />
-# <GroupAddress Name="Bedroom LX rel DIM" Address="0/0/3" DPTs="DPST-3-7" />
-# <GroupAddress Name="Bedroom LX DIM value %" Address="0/0/4" DPTs="DPST-5-1" />
-
-def decode_ETS_GA_Export(filename):
     # Parse XML from a file object
     if not os.path.isfile(filename):
-        log(f"decode_ETS_GA_Export: file '{filename}' not found. Aborting")
-        print(f"decode_ETS_GA_Export: file '{filename}' not found. Aborting")
+        log(f"decode_Addresses: file '{filename}' not found. Aborting")
+        print(f"decode_Addresses: file '{filename}' not found. Aborting")
         return
     try:
         with open(filename) as file:
             document = parse(file)
-        GAs = document.getElementsByTagName('GroupAddress')
     except Exception as e:
         log(f"decode_ETS_GA_Export: Exception thrown trying to read file '{filename}'. {e}")
 
-    data = {}
-
-    for GA in GAs:
-        # discard those with any empty values. (Mostly likely only the DPT type for an unused GA)
-        if not GA.hasAttribute('Name'):
-            log(f'decode_ETS_GA_Export: Group Address {GA} has no Name and was discarded')
-            continue
-        if not GA.hasAttribute('Address'):
-            log(f'decode_ETS_GA_Export: Group Address {GA} has no Address and was discarded')
-            continue
-        if not GA.hasAttribute('DPTs'):
-            log(f'decode_ETS_GA_Export: Group Address {GA} has no DPT and was discarded')
-            continue
-        name = GA.getAttribute('Name') # TODO: will this fall over if there's a quotation mark in the name?
-        address = (GA.getAttribute('Address')).split('/')
-
-        #Turn the DPT back into a float: "DPST-5-1" becomes 5.001
-        DPT_split = GA.getAttribute('DPTs').split('-')
-        if len(DPT_split) == 2:
-            # Rare, possibly junk value, maybe an old GA no longer used. e.g. "DPST-1" Format to 1.000
-            # Valid occurrences are seen in ETS as (e.g.) DPT "9.*", a 2-bytpe float not fully defined.
-            sub_dpt = float("{:.3f}".format(0))
-        elif len(DPT_split) == 3:
-            sub_dpt = float((DPT_split)[2]) / 1000
-        else:
-            # A broken DPT? Discard the whole GA
-            log(f"decode_ETS_GA_Export: Failed to decode sub-type from '{DPT_split}' for Group Address {GA}. The GA has been discarded")
-            continue
-        DPT = int(DPT_split[1]) + sub_dpt
-        if not isinstance(DPT, float):
-            # It *should* be a float by now. If not, discard it
-            log(f"decode_ETS_GA_Export: DPT '{DPT}' for Group Address {GA} is not a float. The GA has been discarded")
-            continue
-        data[knxdclient.GroupAddress(int(address[0]), int(address[1]), int(address[2]))] = (DPT, name)
+    try:
+        topo = document.getElementsByTagName('Topology')
+        for node in topo:
+            for areas in node.getElementsByTagName('Area'):
+                for lines in areas.getElementsByTagName('Line'):
+                    for segments in lines.getElementsByTagName('Segment'):
+                        for DeviceInstances in segments.getElementsByTagName('DeviceInstance'):
+                            area   = (areas.getAttribute('Address')).strip()
+                            line   = (lines.getAttribute('Address')).strip()
+                            device = (DeviceInstances.getAttribute('Address')).strip()
+                            name   = (DeviceInstances.getAttribute('Name')).strip()
+                            if device:
+                                deviceAddress = (f'{area}.{line}.{device}')
+                                if deviceAddress not in data:
+                                    data[deviceAddress] = ('', name)
+                            # Routers and the X1 have 'additional addresses' as well:
+                            for AdditionalAddresses in DeviceInstances.getElementsByTagName('AdditionalAddresses'):
+                                for EachAddress in AdditionalAddresses.getElementsByTagName('Address'):
+                                    device = (EachAddress.getAttribute('Address')).strip()
+                                    name   = (EachAddress.getAttribute('Name')).strip()
+                                    deviceAddress = (f'{area}.{line}.{device}')
+                                    if deviceAddress not in data:
+                                        data[deviceAddress] = ('', name)
+    except Exception as e:
+        print(f"decode_Individual_Addresses: Exception thrown trying to read file '{filename}'. {e}")
+        log(f"decode_Individual_Addresses: Exception thrown trying to read file '{filename}'. {e}")
 
     return data
 
 
-Topo_Data = decode_ETS_Topology_Export(ETS_TOPO_FILE)
+# Decode this Group Address data:
+#
+# <GroupAddresses>
+#   <GroupRanges>
+#     <GroupRange Id="P-00B8-0_GR-1" RangeStart="1" RangeEnd="2047" Name="MASTER BEDROOM" Puid="606">
+#       <GroupRange Id="P-00B8-0_GR-21" RangeStart="1" RangeEnd="255" Name="Lighting" Puid="1024">
+#         <GroupAddress Id="P-00B8-0_GA-623" Address="1" Name="Bedroom LX SW" DatapointType="DPST-1-1" Puid="1568" />
 
-GA_Data   = decode_ETS_GA_Export(ETS_GA_FILE)
+def decode_Group_Addresses(filename):
+    '''
+    Decodes group addresses from 0.xml. Aborts if file not found - a fatal error
+    Handles either two- and three-level GA's, using a STATIC VAR declared above, set/changed by the setup script (TODO)
+    Returns a dictionary where the key is the GA address, and the value is a tuple of datapoint type and name
+    '''
+    data = {}
+    # Parse XML from a file object
+    if not os.path.isfile(filename):
+        log(f"decode_Group_Addresses: file '{filename}' not found. Aborting")
+        print(f"decode_Group_Addresses: file '{filename}' not found. Aborting")
+        return
+    try:
+        with open(filename) as file:
+            document = parse(file)
+    except Exception as e:
+        log(f"decode_Group_Addresses: Exception thrown trying to read file '{filename}'. {e}")
+
+    try:
+        for GAs in document.getElementsByTagName('GroupAddresses'):
+            for GroupRanges in GAs.getElementsByTagName('GroupRanges'):
+                for GroupRange in GroupRanges.getElementsByTagName('GroupRange'):
+                    for GroupRange2 in GroupRange.getElementsByTagName('GroupRange'):
+                        for GroupAddress in GroupRange2.getElementsByTagName('GroupAddress'):
+                            longAddress   = int((GroupAddress.getAttribute('Address')).strip())
+                            name          = (GroupAddress.getAttribute('Name')).strip()
+                            DptString     = (GroupAddress.getAttribute('DatapointType')).strip()
+
+                            if longAddress and DptString:
+                                # Both the address and DPT are crucial. Discard this GA if either is absent
+                                # Bit decoding thanks to: https://knxer.net/?p=49
+                                if GA_LEVELS == 3:
+                                    main = longAddress >> 11
+                                    middle = (longAddress >> 8) & 0x07
+                                    sub = longAddress & 0b0000000011111111
+                                    GA = (f'{main}/{middle}/{sub}')
+                                else:
+                                    main = longAddress >> 11
+                                    sub = longAddress & 0b0000011111111111
+                                    GA = (f'{main}/{sub}')
+
+                                # Turn the DPT back into a *string* that resembles a float: "DPST-5-1" becomes 5.001
+                                # (I couldn't get the trailing zeroes to work for all types as a float, so it's now a string)
+                                
+                                DPT_split = DptString.split('-')
+                                if len(DPT_split) == 2:
+                                    # Rare, possibly junk value, maybe an old GA no longer used. e.g. "DPST-1" Format to 1.000
+                                    # Valid occurrences are seen in ETS as (e.g.) DPT "9.*", a 2-byte float not fully defined.
+                                    sub_dpt = '000'
+                                elif len(DPT_split) == 3:
+                                    sub_dpt = DPT_split[2].zfill(3) #Right-justifies sub-dpt to three digits.
+                                else:
+                                    # A broken DPT? Discard the whole GA
+                                    print(f"decode_Group_Addresses: Failed to decode sub-type from '{DptString}' for Group Address {GA}. The GA has been discarded")
+                                    continue
+
+                                DPT = DPT_split[1] + '.' + sub_dpt
+
+                                if GA not in data:
+                                    data[GA] = (DPT, name)
+
+                            else:
+                                log(f'decode_Group_Addresses discarded incomplete address=|{longAddress}|, name=|{name}|, DptString=|{DptString}|')
+
+    except Exception as e:
+        print(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
+        log(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
+
+    return data
+
+
+unzip_topo_archive()
+
+Individual_Data = decode_Individual_Addresses(ETS_XML_FILE)
+
+GA_Data   = decode_Group_Addresses(ETS_XML_FILE)
 
 
 async def main() -> None:
+    '''
+    Asynchronously receives telegrams, decodes the data, and POSTs it as JSON to telegraf for logging
+    Some types of failures will cause the telegram to be discarded, all of which are captured in the logfile
+    '''
     connection = knxdclient.KNXDConnection()
     await connection.connect()
     try:
@@ -182,23 +240,23 @@ async def main() -> None:
                 # Decode and log incoming group WRITE and RESPONSE telegrams
 
                 # Decode the SOURCE (from the Topology):
-                source_name = None
-                room = None
+                room = source_name = ''
                 try:
-                    room, source_name = Topo_Data[str(packet.src)]
+                    room, source_name = Individual_Data[str(packet.src)]
                 except Exception as e:
                     # We failed to ID the source. Not fatal, it will be sent as 'Unknown'
-                    source_name = None
+                    source_name = ''
                     print(f'main: Exception decoding a telegram from packet.src {packet.src} - {e}')
 
                 # Decode the DESTINATION (a Group Address):
+                DPT = GA_name = ''
                 try:
-                    DPT, GA_name = GA_Data[packet.dst]
-                    DPT_main = math.floor(DPT)
+                    DPT, GA_name = GA_Data[str(packet.dst)]
+                    DPT_main = int(DPT.split('.')[0])
                 except Exception as e:
                     # We failed to match on the destination
                     # Discard this telegram as we don't know how to decode the data
-                    print(f'main: Exception decoding a telegram to packet.dst {packet.dst}. The telegram has been discarded')
+                    print(f'main: Exception decoding a telegram to packet.dst {packet.dst}. The telegram has been discarded. {e}')
                     continue
 
                 try:
@@ -206,7 +264,7 @@ async def main() -> None:
                 except Exception as e:
                     # We failed to decode the payload
                     # Discard this telegram as we don't know how to decode the data
-                    print(f'main: Exception decoding the payload of a telegram to packet.dst {packet.dst}. The telegram has been discarded')
+                    print(f'main: Exception decoding the payload of a telegram to packet.dst {packet.dst}. The telegram has been discarded. {e}')
                     continue
                 # print(f'Telegram from {packet.src} to GAD {packet.dst}: {value}') # Raw data, retained here for debugging
 
@@ -216,7 +274,7 @@ async def main() -> None:
                 telegram['source_name'] = source_name if (source_name) else 'Unknown' # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
                 telegram['destination'] = "/".join(map(str,packet.dst))
                 telegram['destination_name'] = GA_name if (GA_name) else 'Unknown' # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
-                telegram['dpt'] = DPT # We send DPT_main to the knxdclient but the full numerical DPT to Influx
+                telegram['dpt'] = float(DPT) # We send DPT_main to the knxdclient but the full numerical DPT to Influx
                 #telegram['value'] = 'discardme'
                 #Ugh! The value could be one of MANY types:
                 # TODO: is this where we define EVERY sub-type??
@@ -230,6 +288,9 @@ async def main() -> None:
                 else:
                     print(f'Unhandled object type. Value is {type(value)}')
                 message = {"telegram" : telegram}
+
+                #print(message)
+                #continue
 
                 # Post it to telegraf:
                 try:
