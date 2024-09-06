@@ -687,6 +687,19 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" /etc/knxd.conf is missing required config. Re-run setup"
 	fi
 
+	echo -n "Checking /home/pi/log/telegraf/telegraf.log"
+	telegraf_error=$(sed -n -E '/^(.*) (.*)field type conflict(.*)$/h;${x;p;}' /home/pi/log/telegraf/telegraf.log)
+	if [[ $telegraf_error ]];
+	then
+		echo -e '\r-------------------------------------      '
+		echo -e "\r"$YELLOW"FAIL:"$RESET" /home/pi/log/telegraf/telegraf.log shows a 'field type conflict'. Telegrams are being discarded"
+		echo ''
+		echo $telegraf_error
+	else
+		echo -e "\r"$GREEN"PASS:"$RESET" /home/pi/log/telegraf/telegraf.log logged no 'field type conflicts'"
+	fi
+
+	echo '-------------------------------------'
 	echo ''
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
 	echo ''
