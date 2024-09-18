@@ -309,6 +309,8 @@ async def main() -> None:
                 if DPT_main == 1:
                     value_true, value_false = DPT1[sub_DPT]
                     value = value_true if (value) else value_false
+                elif DPT_main == 5:
+                    value = DPT5(sub_DPT, value)
 
                 if isinstance(value, str):
                     telegram[str(DPT)] = '"' + value + '"'
