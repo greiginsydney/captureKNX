@@ -50,11 +50,14 @@ DPT1 = {
 
 
 def DPT5(sub_DPT, value):
+    '''
+    TODO: return 'decoded' as a tuple with the value type
+    '''
     if sub_DPT == 1:
         decoded = round(value / 255 * 100, 1)
     elif sub_DPT == 3:
         decoded = round(value / 255 * 360, 1)
     else:
-        decoded = value # 4, 5, 6 & 10 all return the initial value
+        decoded = value # 4, 5, 6 & 10 all return the initial value unchanged
     return decoded
     
