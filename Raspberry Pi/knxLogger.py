@@ -40,9 +40,8 @@ else:
     PI_USER_HOME = os.path.expanduser('~')
 KNXLOGGER_DIR    = os.path.join(PI_USER_HOME, 'knxLogger')
 LOGFILE_NAME     = os.path.join(KNXLOGGER_DIR, 'knxLogger.log')
-ETS_XML_FILE     = os.path.join(KNXLOGGER_DIR, '0.xml')
-
-GA_LEVELS        = 3 # Set as 2 or 3 depending on your implementation. (Read by decode_Group_Addresses)
+ETS_0_XML_FILE     = os.path.join(KNXLOGGER_DIR, '0.xml')
+ETS_PROJECT_XML_FILE     = os.path.join(KNXLOGGER_DIR, 'project.xml')
 
 
 HOST               = "localhost"
@@ -87,7 +86,42 @@ def unzip_topo_archive():
     return
 
 
-# Decode this Topology data (NB: this is an edited extract):
+# Decode this Topology data from project.xml (NB: this is an edited extract):
+
+# <?xml version="1.0" encoding="utf-8"?>
+# <KNX xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" CreatedBy="ETS6" ToolVersion="6.2.7302.0" xmlns="http://knx.org/xml/project/23">
+#   <Project Id="P-00B8">
+#      <ProjectInformation Name="MyProject" GroupAddressStyle="ThreeLevel" LastModified="2024-08-26T22:45:00.1307987Z" ArchivedVersion="2022-05-04T07:36:16.4846857Z" ProjectStart="2022-02-10T06:35:34.3087562Z" Comment="" 
+
+def decode_GroupLevels(filename):
+    '''
+    Reads topology.xml to determine if we're using Free, Two or Three level group addressing.
+    '''
+    if not os.path.isfile(filename):
+        log(f"decode_GroupLevels: file '{filename}' not found. Aborting")
+        print(f"decode_GroupLevels: file '{filename}' not found. Aborting")
+        return
+    try:
+        with open(filename) as file:
+            document = parse(file)
+    except Exception as e:
+        log(f"decode_GroupLevels: Exception thrown trying to read file '{filename}'. {e}")
+
+    try:
+        for elements in document.getElementsByTagName('ProjectInformation'):
+            GroupAddressStyle = (elements.getAttribute('GroupAddressStyle')).strip()
+        if "ThreeLevel" in GroupAddressStyle:
+            return 3
+        elif "TwoLevel" in GroupAddressStyle:
+            return 2
+        else:
+            return 1
+    except Exception as e:
+        log(f"decode_GroupLevels: Exception thrown trying to read GA Style from '{filename}'. {e}")
+    
+
+
+# Decode this Topology data from 0.xml (NB: this is an edited extract):
 #
 #  <Topology>
 #    <Area Id="P-00B8-0_A-2" Address="1" Puid="4">
@@ -176,7 +210,7 @@ def decode_Individual_Addresses(filename):
 #       <GroupRange Id="P-00B8-0_GR-21" RangeStart="1" RangeEnd="255" Name="Lighting" Puid="1024">
 #         <GroupAddress Id="P-00B8-0_GA-623" Address="1" Name="Bedroom LX SW" DatapointType="DPST-1-1" Puid="1568" />
 
-def decode_Group_Addresses(filename):
+def decode_Group_Addresses(filename, grpAddLevels):
     '''
     Decodes group addresses from 0.xml. Aborts if file not found - a fatal error
     Handles either two- and three-level GA's, using a STATIC VAR declared above, set/changed by the setup script (TODO)
@@ -207,15 +241,17 @@ def decode_Group_Addresses(filename):
                             if longAddress and DptString:
                                 # Both the address and DPT are crucial. Discard this GA if either is absent
                                 # Bit decoding thanks to: https://knxer.net/?p=49
-                                if GA_LEVELS == 3:
+                                if grpAddLevels == 3:
                                     main = longAddress >> 11
                                     middle = (longAddress >> 8) & 0x07
                                     sub = longAddress & 0b0000000011111111
                                     GA = (f'{main}/{middle}/{sub}')
-                                else:
+                                elif grpAddLevels == 2:
                                     main = longAddress >> 11
                                     sub = longAddress & 0b0000011111111111
                                     GA = (f'{main}/{sub}')
+                                else:
+                                    GA = longAddress
 
                                 # Turn the DPT back into a *string* that resembles a float: "DPST-5-1" becomes 5.001
                                 # (I couldn't get the trailing zeroes to work for all types as a float, so it's now a string)
@@ -249,9 +285,11 @@ def decode_Group_Addresses(filename):
 
 unzip_topo_archive()
 
-Individual_Data = decode_Individual_Addresses(ETS_XML_FILE)
+GALevels = decode_GroupLevels(ETS_PROJECT_XML_FILE)
 
-GA_Data   = decode_Group_Addresses(ETS_XML_FILE)
+Individual_Data = decode_Individual_Addresses(ETS_0_XML_FILE)
+
+GA_Data   = decode_Group_Addresses(ETS_0_XML_FILE, GALevels)
 
 
 async def main() -> None:
