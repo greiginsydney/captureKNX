@@ -55,7 +55,12 @@ def DPT3(sub_DPT, value):
     
 
 def DPT4(sub_DPT, value):
-    
+	try:
+		decoded = chr(value)
+    except Exception as e:
+		log(f'DPT4 threw decoding a value of {value}: {e}')
+		decoded = ''
+    return decoded
 
 def DPT5(sub_DPT, value):
     '''
@@ -74,6 +79,6 @@ def DPT16(sub_DPT, value):
 	try:
 		decoded = "".join(map(chr(value)))
     except Exception as e:
-		log(f'DPT16 threw: {e}')
+		log(f'DPT16 threw decoding a value of {value}: {e}')
 		decoded = ''
 	return decoded
