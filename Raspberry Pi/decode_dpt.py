@@ -49,6 +49,14 @@ DPT1 = {
 }
 
 
+
+def DPT3(sub_DPT, value):
+    
+    
+
+def DPT4(sub_DPT, value):
+    
+
 def DPT5(sub_DPT, value):
     '''
     TODO: return 'decoded' as a tuple with the value type
@@ -60,4 +68,12 @@ def DPT5(sub_DPT, value):
     else:
         decoded = value # 4, 5, 6 & 10 all return the initial value unchanged
     return decoded
-    
+
+
+def DPT16(sub_DPT, value):
+	try:
+		decoded = "".join(map(chr(value)))
+    except Exception as e:
+		log(f'DPT16 threw: {e}')
+		decoded = ''
+	return decoded
