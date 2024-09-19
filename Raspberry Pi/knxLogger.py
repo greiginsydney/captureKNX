@@ -25,12 +25,13 @@ import requests                     # To push the values to telegraf
 from xml.dom.minidom import parse   # Decoding the ETS XML file
 import zipfile                      # Reading the topology file (it's just a ZIP file!)
 
-from decode_dpt import DPT1         # Decodes certain DPT sub-types
+from decode_dpt import *            # Decodes popular DPT sub-types
 
 
 # ////////////////////////////////
 # /////////// STATICS ////////////
 # ////////////////////////////////
+
 
 sudo_username = os.getenv("SUDO_USER")
 if sudo_username:
@@ -122,7 +123,7 @@ def decode_Individual_Addresses(filename):
                             if RefId:
                                 if RefId not in location:
                                     location[RefId] = (building, floor, room)
-        
+
     except Exception as e:
         print(f"decode_Individual_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
         log(f"decode_Individual_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
@@ -213,7 +214,7 @@ def decode_Group_Addresses(filename):
 
                                 # Turn the DPT back into a *string* that resembles a float: "DPST-5-1" becomes 5.001
                                 # (I couldn't get the trailing zeroes to work for all types as a float, so it's now a string)
-                                
+
                                 DPT_split = DptString.split('-')
                                 if len(DPT_split) == 2:
                                     # Rare, possibly junk value, maybe an old GA no longer used. e.g. "DPST-1" Format to 1.000
@@ -280,6 +281,7 @@ async def main() -> None:
                 try:
                     DPT, GA_name = GA_Data[str(packet.dst)]
                     DPT_main = int(DPT.split('.')[0])
+                    sub_DPT = int(DPT.split('.')[1])
                 except Exception as e:
                     # We failed to match on the destination
                     # Discard this telegram as we don't know how to decode the data
@@ -297,23 +299,26 @@ async def main() -> None:
 
                 telegram = {}
                 telegram['source_address']   = ".".join(map(str,packet.src))
-                telegram['source_building']  = building if (building) else ("Unknown")
-                telegram['source_floor']     = floor if (floor) else ("Unknown")
-                telegram['source_room']      = room if (room) else ("Unknown")
-                telegram['source_name']      = ('"' + source_name + '"') if (source_name) else ("Unknown") # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
+                telegram['source_building']  = building if building else "Unknown"
+                telegram['source_floor']     = floor if floor else "Unknown"
+                telegram['source_room']      = room if room else "Unknown"
+                telegram['source_name']      = source_name if source_name else "Unknown" # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
                 telegram['destination']      = "/".join(map(str,packet.dst))
-                telegram['destination_name'] = ('"' + GA_name + '"') if (GA_name) else ("Unknown") # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
-                telegram['dpt']              = float(DPT) # We only send DPT_main to the knxdclient but the full numerical DPT to Influx
-                
+                telegram['destination_name'] = GA_name if GA_name else "Unknown" # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
+                telegram['dpt']              = float(DPT) # We only send DPT_main to the knxdclient but the full numerical DPT to Influx (as a float)
+
                 # TODO: is this where we define EVERY sub-type??
                 if DPT_main == 1:
-                    value_true, value_false = DPT1[sub_DPT]
-                    value = value_true if (value) else value_false
-                elif DPT_main in [3, 4, 5, 16]:
-                    globals()['DPT' + str(DPT_main)](sub_DPT, value)
+                    try:
+                        value_true, value_false = DPT1[sub_DPT]
+                        value = value_true if (value) else value_false
+                    except:
+                        pass    # If we fail a lookup (VERY unlikely) we'll send the original DPT value unchanged
+                elif DPT_main in [3, 5, 6]:
+                    value = globals()['DPT' + str(DPT_main)](sub_DPT, value)
 
                 if isinstance(value, str):
-                    telegram[str(DPT)] = '"' + value + '"'
+                    telegram[str(DPT)] = value
                 elif isinstance(value, float):
                     telegram[str(DPT)] = round(value, 2)
                 elif isinstance(value, (int, bool)):
