@@ -13,10 +13,8 @@
 
 
 '''
-DPT sub-type decoding is documented here:
-https://support.knx.org/hc/en-us/article_attachments/15392631105682
-
-This file only decodes a fraction of these. More may come over time
+All the DPT types that require effort to decode are here:
+Reference: https://support.knx.org/hc/en-us/article_attachments/15392631105682
 '''
 
 DPT1 = {
@@ -45,26 +43,36 @@ DPT1 = {
     21 : ('Logical AND', 'Logical OR'),
     22 : ('Scene B', 'Scene A'),
     23 : ('Up/Down+Step/Stop', 'Up/Down'),
-    24 : ('Night', 'Day'),
+    24 : ('Night', 'Day')
 }
 
 
-
 def DPT3(sub_DPT, value):
-    
-    
+
+    direction, count = value
+    if sub_DPT == 7:
+        if count == 0:
+            decoded = "Break"
+        else:
+            decoded = "+" if direction else "-"
+            stepWidth = int(1 / pow(2,count - 1) * 100) # Rounds to align with ETS6
+            decoded = (f'{decoded} {stepWidth}%')
+    else:
+        decoded = str(value)
+    return decoded
+
 
 def DPT4(sub_DPT, value):
-	try:
-		decoded = chr(value)
-    except Exception as e:
-		log(f'DPT4 threw decoding a value of {value}: {e}')
-		decoded = ''
-    return decoded
+    '''
+    It looks like knxd has already decoded DPT 4
+    This code is never called; it's left here just to remind me why
+    '''
+    return value
+
 
 def DPT5(sub_DPT, value):
     '''
-    TODO: return 'decoded' as a tuple with the value type
+    TODO: return 'decoded' as a tuple with the value's unit
     '''
     if sub_DPT == 1:
         decoded = round(value / 255 * 100, 1)
@@ -75,10 +83,23 @@ def DPT5(sub_DPT, value):
     return decoded
 
 
+def DPT6(sub_DPT, value):
+    '''
+    TODO: return 'decoded' as a tuple with the value's unit
+    '''
+    if sub_DPT == 1:
+        unit = "%"
+    elif sub_DPT == 10:
+        unit = "pulse"
+
+    if (value & (1 << (7))) != 0:
+        value = value - (1 << bits)
+    return value
+
+
 def DPT16(sub_DPT, value):
-	try:
-		decoded = "".join(map(chr(value)))
-    except Exception as e:
-		log(f'DPT16 threw decoding a value of {value}: {e}')
-		decoded = ''
-	return decoded
+    '''
+    It looks like knxd has already decoded DPT 16
+    This code is never called; it's left here just to remind me why
+    '''
+    return value
