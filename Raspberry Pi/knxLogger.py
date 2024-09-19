@@ -72,8 +72,13 @@ def unzip_topo_archive():
         if topo_files:
             topo_file = max(topo_files, key=os.path.getctime)
             with zipfile.ZipFile(topo_file) as z:
-                with open(PI_USER_HOME +'/knxLogger/0.xml', 'wb') as f:
-                    f.write(z.read('P-00B8/0.xml'))
+                allFiles = z.namelist()
+                for etsFile in ('0.xml', 'project.xml'):
+                    for thisFile in allFiles:
+                        if etsFile == thisFile.split('/')[-1]:
+                            with open(PI_USER_HOME + '/knxLogger/' + etsFile , 'wb') as f:
+                                f.write(z.read(thisFile))
+                            break
         else:
             log(f'unzip_topo_archive: No topology file found')
     except Exception as e:
