@@ -90,6 +90,7 @@ setup()
 	fi
 
 	mkdir -p /home/$SUDO_USER/knxLogger
+ 	chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/knxLogger/
 	mkdir -p /home/$SUDO_USER/staging
 	#cd /home/$SUDO_USER/knxLogger
 
