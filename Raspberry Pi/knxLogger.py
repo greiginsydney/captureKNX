@@ -310,7 +310,7 @@ async def main() -> None:
                     value_true, value_false = DPT1[sub_DPT]
                     value = value_true if (value) else value_false
                 elif DPT_main in [3, 4, 5, 16]:
-                    globals()['DPT' + str(DPT_main](sub_DPT, value)
+                    globals()['DPT' + str(DPT_main)](sub_DPT, value)
 
                 if isinstance(value, str):
                     telegram[str(DPT)] = '"' + value + '"'
