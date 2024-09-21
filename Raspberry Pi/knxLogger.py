@@ -382,9 +382,9 @@ async def main() -> None:
                     status_code = response.status_code
                     reason = response.reason
                     if response.ok:
-                        print(f'Telegram from {packet.src} ({source_name}) to GAD {packet.dst} ({GA_name}): {DPT} = {telegram[str(DPT)]}')
+                        print(f"Telegram from {telegram['source_address']:7.7} ({telegram['source_name']:30.30}) to GAD {telegram['destination']:7.7} ({telegram['destination_name']:30.30}): {str(telegram['dpt']):6.6} = {telegram[str(DPT)]}")
                     else:
-                        print(f'Telegram from {packet.src} ({source_name}) to GAD {packet.dst} ({GA_name}): {DPT} = {telegram[str(DPT)]} - failed with {status_code}, {reason}')
+                        print(f"Telegram from {telegram['source_address']:7.7} ({telegram['source_name']:30.30}) to GAD {telegram['destination']:7.7} ({telegram['destination_name']:30.30}): {str(telegram['dpt']):6.6} = {telegram[str(DPT)]} - failed with {status_code}, {reason}")
                 except Exception as e:
                     print(f'Exception POSTing: {e}')
 
