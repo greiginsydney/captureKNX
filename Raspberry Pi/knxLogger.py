@@ -361,20 +361,18 @@ async def main() -> None:
                     value = globals()['DPT' + str(DPT_main)](sub_DPT, value)
 
                 if isinstance(value, str):
-                    telegram[str(DPT)] = value
+                    telegram['info'] = value
                 elif isinstance(value, float):
-                    telegram[str(DPT)] = round(value, 2)
+                    telegram['info'] = str(round(value, 2))
                 elif isinstance(value, (int, bool)):
-                    telegram[str(DPT)] = value
+                    telegram['info'] = str(value)
                 elif isinstance(value, tuple):
                     print('-- TUPLE COMING THROUGH ')
-                    telegram[str(DPT)] = "-".join(map(str,value))
+                    telegram['info'] = str("-".join(map(str,value)))
                 else:
                     print(f'Unhandled object type. Value is {type(value)}')
+                    telegram['info'] = value
                 message = {"telegram" : telegram}
-
-                #print(message)
-                #continue
 
                 # Post it to telegraf:
                 try:
@@ -382,9 +380,9 @@ async def main() -> None:
                     status_code = response.status_code
                     reason = response.reason
                     if response.ok:
-                        print(f"Telegram from {telegram['source_address']:7.7} ({telegram['source_name']:30.30}) to GAD {telegram['destination']:7.7} ({telegram['destination_name']:30.30}): {str(telegram['dpt']):6.6} = {telegram[str(DPT)]}")
+                        print(f"Telegram from {telegram['source_address']:7.7} ({telegram['source_name']:30.30}) to GAD {telegram['destination']:7.7} ({telegram['destination_name']:30.30}): {str(telegram['dpt']):6.6} = {telegram['info']}")
                     else:
-                        print(f"Telegram from {telegram['source_address']:7.7} ({telegram['source_name']:30.30}) to GAD {telegram['destination']:7.7} ({telegram['destination_name']:30.30}): {str(telegram['dpt']):6.6} = {telegram[str(DPT)]} - failed with {status_code}, {reason}")
+                        print(f"Telegram from {telegram['source_address']:7.7} ({telegram['source_name']:30.30}) to GAD {telegram['destination']:7.7} ({telegram['destination_name']:30.30}): {str(telegram['dpt']):6.6} = {telegram['info']} - failed with {status_code}, {reason}")
                 except Exception as e:
                     print(f'Exception POSTing: {e}')
 
