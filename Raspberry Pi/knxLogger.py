@@ -70,6 +70,7 @@ def unzip_topo_archive():
         topo_files = glob.glob(PI_USER_HOME + "/**/*.knxproj", recursive = True)
         if topo_files:
             topo_file = max(topo_files, key=os.path.getctime)
+            log(f'unzip_topo_archive: Unzipping {topo_file}')
             with zipfile.ZipFile(topo_file) as z:
                 allFiles = z.namelist()
                 for etsFile in ('0.xml', 'project.xml'):
@@ -91,7 +92,7 @@ def unzip_topo_archive():
 # <?xml version="1.0" encoding="utf-8"?>
 # <KNX xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" CreatedBy="ETS6" ToolVersion="6.2.7302.0" xmlns="http://knx.org/xml/project/23">
 #   <Project Id="P-00B8">
-#      <ProjectInformation Name="MyProject" GroupAddressStyle="ThreeLevel" LastModified="2024-08-26T22:45:00.1307987Z" ArchivedVersion="2022-05-04T07:36:16.4846857Z" ProjectStart="2022-02-10T06:35:34.3087562Z" Comment="" 
+#      <ProjectInformation Name="MyProject" GroupAddressStyle="ThreeLevel" LastModified="2024-08-26T22:45:00.1307987Z" ArchivedVersion="2022-05-04T07:36:16.4846857Z" ProjectStart="2022-02-10T06:35:34.3087562Z" Comment=""
 #
 # -----------------------------------------------------------------^
 
@@ -120,7 +121,6 @@ def decode_GroupLevels(filename):
             return 1
     except Exception as e:
         log(f"decode_GroupLevels: Exception thrown trying to read GA Style from '{filename}'. {e}")
-    
 
 
 # Decode this Topology data from 0.xml (NB: this is an edited extract):
@@ -169,7 +169,6 @@ def decode_Individual_Addresses(filename):
                 if RefId not in location:
                     location[RefId] = (building, floor, room)
                     #print(f'RefId: {RefId} - Building: {building}, floor: {floor}, room: {room}')
-            
 
     except Exception as e:
         print(f"decode_Individual_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
