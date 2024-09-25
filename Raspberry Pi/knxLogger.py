@@ -92,6 +92,8 @@ def unzip_topo_archive():
 # <KNX xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" CreatedBy="ETS6" ToolVersion="6.2.7302.0" xmlns="http://knx.org/xml/project/23">
 #   <Project Id="P-00B8">
 #      <ProjectInformation Name="MyProject" GroupAddressStyle="ThreeLevel" LastModified="2024-08-26T22:45:00.1307987Z" ArchivedVersion="2022-05-04T07:36:16.4846857Z" ProjectStart="2022-02-10T06:35:34.3087562Z" Comment="" 
+#
+# -----------------------------------------------------------------^
 
 def decode_GroupLevels(filename):
     '''
