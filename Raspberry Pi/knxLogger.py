@@ -152,18 +152,24 @@ def decode_Individual_Addresses(filename):
 
     try:
         locations = document.getElementsByTagName('Locations')
-        for node in locations:
-            for buildings in node.getElementsByTagName('Space'):
-                for floors in buildings.getElementsByTagName('Space'):
-                    for rooms in floors.getElementsByTagName('Space'):
-                        for DeviceInstances in rooms.getElementsByTagName('DeviceInstanceRef'):
-                            building = (buildings.getAttribute('Name')).strip()
-                            floor    = (floors.getAttribute('Name')).strip()
-                            room    = (rooms.getAttribute('Name')).strip()
-                            RefId   = (DeviceInstances.getAttribute('RefId')).strip()
-                            if RefId:
-                                if RefId not in location:
-                                    location[RefId] = (building, floor, room)
+        for each_location in locations:
+            for DeviceInstances in each_location.getElementsByTagName('DeviceInstanceRef'):
+                RefId = DeviceInstances.getAttribute('RefId').strip()
+                building = floor = room = '' # Flush for each pass, as a device won't always have a floor or room
+                node = DeviceInstances
+                while node.parentNode:
+                    node = node.parentNode
+                    if node.nodeName == 'Space':
+                        if node.getAttribute('Type') == 'Building':
+                            building = (node.getAttribute('Name')).strip()
+                        elif node.getAttribute('Type') == 'Floor':
+                            floor = (node.getAttribute('Name')).strip()
+                        elif node.getAttribute('Type') == 'Room':
+                            room = (node.getAttribute('Name')).strip()
+                if RefId not in location:
+                    location[RefId] = (building, floor, room)
+                    #print(f'RefId: {RefId} - Building: {building}, floor: {floor}, room: {room}')
+            
 
     except Exception as e:
         print(f"decode_Individual_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
