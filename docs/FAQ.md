@@ -3,6 +3,7 @@
 
 - [How can I delete all the data in InfluxDB and start again?](https://github.com/greiginsydney/knxLogger/blob/master/docs/FAQ.md#how-can-I-delete-all-the-data-in-influxdb-and-start-again)
 - [How do I stop Grafana truncating my DPT values?](https://github.com/greiginsydney/knxLogger/blob/master/docs/FAQ.md#how-do-i-stop-grafana-truncating-my-dpt-values)
+- [How do I update the logger with a new topology file?](https://github.com/greiginsydney/knxLogger/blob/master/docs/FAQ.md#How-do-i-update-the-logger-with-a-new-topology-file)
 - [Question-next?](https://github.com/greiginsydney/knxLogger/blob/master/docs/FAQ.md#question-next)
 
 <br>
@@ -32,6 +33,20 @@ This is what the final result will look like:
 ![image](https://github.com/user-attachments/assets/b783f5bd-cd51-44c1-9a51-ae0bef4e08de)
 
 
+[Top](https://github.com/greiginsydney/knxLogger/blob/master/docs/FAQ.md)
+
+<br>
+
+## How do I update the logger with a new topology file?
+
+1. Follow the process in [Prepare The Topology Export](https://github.com/greiginsydney/knxLogger/blob/main/docs/step1-prepare-the-topology-export.md)
+2. Copy the file to `/home/pi/`.
+3. Restart the knxLogger service:
+
+```text
+sudo systemctl restart knxLogger
+```
+4. When it restarts the logger script will detect the presence of a newer topo file and extract its content.
 
 [Top](https://github.com/greiginsydney/knxLogger/blob/master/docs/FAQ.md)
 
