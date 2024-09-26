@@ -63,22 +63,32 @@ def log(message):
 def unzip_topo_archive():
     '''
     Walk through the user's root folder recursively in search of the most recent (youngest) topo file.
-    If found, extract \P-00B8\0.xml and exit.
-    If not found, just exit, as a previous 0.xml may already exist.
+    If topo file is found, compare its creation time to existing 0.XML & project.XML. If they're *younger*, exit.
+    If topo file and 0 or Project are OLDER, extract the files.
+    If topo file not found, just exit, as previous 0.XML & project.XML may already exist.
     '''
     try:
+        oldest = 0  # Initialise to 1970
+        if os.path.isfile(ETS_0_XML_FILE) and os.path.isfile(ETS_PROJECT_XML_FILE):
+            # Good. We have files, that's a start.
+            # Check their datestamps:
+            oldest = min(os.path.getmtime(ETS_0_XML_FILE),os.path.getmtime(ETS_PROJECT_XML_FILE))
+        
         topo_files = glob.glob(PI_USER_HOME + "/**/*.knxproj", recursive = True)
         if topo_files:
             topo_file = max(topo_files, key=os.path.getctime)
-            log(f'unzip_topo_archive: Unzipping {topo_file}')
-            with zipfile.ZipFile(topo_file) as z:
-                allFiles = z.namelist()
-                for etsFile in ('0.xml', 'project.xml'):
-                    for thisFile in allFiles:
-                        if etsFile == thisFile.split('/')[-1]:
-                            with open(PI_USER_HOME + '/knxLogger/' + etsFile , 'wb') as f:
-                                f.write(z.read(thisFile))
-                            break
+            if os.path.getctime(topo_file) > oldest:
+                log(f'unzip_topo_archive: Unzipping {topo_file}')
+                with zipfile.ZipFile(topo_file) as z:
+                    allFiles = z.namelist()
+                    for etsFile in (os.path.split(ETS_0_XML_FILE)[1], os.path.split(ETS_PROJECT_XML_FILE)[1]):
+                        for thisFile in allFiles:
+                            if etsFile == thisFile.split('/')[-1]:
+                                with open(PI_USER_HOME + '/knxLogger/' + etsFile , 'wb') as f:
+                                    f.write(z.read(thisFile))
+                                break
+            else:
+                log(f'unzip_topo_archive: existing XML files are younger than {topo_file}. Skipping extraction')
         else:
             log(f'unzip_topo_archive: No topology file found')
     except Exception as e:
