@@ -1,6 +1,8 @@
 # knxLogger
 Build a Raspberry Pi that will log all KNX traffic to InfluxDB &amp; query it from a browser any time.
 
+TODO: photo goes here
+
 ## Features
 
 - No fancy hardware. Buy a Raspberry Pi 5, plug a KNX shield on top, add a solid-state drive, stick it in a box (artwork provided here to print your own) and apply power!
