@@ -90,7 +90,7 @@ setup()
 	fi
 
 	mkdir -p /home/$SUDO_USER/knxLogger
- 	chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/knxLogger/
+	chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/knxLogger/
 	mkdir -p /home/$SUDO_USER/staging
 	#cd /home/$SUDO_USER/knxLogger
 
@@ -164,7 +164,7 @@ setup()
 			echo -e "\n"$YELLOW"Error trying to 'chgrp' logrotate"$RESET""
 		fi
 
-  		touch /home/${SUDO_USER}/knxLogger/knxLogger.log
+		touch /home/${SUDO_USER}/knxLogger/knxLogger.log
 
 		#TODO: once all wanted files are removed, delete the staging folder - this needs to take place at the END of the script.
 		# rm -fr /home/${SUDO_USER}/staging/ NOT HERE
@@ -230,7 +230,6 @@ setup()
 		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
 		curl -LO https://download.influxdata.com/influxdb/releases/influxdb2_2.7.8-1_arm64.deb
 		dpkg -i influxdb2_2.7.8-1_arm64.deb
-		systemctl start influxdb # TODO: don't start until the config has been customised
 	else
 		echo -e "\n"$GREEN"InfluxDB is already installed - skipping"$RESET""
 		# TODO: Check version and update if there's newer.
@@ -242,6 +241,7 @@ setup()
 	set -e #Resume the error trap
 	if [[ ! $isInfluxCLI ]];
 	then
+		echo '\n\n\IsInfluxCLI = $isInfluxCLI \n\n\n'
 		mkdir -pv /home/$SUDO_USER/staging/influxd
 		cd /home/${SUDO_USER}/staging/influxd/
 		echo -e "\n"$GREEN"Installing InfluxCLI "$RESET""
@@ -267,19 +267,18 @@ setup()
 		echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
 		apt-get update
 		apt-get install grafana-enterprise -y
-		sudo systemctl daemon-reload
-		sudo systemctl start grafana-server # TODO: don't start until the config has been customised
-		sudo systemctl enable grafana-server
 	else
 		echo -e "\n"$GREEN"grafana is already installed - skipping"$RESET""
 		# TODO: Check version and update if there's newer.
 	fi
 
+
 	# hciuart needs to be stopped and disabled before we can control the TTY port
 	systemctl stop hciuart.service
 	systemctl disable hciuart.service
 	systemctl mask hciuart.service
- 
+
+
 	# Customise /boot/firmware/config.txt:
 	if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
 	then
@@ -306,6 +305,7 @@ setup()
 	then
 		echo -e 'dtoverlay=pi3-disable-bt' >> /boot/firmware/config.txt
 	fi
+
 
 
 	NEEDS_REBOOT=''
@@ -494,6 +494,7 @@ setup()
 		echo -e "\n"$GREEN"Performed initial isTelegrafConfiguration setup OK. (TODO: are you SURE?)"$RESET""
 	fi
 
+
 	# -----------------------------------
 	# LET'S START IT UP!
 	# -----------------------------------
@@ -510,13 +511,16 @@ setup()
 		if ! systemctl is-active --quiet knxd.socket;  then echo "Starting knxd.socket";  systemctl start knxd.socket; fi
 		if ! systemctl is-active --quiet knxd.service; then echo "Starting knxd.service"; systemctl start knxd.service; fi
 	fi
-
+	systemctl enable influxdb
+	systemctl start influxdb
+	systemctl enable grafana-server
+	systemctl start grafana-server
 
 
 	# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
-	echo -e ""$GREEN"TODO - Enabling knxLogger.service"$RESET""
-	#systemctl enable knxLogger.service
-	#systemctl start knxLogger.service
+	echo -e ""$GREEN"Enabling knxLogger.service"$RESET""
+	systemctl enable knxLogger.service
+	systemctl start knxLogger.service
 
 
 	echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
@@ -593,6 +597,7 @@ test_install()
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" requests NOT installed"
 	fi
+
 
 	set +e #Suspend the error trap
 	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
