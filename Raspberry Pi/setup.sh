@@ -577,21 +577,22 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" knxd NOT installed"
 	fi
 
-	PIP_LIST=$(pip list)
-	# TODO: This bit's still broken, always reports FALSE
-	if [[ $PIP_LIST == *"knxdclient"* ]];
+	isKnxdClient=$(find /home/pi/venv -type d -name knxdclient)
+	if [[ $isKnxdClient ]];
+	#if [[ -d /home/${SUDO_USER}/venv/lib knxdclient ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" knxdclient installed"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" knxdclient NOT installed"
 	fi
+	
+	PIP_LIST=$(pip3 list)
 	if [[ $PIP_LIST == *"requests"* ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" requests installed"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" requests NOT installed"
 	fi
-
 
 	set +e #Suspend the error trap
 	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
