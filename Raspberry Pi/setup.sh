@@ -241,7 +241,6 @@ setup()
 	set -e #Resume the error trap
 	if [[ ! $isInfluxCLI ]];
 	then
-		echo '\n\n\IsInfluxCLI = $isInfluxCLI \n\n\n'
 		mkdir -pv /home/$SUDO_USER/staging/influxd
 		cd /home/${SUDO_USER}/staging/influxd/
 		echo -e "\n"$GREEN"Installing InfluxCLI "$RESET""
