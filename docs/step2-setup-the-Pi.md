@@ -189,11 +189,13 @@ sudo chmod +x setup.sh
 sudo -E -H ./setup.sh
 ```
 
-38. The FIRST time you run the script on a brand new Pi it's going to run for ~8 minutes (depending on your internet speed) and then prompt you to reboot:
+38. The FIRST time you run the script on a brand new Pi it's going to run for ~8-9 minutes (depending on your internet speed) and then prompt you to reboot:
 
 ![image](https://github.com/user-attachments/assets/f937f01d-2004-43df-a854-5799a2b7db69)
 
 
-39. Reconnect to the Pi after it reboots and return to Step 37. Once the required bits have been added, it will stop prompting for reboots (there are two), and continue.
+39. Reconnect to the Pi after it reboots and return to Step 37. (Pressing up-arrow should offer you the `sudo -E -H ./setup.sh` command to save you re-typing it.)
 
-40. 
+40. Once the required bits have been added, it will stop prompting for reboots (there are two), and continue.
+
+41. 
