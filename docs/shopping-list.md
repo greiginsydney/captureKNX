@@ -55,7 +55,7 @@ I used Tijl's KNX Pi hat from [Tindie](https://www.tindie.com/products/cpu20/knx
 
 $USD67 / $AUD100
 
-### Mounting screws and spacers
+### Mounting screws and spacers (Tijl hat only)
 
 The Pi hat from Tindie needs to be screwed to the Pi, and this pair of boards then slot into the custom housing below.
 
@@ -65,6 +65,17 @@ You need 2.5mm machine screws, washers, and 20mm threaded spacers. I get mine fr
 4 x 20mm long threaded spacers
 
 Let's call it $10.
+
+### Mounting screws (Weinzierl hat only)
+
+Weinzierl's hat has no holes for mounting screws, and is instead held in position by lugs in the case and lid.
+
+In this configuration the Pi itself is screwed into the base of the case.
+
+You need 4 x 2.5mm self-tappers or machine screws.
+
+Let's call it $10 just to keep the maths even.
+
 
 ### A housing to put it all in
 
