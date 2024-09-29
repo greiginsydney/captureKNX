@@ -425,17 +425,18 @@ setup()
 	OLD_ORG=$(sed -n -E 's/^\s*INFLUXDB_INIT_ORG=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
 	OLD_BUCKET=$(sed -n -E 's/^\s*INFLUXDB_INIT_BUCKET=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
 	OLD_RETENTION=$(sed -n -E 's/^\s*INFLUXDB_INIT_RETENTION=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
-	OLD_HOST=$(sed -n -E 's/^\s*INFLUXDB_INIT_HOST=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
-	OLD_PORT=$(sed -n -E 's/^\s*GRAFANA_PORT=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
+	# I'm not prompting these:
+ 	HOST=$(sed -n -E 's/^\s*INFLUXDB_INIT_HOST=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
+	PORT=$(sed -n -E 's/^\s*GRAFANA_PORT=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
 
 	read -e -i "$OLD_USERNAME" -p   'INFLUXDB_INIT_USERNAME    = ' USERNAME
 	read -e -i "$OLD_PASSWORD" -p   'INFLUXDB_INIT_PASSWORD    = ' PASSWORD
-	#read -e -i "$OLD_TOKEN" -p      'INFLUXDB_INIT_ADMIN_TOKEN = ' TOKEN
+	# read -e -i "$OLD_TOKEN" -p      'INFLUXDB_INIT_ADMIN_TOKEN = ' TOKEN
 	read -e -i "$OLD_ORG" -p        'INFLUXDB_INIT_ORG         = ' ORG
 	read -e -i "$OLD_BUCKET" -p     'INFLUXDB_INIT_BUCKET      = ' BUCKET
 	read -e -i "$OLD_RETENTION" -p  'INFLUXDB_INIT_RETENTION   = ' RETENTION
-	read -e -i "$OLD_HOST" -p       'INFLUXDB_INIT_HOST        = ' HOST
-	read -e -i "$OLD_PORT" -p       'GRAFANA_PORT              = ' PORT
+	# read -e -i "$OLD_HOST" -p       'INFLUXDB_INIT_HOST        = ' HOST
+	# read -e -i "$OLD_PORT" -p       'GRAFANA_PORT              = ' PORT
 
 	OLD_INFLUX_CHECKSUM=$(md5sum /etc/influxdb/knxLogger.env)
 	#Paste in the new settings. (I used "|" as the delimiter for all, as "/" is in the replacement for the path
