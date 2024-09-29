@@ -279,6 +279,7 @@ setup()
 
 
 	# Customise /boot/firmware/config.txt:
+	NEEDS_REBOOT=''
 	if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
 	then
 		echo -e "\n"$GREEN"UART changes to config.txt already exist"$RESET""
@@ -290,21 +291,33 @@ setup()
 	if ! grep -q '^enable_uart=1' /boot/firmware/config.txt;
 	then
 		echo -e 'enable_uart=1' >> /boot/firmware/config.txt
-		echo ''
-		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
-		prompt_for_reboot
+		NEEDS_REBOOT='yes'
 	fi
 
 	if ! grep -q '^dtoverlay=disable-bt' /boot/firmware/config.txt;
 	then
 		echo -e 'dtoverlay=disable-bt' >> /boot/firmware/config.txt
+		NEEDS_REBOOT='yes'
 	fi
 
 	if ! grep -q '^dtoverlay=pi3-disable-bt' /boot/firmware/config.txt;
 	then
 		echo -e 'dtoverlay=pi3-disable-bt' >> /boot/firmware/config.txt
+		NEEDS_REBOOT='yes'
 	fi
 
+	if ! grep -q '^dtparam=uart0' /boot/firmware/config.txt;
+	then
+		echo -e 'dtparam=uart0' >> /boot/firmware/config.txt
+		NEEDS_REBOOT='yes'
+	fi
+	
+	if [[ $NEEDS_REBOOT ]];
+	then
+		echo ''
+		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
+		prompt_for_reboot
+	fi
 
 
 	NEEDS_REBOOT=''
