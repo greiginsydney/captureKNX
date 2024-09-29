@@ -23,7 +23,7 @@ User=pi
 Group=www-data
 WorkingDirectory=/home/pi/knxLogger
 Environment="PATH=/home/pi/knxLogger"
-ExecStart=/usr/bin/python3 /home/pi/knxLogger/knxLogger.py
+ExecStart=/home/pi/venv/bin/python3 /home/pi/knxLogger/knxLogger.py
 StandardError=journal
 
 [Install]
