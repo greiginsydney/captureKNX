@@ -26,7 +26,7 @@ Don't skimp and re-use an old Pi4 power supply, as you run the risk of the Pi no
 
 TODO
 
-### Raspberry Pi "stackable" header
+### Raspberry Pi "stackable" header (Tijl hat only)
 
 This header extends the lengths of the Pi's GPIO header pins so they'll reach the KNX hat mounted high above.
 Core has a [Raspberry Pi Extra-Long Stacking Header (2x20 pins)](https://core-electronics.com.au/stacking-2x20.html) for $AUD2.40, and the [Pololu-2748 Stackable 0.100″ Female Header: 2x20-pin, Straight](https://core-electronics.com.au/stackable-0-100-female-header-2x20-pin-straight.html) for $4.95. ([Pololu link](https://www.pololu.com/product/2748))
