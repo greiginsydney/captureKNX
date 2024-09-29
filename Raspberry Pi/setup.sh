@@ -108,6 +108,17 @@ setup()
 			fi
 		fi
 
+  		# decode_dpt.py:
+		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_dpt.py ];
+		then
+			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_dpt.py /home/${SUDO_USER}/knxLogger/decode_dpt.py;
+			then
+				echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/decode_dpt.py' already exists & the new version is unchanged"
+			else
+				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_dpt.py /home/${SUDO_USER}/knxLogger/decode_dpt.py
+			fi
+		fi
+
 		# knxLogger.service:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service ];
 		then
