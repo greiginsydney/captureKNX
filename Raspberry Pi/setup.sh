@@ -175,7 +175,8 @@ setup()
 			echo -e "\n"$YELLOW"Error trying to 'chgrp' logrotate"$RESET""
 		fi
 
-		touch /home/${SUDO_USER}/knxLogger/knxLogger.log
+		chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/knxLogger/knxLogger.log
+		# touch /home/${SUDO_USER}/knxLogger/knxLogger.log - this might not be needed now?
 
 		#TODO: once all wanted files are removed, delete the staging folder - this needs to take place at the END of the script.
 		# rm -fr /home/${SUDO_USER}/staging/ NOT HERE
