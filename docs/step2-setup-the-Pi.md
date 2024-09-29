@@ -123,19 +123,24 @@ Your SSH session will end here. Wait for the Pi to reboot, sign back in again an
 
 30. Confirm your current version of python:
 
+```txt
+python3 --version
 ```
-pi@knxLoggerPi5:~ $ python3 --version
+The output should look like this, which confirms python 3.11 (ignore the .2):
+```txt
 Python 3.11.2
-pi@knxLoggerPi5:~ $
 ```
 
 31. Update the following command if required with that of the same version number:
 
+```txt
+sudo apt install python3.11-venv -y
 ```
-pi@knxLoggerPi5:~ $ sudo apt install python3.11-venv -y
-pi@knxLoggerPi5:~ $ python3 -m venv venv
-pi@knxLoggerPi5:~ $ source venv/bin/activate
-pi@knxLoggerPi5:
+```txt
+python3 -m venv venv
+```
+```txt
+source venv/bin/activate
 ```
 
 32. We need to install git so we can download the repo from GitHub:
@@ -148,7 +153,11 @@ sudo apt-get install git -y
 
 ```txt
 cd ~
+```
+```txt
 sudo rm -rfd staging
+```
+```txt
 git clone --depth=3 https://github.com/greiginsydney/knxLogger staging/knxLogger
 ```
 
@@ -156,8 +165,10 @@ git clone --depth=3 https://github.com/greiginsydney/knxLogger staging/knxLogger
 
 34. The knxdclient & requests go in here:
 
-```
+```txt
 pip3 install knxdclient
+```
+```txt
 python3 -m pip install requests
 ```
 
