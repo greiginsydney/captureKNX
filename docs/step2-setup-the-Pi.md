@@ -6,6 +6,35 @@ If you're upgrading or re-running the setup script, you should be able to SSH to
 
 <hr />
 
+## Configuration pre-requisite values
+
+The KNX "hat" on the Pi needs some addresses within the KNX topology. It only ever listens, never transmits, but we still need to configure some addresses for it.
+
+The installation will prompt you for them. The default values are four addresses starting from 1.1.250 (hoping they're well out of your active range). Please change these when prompted if they're already in use.
+
+The script installs the reporting component `InfluxDB`, which also requires a user login name and password for its web interface. The terribly unsecure 'knxLogger' is the default for both, and you should please change them when prompted. 
+
+You'll also be asked for an 'organisation' and a 'bucket'. Neither name are particularly important. The former could be the name of the building, its street name, or something like that. The 'bucket' is the name of the database. 'knxLogger' is as good a value for that as any, but feel free to change it - but be aware it will be visible all the time on the data visualisation screens. (Keep it short too).
+
+
+| Prompt | What is it? | Default value |
+| --- | --- | --- |
+| My KNX network client address | A spare physical address | 1.1.250 |
+| Sending KNX network client start address | A spare physical address | The above + 1 |
+| Sending KNX network client count | How many sending client addresses to reserve | 2 |
+| INFLUXDB_INIT_USERNAME | Influx web user login | knxLogger |
+| INFLUXDB_INIT_PASSWORD | InfluxDB web user password | knxLogger |
+| INFLUXDB_INIT_ORG | An 'organisation name' | knxLogger |
+| INFLUXDB_INIT_BUCKET | The database name | knxLogger |
+| INFLUXDB_INIT_RETENTION | How long to retain the data | "52w", a full year |
+
+<br>
+
+<hr />
+
+## Let's Go!
+
+
 1. Prepare the memory card with the [64-bit Raspberry Pi OS 'Lite'](https://www.raspberrypi.org/software/operating-systems/) image.
 
 > The ["Raspberry Pi Imager"](https://www.raspberrypi.org/software/) app can download and write the image to a memory card for you quickly and easily.
