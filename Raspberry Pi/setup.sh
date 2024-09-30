@@ -204,6 +204,11 @@ setup()
 		apt-get install git-core -y
 		git clone -b debian https://github.com/knxd/knxd.git
 		sh knxd/install-debian.sh
+
+  		# Paste in knxLogger's new default device addresses:
+		sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\11.1.250\3|" /etc/knxd.conf
+		sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)(:.*$)|\11.1.251\3|" /etc/knxd.conf
+		sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+:)([[:digit:]]+)( .*$)|\1\22\4|" /etc/knxd.conf
 	else
 		echo -e "\n"$GREEN"knxd is already installed - skipping"$RESET""
 		# TODO: Check version and update if there's newer.
