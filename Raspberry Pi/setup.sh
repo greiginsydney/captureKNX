@@ -384,6 +384,14 @@ setup()
 	OLD_CLTNBR=$(sed -n -E 's/^KNXD_OPTS.* -E [[:digit:]]+.[[:digit:]]+.[[:digit:]]+:([[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
 
 	read -e -i "$OLD_MYADDRESS" -p 'My KNX network client address            = ' MYADDRESS
+	if [[ ! $OLD_MYADDRESS == $MYADDRESS ]];
+	then
+		# The user changed the start address. Add one and offer it as the suggested client start address:
+		PREFIX=$(echo $MYADDRESS | cut -d "." -f-2)
+		SUFFIX=$(echo $MYADDRESS | cut -d "." -f3)
+		SUFFIX=$((SUFFIX+1))
+		OLD_CLTADDR=$PREFIX.$SUFFIX
+	fi
 	read -e -i "$OLD_CLTADDR"   -p 'Sending KNX network client start address = ' CLIENTADDR
 	read -e -i "$OLD_CLTNBR"    -p 'Sending KNX network client count         = ' CLIENTNBR
 
