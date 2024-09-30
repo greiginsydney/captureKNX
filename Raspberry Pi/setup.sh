@@ -809,6 +809,7 @@ case "$1" in
 	('')
 		activate_venv
 		setup
+  		test_install
 		;;
 	(*)
 		echo -e "\nThe switch '$1' is invalid. Try again.\n"
