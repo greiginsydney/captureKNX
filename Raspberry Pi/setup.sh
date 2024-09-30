@@ -674,8 +674,6 @@ test_install()
 	if [[ $isKnxd ]]; then
 		systemctl is-active --quiet knxd.service   && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxd.service        || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxd.service
 		systemctl is-active --quiet knxd.socket    && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxd.socket         || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxd.socket; fi
-	if [[ $isKnxdClient ]]; then
-		systemctl is-active --quiet knxdclient     && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxdclient          || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxdclient; fi
 	if [[ $isTelegraf  ]]; then
 		systemctl is-active --quiet telegraf       && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" telegraf            || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" telegraf; fi
 	if [[ $isInfluxd ]]; then
