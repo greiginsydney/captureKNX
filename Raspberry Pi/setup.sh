@@ -238,6 +238,12 @@ setup()
 		# TODO: Check version and update if there's newer.
 	fi
 
+	# Suppress noisy error message in OOB telegraf.service (n/a on Debian/Raspbian):
+	if grep -q '^ImportCredential=telegraf.*'  /lib/systemd/system/telegraf.service;
+	then
+		sed -i -E "s|^(\s*ImportCredential=)(.*)$|# \1\2|g" /lib/systemd/system/telegraf.service
+	fi
+
 
 	set +e #Suspend the error trap
 	isInfluxd=$(command -v influxd)
