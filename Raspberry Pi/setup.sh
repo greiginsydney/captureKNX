@@ -555,6 +555,11 @@ setup()
 		echo -e "\n"$GREEN"Performed initial isTelegrafConfiguration setup OK. (TODO: are you SURE?)"$RESET""
 	fi
 
+	# Copy the TOKEN into the Grafana source yaml file:
+	if grep -q "Token changeme" /etc/grafana/provisioning/datasources/grafana-source.yaml;
+	then
+		sed -i -E "s|^(.*Token )(changeme)(.*)|\1$TOKEN\3|" /etc/grafana/provisioning/datasources/grafana-source.yaml
+	fi
 
 	# -----------------------------------
 	# LET'S START IT UP!
