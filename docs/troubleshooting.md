@@ -8,13 +8,13 @@ The 'hat' provides the physical interface to the KNX TP Line, and the ensuing co
 
 If you're encountering problems with the knxLogger, use this diagram to help understand the flow and where to focus your attention.
 
-- [Start here](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#start-here)
-- [knxd](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#knxd)
-- [KNXDClient](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#knxdclient)
-- [knxLogger](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#knxLogger)
-- [telegraf](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#telegraf)
-- [InfluxDB](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#influxdb)
-- [Grafana](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#grafana)
+- [Start here](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#start-here)
+- [knxd](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#knxd)
+- [KNXDClient](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#knxdclient)
+- [knxLogger](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#knxLogger)
+- [telegraf](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#telegraf)
+- [InfluxDB](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#influxdb)
+- [Grafana](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#grafana)
 
 <hr/>
 
