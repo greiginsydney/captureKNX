@@ -20,6 +20,15 @@ TODO: photo goes here
 - Every telegram to a known Group Address is logged, however it only decodes the most commonly-used DPT types. (This is expected to evolve over time).
 - Even though the Raspberry Pi 5 is the fastest Pi made it can still be a little slow, especially on initial login to the Influx or Grafana web pages.
 
+## Software architecture
+
+The knxLogger is a consolidation of multiple open-source & freeware software components, all running on the one Raspberry Pi 5 single board computer.
+
+The 'hat' provides the physical interface to the KNX TP Line, and the ensuing components read and format the telegrams, then stuff them in the InfluxDB database. Grafana is the 'visualisation' component that lets you easily review and filter the raw logs, and/or create dashboards of useful values, all of which you access from a web browser.
+
+![image](https://github.com/user-attachments/assets/e46410d2-74dd-42a9-acd8-e19f3be63a16)
+
+
 ## Credits
 
 knxLogger relies upon the open-source [knxd](https://github.com/knxd/knxd) and [knxdclient](https://github.com/mhthies/knxdclient) projects for its communications, and would be lost without them. If you're feeling generous please visit their sites and send some appreciation in your preferred currency.
