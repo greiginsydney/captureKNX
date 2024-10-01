@@ -199,7 +199,8 @@ setup()
 	if [[ ! $isKnxd ]];
 	then
 		echo -e "\n"$GREEN"Installing knxd "$RESET""
-		mkdir -pv /home/$SUDO_USER/staging/knxd
+		rm -r /home/$SUDO_USER/staging/knxd
+  		mkdir -pv /home/$SUDO_USER/staging/knxd
 		cd /home/${SUDO_USER}/staging/knxd/
 		apt-get install git-core -y
 		git clone -b debian https://github.com/knxd/knxd.git
@@ -225,6 +226,7 @@ setup()
 	if [[ ! $isTelegraf  ]];
 	then
 		echo -e "\n"$GREEN"Installing telegraf"$RESET""
+		rm -r /home/$SUDO_USER/staging/telegraf		
 		mkdir -pv /home/$SUDO_USER/staging/telegraf
 		cd /home/${SUDO_USER}/staging/telegraf/
 		curl -s https://repos.influxdata.com/influxdata-archive.key > influxdata-archive.key
@@ -242,9 +244,11 @@ setup()
 	set -e #Resume the error trap
 	if [[ ! $isInfluxd ]];
 	then
-		mkdir -pv /home/$SUDO_USER/staging/influxd
+		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""		
+		rm -r /home/$SUDO_USER/staging/influxd
+  		mkdir -pv /home/$SUDO_USER/staging/influxd
 		cd /home/${SUDO_USER}/staging/influxd/
-		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
+		
 		curl -LO https://download.influxdata.com/influxdb/releases/influxdb2_2.7.8-1_arm64.deb
 		dpkg -i influxdb2_2.7.8-1_arm64.deb
 	else
@@ -258,9 +262,11 @@ setup()
 	set -e #Resume the error trap
 	if [[ ! $isInfluxCLI ]];
 	then
-		mkdir -pv /home/$SUDO_USER/staging/influxd
+		echo -e "\n"$GREEN"Installing InfluxCLI "$RESET""		
+		rm -r /home/$SUDO_USER/staging/influxd
+  		mkdir -pv /home/$SUDO_USER/staging/influxd
 		cd /home/${SUDO_USER}/staging/influxd/
-		echo -e "\n"$GREEN"Installing InfluxCLI "$RESET""
+		
 		wget https://download.influxdata.com/influxdb/releases/influxdb2-client-2.7.5-linux-arm64.tar.gz
 		tar xvzf influxdb2-client-2.7.5-linux-arm64.tar.gz
 		dest=${isInfluxd%/*}/
