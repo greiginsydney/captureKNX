@@ -34,7 +34,7 @@ The tests check common errors and misconfigurations, and will be added to as the
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md)
+[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
 
@@ -46,7 +46,7 @@ TODO
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md)
+[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
 
@@ -56,7 +56,7 @@ KNXDclient doesn't run as a service, so it's not something you can directly test
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md)
+[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
 
@@ -95,7 +95,7 @@ If the issue you're chasing is missing telegrams, copy a fresh project file acro
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md)
+[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
 
@@ -152,7 +152,7 @@ In the same folder as `telegraf.log` is the file `debug_output.log`. This is an 
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md)
+[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
 
@@ -166,7 +166,7 @@ Review the error log for obvious issues: `journalctl --no-pager --unit influxdb`
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md)
+[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
 
@@ -198,6 +198,6 @@ Check Grafana and InfluxDB are getting along:
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md)
+[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
