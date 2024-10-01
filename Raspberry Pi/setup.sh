@@ -751,7 +751,7 @@ test_install()
 
 	echo '-------------------------------------'
 
-	isKnxProject=$(find /home/pi/ -type f -name '*.knxp1roj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
+	isKnxProject=$(find /home/pi/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isKnxProject ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" knx project file $isKnxProject found"
