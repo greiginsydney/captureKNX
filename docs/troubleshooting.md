@@ -8,6 +8,16 @@ The 'hat' provides the physical interface to the KNX TP Line, and the ensuing co
 
 If you're encountering problems with the knxLogger, use this diagram to help understand the flow and where to focus your attention.
 
+- [Start here](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#start-here)
+- [knxd](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#knxd)
+- [KNXDClient](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#knxdclient)
+- [knxLogger](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#knxLogger)
+- [telegraf](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#telegraf)
+- [InfluxDB](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#influxdb)
+- [Grafana](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md#grafana)
+
+<hr/>
+
 ## Start here
 
 First off, don't forget the knxLogger is an IT device, so MANY problems will be resolved just by turning it off and back on again - or at least a reboot.
@@ -22,6 +32,11 @@ If the problems are continuing after a reboot, run the setup script's `test` mod
 
 The tests check common errors and misconfigurations, and will be added to as the knxLogger evolves. It needs to be said however that sometimes the script will report everying PASSing, but the knxLogger's still misbehaving. Further investigation is required.
 
+<br>
+
+[Top](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md)
+
+<hr>
 
 ## knxd
 
@@ -29,9 +44,21 @@ knxd reads what's coming from the bus and makes it available for KNXDClient and 
 
 TODO
 
+<br>
+
+[Top](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md)
+
+<hr>
+
 ## KNXDclient
 
 KNXDclient doesn't run as a service, so it's not something you can directly test. Skip to the knxLogger, as it uses KNXDclient to talk to the bus.
+
+<br>
+
+[Top](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md)
+
+<hr>
 
 ## knxLogger
 
@@ -64,6 +91,11 @@ An established (healthy) knxLogger should report this frequently.
 
 If the issue you're chasing is missing telegrams, copy a fresh project file across and restart the knxLogger service with `sudo systemtctl restart knxLogger.service`.
 
+<br>
+
+[Top](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md)
+
+<hr>
 
 ## telegraf
 
@@ -81,9 +113,21 @@ quiet = false
 ```
 Don't forget to turn this back off after, as debug logs will contribute to unnecessary hard drive bloat.
 
+<br>
+
+[Top](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md)
+
+<hr>
+
 ## InfluxDB
 
 TODO 
+
+<br>
+
+[Top](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md)
+
+<hr>
 
 ## Grafana
 
