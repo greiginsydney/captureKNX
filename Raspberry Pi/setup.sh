@@ -578,9 +578,9 @@ setup()
 		if ! systemctl is-active --quiet knxd.service; then echo "Starting knxd.service"; systemctl start knxd.service; fi
 	fi
 	systemctl enable influxdb
-	systemctl start influxdb
+	systemctl restart influxdb
 	systemctl enable grafana-server
-	systemctl start grafana-server
+	systemctl restart grafana-server
 
 
 	# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
