@@ -99,7 +99,7 @@ If the issue you're chasing is missing telegrams, copy a fresh project file acro
 
 ## telegraf
 
-telegraf runs as a service, so check if it's running OK. The output will look similar to that for the konxLogger.
+telegraf runs as a service, so check if it's running OK. The output will look similar to that for the knxLogger.
 
 `sudo systemctl status telegraf.service`
 
@@ -111,7 +111,40 @@ debug = true
 ## Log only error level messages.
 quiet = false
 ```
+
+`sudo systemctl restart telegraf.service` to pick up the changes and start logging.
+
+Review the file `/var/log/telegraf/telegraf.log`. (The same file is aliased as `/home/pi/log/telegraf/telegraf.log`.)
+
 Don't forget to turn this back off after, as debug logs will contribute to unnecessary hard drive bloat.
+
+This is an example of a healthy-looking telegraf: The inputs and outputs are 'loaded', and 'connected':
+
+```text
+2024-10-02T08:39:30+10:00 I! Loading config: /etc/telegraf/telegraf.conf
+2024-10-02T08:39:30+10:00 I! Starting Telegraf 1.32.0 brought to you by InfluxData the makers of InfluxDB
+2024-10-02T08:39:30+10:00 I! Available plugins: 235 inputs, 9 aggregators, 32 processors, 26 parsers, 62 outputs, 6 secret-stores
+2024-10-02T08:39:30+10:00 I! Loaded inputs: http_listener_v2
+2024-10-02T08:39:30+10:00 I! Loaded aggregators:
+2024-10-02T08:39:30+10:00 I! Loaded processors:
+2024-10-02T08:39:30+10:00 I! Loaded secretstores:
+2024-10-02T08:39:30+10:00 I! Loaded outputs: file influxdb_v2
+2024-10-02T08:39:30+10:00 I! Tags enabled:
+2024-10-02T08:39:30+10:00 I! [agent] Config: Interval:10s, Quiet:false, Hostname:"", Flush Interval:10s
+2024-10-02T08:39:30+10:00 D! [agent] Initializing plugins
+2024-10-02T08:39:30+10:00 D! [agent] Connecting outputs
+2024-10-02T08:39:30+10:00 D! [agent] Attempting connection to [outputs.file]
+2024-10-02T08:39:30+10:00 D! [agent] Successfully connected to outputs.file
+2024-10-02T08:39:30+10:00 D! [agent] Attempting connection to [outputs.influxdb_v2]
+2024-10-02T08:39:30+10:00 D! [agent] Successfully connected to outputs.influxdb_v2
+2024-10-02T08:39:30+10:00 D! [agent] Starting service inputs
+2024-10-02T08:39:30+10:00 I! [inputs.http_listener_v2] Listening on [::]:8080
+2024-10-02T08:39:40+10:00 D! [outputs.file] Buffer fullness: 0 / 10000 metrics
+```
+
+### debug_output.log
+
+In the same folder as `telegraf.log` is the file `debug_output.log`. This is an independent log of all telegrams captured by telegraf. Healthy content in this file is a good indicator that everything to this point (the physical connection, hat, knxd, KNXDClient and the knxdLogger) are OK.
 
 <br>
 
