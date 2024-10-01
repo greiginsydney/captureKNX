@@ -288,7 +288,18 @@ setup()
 		# TODO: Check version and update if there's newer.
 	fi
 
+	# grafana-source.yaml:
+	if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana-source.yaml ];
+	then
+		if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
+		then
+			echo "Skipped: the file '/etc/grafana/provisioning/datasources/grafana-source.yaml' already exists & the new version is unchanged"
+		else
+			mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
+		fi
+	fi
 
+ 
 	# hciuart needs to be stopped and disabled before we can control the TTY port
 	systemctl stop hciuart.service
 	systemctl disable hciuart.service
