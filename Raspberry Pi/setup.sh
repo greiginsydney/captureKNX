@@ -460,8 +460,8 @@ setup()
 	sed -i -E "s|^(\s*INFLUXDB_INIT_ORG=)(.*)|\1$ORG|"             /etc/influxdb/knxLogger.env
 	sed -i -E "s|^(\s*INFLUXDB_INIT_BUCKET=)(.*)|\1$BUCKET|"       /etc/influxdb/knxLogger.env
 	sed -i -E "s|^(\s*INFLUXDB_INIT_RETENTION=)(.*)|\1$RETENTION|" /etc/influxdb/knxLogger.env
-	sed -i -E "s|^(\s*INFLUXDB_INIT_HOST=)(.*)|\1$HOST|"           /etc/influxdb/knxLogger.env
-	sed -i -E "s|^(\s*GRAFANA_PORT=)(.*)|\1$PORT|"                 /etc/influxdb/knxLogger.env
+	# sed -i -E "s|^(\s*INFLUXDB_INIT_HOST=)(.*)|\1$HOST|"           /etc/influxdb/knxLogger.env
+	# sed -i -E "s|^(\s*GRAFANA_PORT=)(.*)|\1$PORT|"                 /etc/influxdb/knxLogger.env
 	NEW_INFLUX_CHECKSUM=$(md5sum /etc/influxdb/knxLogger.env)
 	if [[ $NEW_INFLUX_CHECKSUM != $OLD_INFLUX_CHECKSUM ]];
 	then
