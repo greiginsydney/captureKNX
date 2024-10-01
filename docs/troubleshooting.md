@@ -186,6 +186,16 @@ logger=licensing.renewal t=2024-10-02T09:05:41.329592241+10:00 level=warn msg="f
 
 We're running the Enterprise *build* of the software, but it runs unlicenced in its freeware guise.
 
+### Not seeing telegrams / Dashboards report TODO?
+
+Check Grafana and InfluxDB are getting along:
+
+1. Browse to Grafana's Data Sources: http://&lt;YourIP&gt;3000/connections/datasources
+2. Click on the knxLogger entry.
+3. Scroll to the bottom and click on the Test button. This will hopefully reveal success:
+   
+![image](https://github.com/user-attachments/assets/f496dea5-5e5e-4396-96af-5a1fd90e69a1)
+
 <br>
 
 [Top](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md)
