@@ -158,7 +158,11 @@ In the same folder as `telegraf.log` is the file `debug_output.log`. This is an 
 
 ## InfluxDB
 
-TODO 
+InfluxDB runs as a service, so check if it's running OK. The output will look similar to that for the other services.
+
+`sudo systemctl status influxdb.service`
+
+Review the error log for obvious issues: `journalctl --no-pager --unit influxdb`. 
 
 <br>
 
@@ -168,4 +172,22 @@ TODO
 
 ## Grafana
 
-TODO
+Grafana runs as a service, so check if it's running OK. The output will look similar to that for the other services.
+
+`sudo systemctl status grafana-server`
+
+Review the error log for obvious issues: `journalctl --no-pager --unit grafana-server`. 
+
+Also see `/var/log/grafana/grafana.log`. Don't be worried if you see this: 
+
+```text
+logger=licensing.renewal t=2024-10-02T09:05:41.329592241+10:00 level=warn msg="failed to load or validate token" err="license token file not found: /var/lib/grafana/license.jwt"
+```
+
+We're running the Enterprise *build* of the software, but it runs unlicenced in its freeware guise.
+
+<br>
+
+[Top](https://github.com/greiginsydney/knxLogger/blob/master/docs/troubleshooting.md)
+
+<hr>
