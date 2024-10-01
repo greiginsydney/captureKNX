@@ -70,7 +70,9 @@ If text has vanished off to the RHS of the screen (like as shown on the bottom l
 
 Press `Q` to exit this view.
 
-Any errors with the script and its service should be visible.
+Any errors with the script and its service should be visible. 
+
+Review the error log for obvious issues: `journalctl --no-pager --unit knxLogger`.
 
 Review the content of the `/home/pi/knxLogger/knxLogger.log` file. 
 
@@ -102,6 +104,8 @@ If the issue you're chasing is missing telegrams, copy a fresh project file acro
 telegraf runs as a service, so check if it's running OK. The output will look similar to that for the knxLogger.
 
 `sudo systemctl status telegraf.service`
+
+Review the error log for obvious issues: `journalctl --no-pager --unit telegraf`.
 
 Edit `/etc/telegraf/telegraf.conf` to enable debug logging:
 
