@@ -750,6 +750,17 @@ test_install()
 	fi
 
 	echo '-------------------------------------'
+
+	isKnxProject=$(find /home/pi/ -type f -name '*.knxp1roj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
+	if [[ $isKnxProject ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" knx project file $isKnxProject found"
+	else
+		echo -e ""$YELLOW"FAIL:"$RESET" knx project file NOT found"
+		echo -e "      Copy one across to the /home/pi/ folder and 'sudo systemctl restart knxLogger'"
+	fi
+
+	echo '-------------------------------------'
 	echo ''
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
 	echo ''
