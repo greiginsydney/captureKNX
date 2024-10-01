@@ -10,21 +10,27 @@ You DEFINITELY need a Pi 5, as we're asking a lot of this poor little SBC.
 
 It doesn't use much memory, so the 2GB version will be fine.
 
-I sourced mine from [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-model-b-2gb.html) here in Newcastle AU for $AUD82.
-
-I can't find the 2GB version on [Amazon.com](https://amzn.to/4e2eQiR) yet, but here's the 4G for $US70.
+* I sourced mine from [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-model-b-2gb.html) here in Newcastle AU for $AUD82.
+* I can't find the 2GB version on [Amazon.com](https://amzn.to/4e2eQiR) yet, but here's the 4G for $US70.
 
 ### Pi 5 power supply
 
 Don't skimp and re-use an old Pi4 power supply, as you run the risk of the Pi not booting up automatically. Remember it also has to power the SSD.
 
-[Core Electronics](https://core-electronics.com.au/raspberry-pi-5-power-supply-usb-c-pd-27w-white.html) again. $AUD21
+* [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-power-supply-usb-c-pd-27w-white.html) again. $AUD21
+* [Amazon.com](https://amzn.to/3AGWUvP) has the US version for $US19.
 
-[Amazon.com](https://amzn.to/3AGWUvP) has the US version for $US19.
+### Pi 5 cooling fan
 
-### Pi 5 "active cooler" fan kit
+We've gone with a discrete 30x30x7mm cooling fan here, and it's essential it has a 4-pin JST connector.
 
-TODO
+You can't use the official 'Active Cooler' because it won't fit under either of the suggested KNX 'hats'. It's also a 'blower' fan so it won't do even if you separate it from the heatsink and mount it to the side of the box.
+
+Here are the only ones we've found so far:
+* [Ali Express](https://www.aliexpress.com/item/1005006278639024.html)
+* [eBay AU](https://www.ebay.com/itm/305302554079) (but shipping from China)
+* Amazon AU - none found
+* Amazon US - none found
 
 ### Raspberry Pi "stackable" header (Tijl hat only)
 
@@ -81,5 +87,6 @@ Let's call it $10 just to keep the maths even.
 
 My partner Rocky has designed a case you can print for all this to fit inside. The art is on TODO.
 
-
+<hr/>
+<br>
 Note that any Amazon links on this page are Affiliate links. I may earn some recognition if you go there, but you pay no extra for this.
