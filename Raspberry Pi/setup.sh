@@ -199,7 +199,7 @@ setup()
 	if [[ ! $isKnxd ]];
 	then
 		echo -e "\n"$GREEN"Installing knxd "$RESET""
-		rm -r /home/$SUDO_USER/staging/knxd
+		rm -rf /home/$SUDO_USER/staging/knxd
   		mkdir -pv /home/$SUDO_USER/staging/knxd
 		cd /home/${SUDO_USER}/staging/knxd/
 		apt-get install git-core -y
@@ -226,7 +226,7 @@ setup()
 	if [[ ! $isTelegraf  ]];
 	then
 		echo -e "\n"$GREEN"Installing telegraf"$RESET""
-		rm -r /home/$SUDO_USER/staging/telegraf		
+		rm -rf /home/$SUDO_USER/staging/telegraf		
 		mkdir -pv /home/$SUDO_USER/staging/telegraf
 		cd /home/${SUDO_USER}/staging/telegraf/
 		curl -s https://repos.influxdata.com/influxdata-archive.key > influxdata-archive.key
@@ -245,7 +245,7 @@ setup()
 	if [[ ! $isInfluxd ]];
 	then
 		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""		
-		rm -r /home/$SUDO_USER/staging/influxd
+		rm -rf /home/$SUDO_USER/staging/influxd
   		mkdir -pv /home/$SUDO_USER/staging/influxd
 		cd /home/${SUDO_USER}/staging/influxd/
 		
@@ -263,7 +263,7 @@ setup()
 	if [[ ! $isInfluxCLI ]];
 	then
 		echo -e "\n"$GREEN"Installing InfluxCLI "$RESET""		
-		rm -r /home/$SUDO_USER/staging/influxd
+		rm -rf /home/$SUDO_USER/staging/influxd
   		mkdir -pv /home/$SUDO_USER/staging/influxd
 		cd /home/${SUDO_USER}/staging/influxd/
 		
