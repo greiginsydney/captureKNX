@@ -1,10 +1,11 @@
 # Frequently Asked Questions
 
 ## General
-- [How do I update the logger with a new topology file?](/docs/FAQ.md#How-do-i-update-the-logger-with-a-new-topology-file)
+- [Can I build the knxLogger using a microSD card?](/docs/FAQ.md#can-i-build-the-knxlogger-using-a-microsd-card)
+- [How do I update the logger with a new topology file?](/docs/FAQ.md#how-do-i-update-the-logger-with-a-new-topology-file)
 
 ## InfluxDB
-- [How can I delete all the data in InfluxDB and start again?](/docs/FAQ.md#how-can-I-delete-all-the-data-in-influxdb-and-start-again)
+- [How can I delete all the data in InfluxDB and start again?](/docs/FAQ.md#how-can-i-delete-all-the-data-in-influxdb-and-start-again)
 
 ## Grafana
 - [How do I stop Grafana truncating my DPT values?](/docs/FAQ.md#how-do-i-stop-grafana-truncating-my-dpt-values)
@@ -13,9 +14,23 @@
 <br/>
 <hr/>
 
+### Can I build the knxLogger using a microSD card?
+
+Sure - but it's not best practice for what we're doing here.
+
+[microSD](https://simple.wikipedia.org/wiki/MicroSD) cards only have a finite number of read/write cycles in them, and we're writing KNX telegrams to the database **continuously**. Eventually it's going to fail.
+
+We've gone with external storage that's designed to survive the read/write onslaught, and as a bonus the Pi is a LOT faster.
+
+As the knxLogger isn't perhaps as 'mission critical' an application as some others, you might choose to build it onto an SD card. None of the installation steps change if you do this.
+
+[Top](/docs/FAQ.md#frequently-asked-questions)
+
+<hr>
+
 ### How do I update the logger with a new topology file?
 
-1. Follow the process in [Prepare The Topology Export](/docs/step1-prepare-the-topology-export.md)
+1. Follow the process in [Prepare The Topology Export](/docs/step1-prepare-the-topology-export.md).
 2. Copy the file to `/home/pi/`. (I use [WinSCP](https://winscp.net/) for this, but there are plenty of other tools that can do the same job.)
 3. Restart the knxLogger service:
 
@@ -25,7 +40,6 @@ sudo systemctl restart knxLogger
 4. When it restarts, the logger script will detect the presence of a newer topo file and extract its content.
 
 [Top](/docs/FAQ.md#frequently-asked-questions)
-
 
 <hr>
 
@@ -57,7 +71,7 @@ This is what the final result will look like:
 [Top](/docs/FAQ.md#frequently-asked-questions)
 <hr>
 
-## Why are some Group Addresses not showing in the reports or logs?
+### Why are some Group Addresses not showing in the reports or logs?
 
 This is usually because the Group Address has been created since the topology/project file that knxLogger is using, and as knxLogger doesn't know what type of DataPoint the GA is, it's discarded.
 
