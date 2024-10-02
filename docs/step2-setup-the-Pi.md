@@ -21,7 +21,7 @@ You'll also be asked for an 'organisation' and a 'bucket'. Neither name are part
 | --- | --- | --- |
 | My KNX network client address | A spare physical address | 1.1.250 |
 | Sending KNX network client start address | A spare physical address | The above + 1 |
-| Sending KNX network client count | How many sending client addresses to reserve | 2 |
+| Sending KNX network client count | How many sending client addresses to reserve | 1 |
 | INFLUXDB_INIT_USERNAME | Influx web user login | knxLogger |
 | INFLUXDB_INIT_PASSWORD | InfluxDB web user password | knxLogger |
 | INFLUXDB_INIT_ORG | An 'organisation name' | knxLogger |
