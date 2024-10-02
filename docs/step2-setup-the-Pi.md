@@ -39,17 +39,19 @@ You'll also be asked for an 'organisation' and a 'bucket'. Neither name are part
 
 > The ["Raspberry Pi Imager"](https://www.raspberrypi.org/software/) app can download and write the image to a memory card for you quickly and easily.
 
+Click `CHOOSE DEVICE`:
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/48df65a7-738b-493f-9e3f-3e3defbd3766" width="50%">
 </p>
 
-I built mine onto a Pi 4, so select your own hardware as required here, or `No filtering` to see the lot:
-
+ Select a Pi 5:
+ 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/a419f62b-e20c-4b1e-810c-6263c4609276" width="50%">
+  <img src="https://github.com/user-attachments/assets/a9378ecd-231c-4dd5-99e9-89180171a1d0" width="50%">
 </p>
 
-Having selected the device, now click `Choose OS`. Select `Raspberry Pi OS (other)`:
+Having selected the device, now click `CHOOSE OS`. Select `Raspberry Pi OS (other)`:
 <p align="center">
   <img src="https://github.com/user-attachments/assets/1583d726-06c1-4b54-b280-9537ce648574" width="50%">
 </p>
