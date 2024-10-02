@@ -640,7 +640,22 @@ read_TTY()
 test_install()
 {
 	echo ''
-	HOSTNAME=$(uname -n)
+	latestknxLoggerRls=$(curl --silent "https://api.github.com/repos/greiginsydney/intervalometerator/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+	echo "Latest    version of knxLogger = $latestknxLoggerRls"
+	if [ -f /home/${SUDO_USER}/version ];
+	then
+		VERSION=$(cat /home/${SUDO_USER}/version)
+		if [[ $VERSION == $latestknxLoggerRls ]];
+		then
+			echo -e ""$GREEN"installed version of knxLogger = $VERSION""$RESET"
+		else
+			echo -e ""$YELLOW"installed version of knxLogger = $VERSION""$RESET"
+		fi
+	else
+		echo -e ""$YELLOW"version file not found"$RESET""
+	fi
+	echo ''
+ 	HOSTNAME=$(uname -n)
 	echo $HOSTNAME
 	cat /proc/device-tree/model
 	echo ''
