@@ -78,7 +78,7 @@ activate_venv()
 }
 
 
-setup()
+setup1()
 {
 	RESULT=$(test_64bit)
 	if [[ $RESULT != "64" ]];
@@ -354,12 +354,20 @@ setup()
 	
 	if [[ $NEEDS_REBOOT ]];
 	then
+		touch /home/${SUDO_USER}/setup1_complete
 		echo ''
 		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
 		prompt_for_reboot
 	fi
+}
 
 
+setup2()
+{
+	if [ -f /home/${SUDO_USER}/setup1_complete ];
+	then
+		rm -rf /home/${SUDO_USER}/setup1_complete
+	fi
 	NEEDS_REBOOT=''
 	newLine=$(read_TTY)
 	if [[ $newLine ]];
@@ -387,11 +395,20 @@ setup()
 	fi
 	if [[ $NEEDS_REBOOT ]];
 	then
+		touch /home/${SUDO_USER}/setup2_complete
 		echo ''
 		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
 		prompt_for_reboot
 	fi
+}
 
+
+setup3()
+{
+	if [ -f /home/${SUDO_USER}/setup2_complete ];
+	then
+		rm -rf /home/${SUDO_USER}/setup2_complete
+	fi
 
 	# Customise knxd.conf
 	# Extract the current values:
@@ -847,7 +864,18 @@ case "$1" in
 		;;
 	('')
 		activate_venv
-		setup
+		if [ -f /home/${SUDO_USER}/setup2_complete ];
+		then
+			setup3
+		elif [ -f /home/${SUDO_USER}/setup1_complete ];
+		then
+			setup2
+			setup3
+		else
+			setup1
+			setup2
+			setup3
+		fi
   		test_install
 		;;
 	(*)
