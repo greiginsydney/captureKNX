@@ -5,12 +5,13 @@ TODO: photo goes here
 
 ## Features
 
+- Log all KNX network traffic for a year (or longer!) without needing to leave ETS running and connected.
 - No fancy hardware. Buy a Raspberry Pi 5, plug a KNX shield on top, add a solid-state drive, stick it in a box (artwork provided here to print your own) and apply power!
 - Plugs directly into the KNX bus. This means your KNX telegrams aren't permanently spamming your IP network to get to the logger, and means you can log tiny KNX installations that don't have a full-time router or programming interface.
 - Easy setup. A bash script installs all the software components. You only need to copy the topology/project file across after exporting it from ETS.
 - A fully on-premises solution. Once you've bought the hardware, that's your total outlay. (Late 2024 estimate circa $AUD250 / $US170 / €150.)
 - With Grafana you can easily visualise data like daily temperatures or light levels, and overlay heating/lighting control signals.
-- Debug your logic and other occurrences by filtering the log view by time/date, Group Address, sending device or the value sent.
+- A dedicated dashboard replicates ETS' Diagnostics / Group Monitor feature. Debug your logic and other occurrences by filtering the log view by time/date, Group Address, sending device or the value sent.
 - Add "[remote.it](https://www.remote.it/)" for full remote access, without needing firewall holes or other complicated setup. (Remote.it is free for non-commercial use!)
 
 ## Limitations / Restrictions
