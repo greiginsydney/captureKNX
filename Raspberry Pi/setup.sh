@@ -769,7 +769,7 @@ test_install()
 			# There's only one line in the file and it == 'newLine'
 			echo -e ""$GREEN"PASS:"$RESET" /etc/udev/rules.d/80-knxd.rules is good"
 		else
-			echo -e ""$YELLOW"FAIL:"$RESET" /etc/udev/rules.d/80-knxd.rules exists but contains either muitple lines or incorrect content"
+			echo -e ""$YELLOW"FAIL:"$RESET" /etc/udev/rules.d/80-knxd.rules exists but contains either multiple lines or incorrect content"
 		fi
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" UDEV file does not exist. Re-run setup or check TTY config"
