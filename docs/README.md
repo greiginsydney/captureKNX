@@ -8,7 +8,7 @@ The [shopping list](/docs/shopping-list.md) itemises everything you'll need, and
 
 ## Installation steps
 
-1. [prepare the topology export](/docs/prepare-the-topology-export.md) - start here by exporting the topology (project file) in ETS.
+1. [prepare the topology export](/docs/step1-prepare-the-topology-export.md) - start here by exporting the topology (project file) in ETS.
 
 2. [Setup the Pi](/docs/step2-setup-the-Pi.md) walks you through the process to install all the software on the Pi. (The setup script does all the hard work!)
 
