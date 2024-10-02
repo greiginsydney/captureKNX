@@ -227,6 +227,19 @@ sudo -E -H ./setup.sh
 
 39. Reconnect to the Pi after it reboots and return to Step 37. (Pressing up-arrow should offer you the `sudo -E -H ./setup.sh` command to save you re-typing it.)
 
+![image](https://github.com/user-attachments/assets/e8c1c9d3-ac1c-4672-be25-8785b0e4e5e6)
+
+
 40. Once the required bits have been added, it will stop prompting for reboots (there are two), and continue.
 
-41. 
+41. Here's where the user input foreshadowed at the top comes in. You'll be prompted for answers to these values, but in most cases you'll be OK with hitting return to accept the defaults:
+
+![image](https://github.com/user-attachments/assets/80a069cc-e564-4e82-93a3-d0c50bd7fa91)
+
+42. When the installation completes the script will report "Done" and execute a test:
+
+![image](https://github.com/user-attachments/assets/f1776fef-6125-4316-8439-e40f1fc12cc5)
+
+If the Pi isn't plugged in to the KNX bus at this stage, it's expected that knxd.service will show as "dead". In this example I've not copied the project file across, and this is also highlighted.
+
+Next steps are to plug the Pi into the bus and continue with testing.
