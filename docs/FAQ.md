@@ -57,7 +57,7 @@ This is what the final result will look like:
 [Top](/docs/FAQ.md#frequently-asked-questions)
 <hr>
 
-## Some Group Addresses are not showing in the reports or logs
+## Why are some Group Addresses not showing in the reports or logs?
 
 This is usually because the Group Address has been created since the topology/project file that knxLogger is using, and as knxLogger doesn't know what type of DataPoint the GA is, it's discarded.
 
