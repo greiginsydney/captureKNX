@@ -320,10 +320,8 @@ setup1()
 
 	# Customise /boot/firmware/config.txt:
 	NEEDS_REBOOT=''
-	if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
+	if ! grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
 	then
-		echo -e "\n"$GREEN"UART changes to config.txt already exist"$RESET""
-	else
 		echo -e "\n"$GREEN"Adding UART changes to config.txt"$RESET""
 		echo -e '\n# Added by setup.sh for the knxLogger' >> /boot/firmware/config.txt
 	fi
@@ -358,6 +356,8 @@ setup1()
 		echo ''
 		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
 		prompt_for_reboot
+	else
+		echo -e "\n"$GREEN"UART changes to config.txt already exist"$RESET""
 	fi
 }
 
