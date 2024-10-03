@@ -674,18 +674,18 @@ test_install()
 {
 	echo ''
 	latestknxLoggerRls=$(curl --silent "https://api.github.com/repos/greiginsydney/intervalometerator/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
-	echo "Latest    version of knxLogger = $latestknxLoggerRls"
-	if [ -f /home/${SUDO_USER}/version ];
+	echo "Latest release of knxLogger is    v$latestknxLoggerRls"
+	if [ -f /home/${SUDO_USER}/knxLogger/version ];
 	then
-		VERSION=$(cat /home/${SUDO_USER}/version)
+		VERSION=$(cat /home/${SUDO_USER}/knxLogger/version)
 		if [[ $VERSION == $latestknxLoggerRls ]];
 		then
-			echo -e ""$GREEN"installed version of knxLogger = $VERSION""$RESET"
+			echo -e ""$GREEN"Installed version of knxLogger is v$VERSION""$RESET"
 		else
-			echo -e ""$YELLOW"installed version of knxLogger = $VERSION""$RESET"
+			echo -e ""$YELLOW"Installed version of knxLogger is v$VERSION""$RESET"
 		fi
 	else
-		echo -e ""$YELLOW"version file not found"$RESET""
+		echo -e ""$YELLOW"Version file not found"$RESET""
 	fi
 	echo ''
  	HOSTNAME=$(uname -n)
