@@ -432,7 +432,6 @@ setup3()
 	OLD_CLTNBR=$(sed -n -E 's/^KNXD_OPTS.* -E [[:digit:]]+.[[:digit:]]+.[[:digit:]]+:([[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
 
 	HAT_TYPE=$(sed -n -E 's/^KNXD_OPTS.* (.*):\/dev\/ttyKNX1\"$/\1/p' /etc/knxd.conf)
-	echo $HAT_TYPE
 	if [[ $HAT_TYPE == "tpuarts" ]];
 	then
 		HAT_INDEX=0
@@ -443,7 +442,6 @@ setup3()
 	HAT_METHOD=("tpuarts" "ft12cemi")
 	echo ''
 	echo "The knxLogger is set to use the ${HATS[HAT_INDEX]} HAT"
-	echo ''
 	read -p "Change to the ${HATS[1 - HAT_INDEX]} HAT? [y/N]: " CHG_HAT
 	case $CHG_HAT in
 		(y|Y)
