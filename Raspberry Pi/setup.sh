@@ -823,9 +823,12 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" UDEV file does not exist. Re-run setup or check TTY config"
 	fi
 
-	if grep -q -E " -n $HOSTNAME (.*)--layer2=tpuarts:/dev/ttyKNX1" /etc/knxd.conf;
+	if grep -q -E " -n $HOSTNAME (.*)-b tpuarts:/dev/ttyKNX1" /etc/knxd.conf;
 	then
-		echo -e ""$GREEN"PASS:"$RESET" /etc/knxd.conf is good"
+		echo -e ""$GREEN"PASS:"$RESET" /etc/knxd.conf is good. Configured for Tijl/Tindie HAT"
+	elif grep -q -E " -n $HOSTNAME (.*)-b ft12cemi:/dev/ttyKNX1" /etc/knxd.conf;
+	then
+		echo -e ""$GREEN"PASS:"$RESET" /etc/knxd.conf is good. Configured for Weinzierl kBerry HAT"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" /etc/knxd.conf is missing required config. Re-run setup"
 	fi
