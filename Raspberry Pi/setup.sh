@@ -178,6 +178,12 @@ setup1()
 		touch /home/${SUDO_USER}/knxLogger/knxLogger.log		
 		chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/knxLogger/knxLogger.log
 
+		# version:
+		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/version ];
+		then
+			mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/version /home/${SUDO_USER}/knxLogger/version
+		fi
+
 		#TODO: once all wanted files are removed, delete the staging folder - this needs to take place at the END of the script.
 		# rm -fr /home/${SUDO_USER}/staging/ NOT HERE
 	else
