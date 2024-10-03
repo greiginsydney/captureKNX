@@ -11,7 +11,7 @@ There are a couple of different variations:
 - Drive storage
   -   an external USB3 SSD
   -   a PCIe NVMe drive
-  -   microSD card. Not officially supported. More about that here
+  -   microSD card. Not officially supported. More about that [here](/docs/FAQ.md#can-i-build-the-knxlogger-using-a-microsd-card)
 - KNX interface board
   -  Tijl's board from Tindie
   -  the Weinzierl 838 kBerry
@@ -45,6 +45,8 @@ Here are the only ones we've found so far:
 * [eBay AU](https://www.ebay.com/itm/305302554079) (but shipping from China)
 * Amazon AU - none found
 * Amazon US - none found
+
+<hr/>
 
 ### Solid State Drive
 
