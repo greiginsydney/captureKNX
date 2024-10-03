@@ -67,6 +67,7 @@ Make sure you get a USB3 version.
 You'll get similar from [Amazon](https://amzn.to/3AJnPr3) in the US for $US10.
 
 <hr/> 
+
 ### KNX Pi HAT - option 1: Tijl/Tindie
 
 I used Tijl's KNX Pi HAT from [Tindie](https://www.tindie.com/products/cpu20/knx-raspberry-pi-hat/) for most of my development. This seems to be permanently out of stock until enough people join the waitlist, then they do a production run of new boards.
@@ -80,9 +81,10 @@ Core has a [Raspberry Pi Extra-Long Stacking Header (2x20 pins)](https://core-el
 
 ### KNX Pi HAT - option 2: Weinzierl 838 kBerry
 
-![image](https://github.com/user-attachments/assets/0d0d85d4-6b17-463c-901e-e14561c4833a)
-
-Image credit: [KNX Shop online UK](https://knxshoponline.co.uk/knx-baos-module-838-kberry/).
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0d0d85d4-6b17-463c-901e-e14561c4833a" width="30%">
+</p>
+<p align="center">Image credit: <a href="https://knxshoponline.co.uk/knx-baos-module-838-kberry" target="_blank">KNX Shop online UK</a></p>
 
 The [Weinzierl 838 kBerry](https://weinzierl.de/en/products/knx-baos-modul-838/) is another plugin daughterboard (HAT) for the Pi.
 
