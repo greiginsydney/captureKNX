@@ -149,7 +149,7 @@ def DPT8(sub_DPT, value):
 
 def DPT9(sub_DPT, value):
     '''
-    2-octet float value.
+    2-octet float value
     '''
     unit = ""
     if sub_DPT == 1:
@@ -196,6 +196,22 @@ def DPT9(sub_DPT, value):
         unit = "g/m-3"
     elif sub_DPT == 30:
         unit = "ug"
+    return (value, unit)
+
+
+def DPT12(sub_DPT, value):
+    '''
+    4-octet unsigned value. Counter pulses & operating hours
+    '''
+    unit = ""
+    if sub_DPT == 1:
+        pass
+    elif sub_DPT == 100:
+        unit = "s"
+    elif sub_DPT == 101:
+        unit = "min"
+    elif sub_DPT == 102:
+        unit = "h"
     return (value, unit)
 
 
