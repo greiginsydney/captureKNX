@@ -429,6 +429,29 @@ setup3()
 	OLD_CLTADDR=$(sed -n -E 's/^KNXD_OPTS.* -E ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+):.*$/\1/p' /etc/knxd.conf)
 	OLD_CLTNBR=$(sed -n -E 's/^KNXD_OPTS.* -E [[:digit:]]+.[[:digit:]]+.[[:digit:]]+:([[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
 
+	HAT_TYPE=$(sed -n -E 's/^KNXD_OPTS.* (.*):\/dev\/ttyKNX1\"$/\1/p' /etc/knxd.conf)
+	echo $HAT_TYPE
+	if [[ $HAT_TYPE == "tpuarts" ]];
+	then
+		HAT_INDEX=0
+	else
+		HAT_INDEX=1
+	fi
+	HATS=("Tijl/Tindie" "Weinzierl kBerry")
+	HAT_METHOD=("tpuarts" "ft12cemi")
+	echo ''
+	echo "The knxLogger is set to use the ${HATS[HAT_INDEX]} HAT"
+	echo ''
+	read -p "Change to the ${HATS[1 - HAT_INDEX]} HAT? [y/N]: " CHG_HAT
+	case $CHG_HAT in
+		(y|Y)
+			HAT_TYPE=${HAT_METHOD[1 - HAT_INDEX]}
+			;;
+		(*)
+			:
+			;;
+	esac
+
 	read -e -i "$OLD_MYADDRESS" -p 'My KNX network client address            = ' MYADDRESS
 	if [[ ! $OLD_MYADDRESS == $MYADDRESS ]];
 	then
@@ -446,7 +469,9 @@ setup3()
 	sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\1$MYADDRESS\3|" /etc/knxd.conf
 	sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)(:.*$)|\1$CLIENTADDR\3|" /etc/knxd.conf
 	sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+:)([[:digit:]]+)( .*$)|\1\2$CLIENTNBR\4|" /etc/knxd.conf
-	# Delete "-u /tmp/eib":
+	sed -i -E "s|(^KNXD_OPTS.*-b )(.*)(:/dev/ttyKNX1\")$|\1$HAT_TYPE\3|" /etc/knxd.conf
+ 
+ 	# Delete "-u /tmp/eib":
 	sed -i -E "s|^(KNXD_OPTS=.*)( -u /tmp/eib)(.*)|\1\3|" /etc/knxd.conf
 	# Insert hostname:
 	HOSTNAME=$(uname -n)
