@@ -147,6 +147,58 @@ def DPT8(sub_DPT, value):
     return (value, unit)
 
 
+def DPT9(sub_DPT, value):
+    '''
+    2-octet float value.
+    '''
+    unit = ""
+    if sub_DPT == 1:
+        unit = "°C"
+    elif sub_DPT == 2:
+        unit = "K"
+    elif sub_DPT == 3:
+        unit = "K/h"
+    elif sub_DPT == 4:
+        unit = "lux"
+    elif sub_DPT == 5:
+        unit = "m/s"
+    elif sub_DPT == 6:
+        unit = "Pa"
+    elif sub_DPT == 7:
+        unit = "%"
+    elif sub_DPT == 8:
+        unit = "ppm"
+    elif sub_DPT == 9:
+        unit = "m3/h"
+    elif sub_DPT == 10:
+        unit = "s"
+    elif sub_DPT == 11:
+        unit = "ms"
+    elif sub_DPT == 20:
+        unit = "mV"
+    elif sub_DPT == 21:
+        unit = "mA"
+    elif sub_DPT == 22:
+        unit = "W/m2"
+    elif sub_DPT == 23:
+        unit = "K/%"
+    elif sub_DPT == 24:
+        unit = "kW"
+    elif sub_DPT == 25:
+        unit = "l/h"
+    elif sub_DPT == 26:
+        unit = "l/m2"
+    elif sub_DPT == 27:
+        unit = "°F"
+    elif sub_DPT == 28:
+        unit = "km/h"
+    elif sub_DPT == 29:
+        unit = "g/m-3"
+    elif sub_DPT == 30:
+        unit = "ug"
+    return (value, unit)
+
+
 def DPT16(sub_DPT, value):
     '''
     It looks like knxd has already decoded DPT 16
