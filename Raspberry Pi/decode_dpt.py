@@ -89,16 +89,16 @@ def DPT5(sub_DPT, value):
 
 def DPT6(sub_DPT, value):
     '''
-    TODO: return 'decoded' as a tuple with the value's unit
+    8-bit signed relative value
     '''
+    unit = ""
     if sub_DPT == 1:
         unit = "%"
     elif sub_DPT == 10:
-        unit = "pulse"
-
+        pass
     if (value & (1 << (7))) != 0:
         value = value - (1 << bits)
-    return value
+    return (value, unit)
 
 
 def DPT16(sub_DPT, value):
