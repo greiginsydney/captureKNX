@@ -57,7 +57,7 @@ activate_venv()
 			else
 				if [[ ! $TRIED ]];
 				then
-					echo -e "\n"$YELLOW"Virtual environment NOT active. Attempting to activate."$RESET""
+					echo -e "\nVirtual environment NOT active. Attempting to activate"
 					source "venv/bin/activate"
 					TRIED==1
 				else
