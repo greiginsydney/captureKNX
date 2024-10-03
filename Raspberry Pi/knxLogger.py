@@ -384,10 +384,11 @@ async def main() -> None:
                 elif isinstance(value, (int, bool)):
                     telegram['info'] = str(value)
                 elif isinstance(value, tuple):
-                    print('-- TUPLE COMING THROUGH ')
+                    # I think I've weeded out the tuples. This is for debug purposes:
+                    log(f'-- TUPLE COMING THROUGH: DPT = {DPT} ')
                     telegram['info'] = str("-".join(map(str,value)))
                 else:
-                    print(f'Unhandled object type. Value is {type(value)}')
+                    log(f'Unhandled object type. DPT = {DPT}. Value is {type(value)}')
                     telegram['info'] = value
                 message = {"telegram" : telegram}
 
