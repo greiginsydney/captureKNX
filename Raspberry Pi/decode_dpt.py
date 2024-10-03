@@ -72,15 +72,19 @@ def DPT4(sub_DPT, value):
 
 def DPT5(sub_DPT, value):
     '''
-    TODO: return 'decoded' as a tuple with the value's unit
+    8-bit unsigned value. Scaling, angle & percent
     '''
+    decoded = value
+    unit = ""
     if sub_DPT == 1:
         decoded = round(value / 255 * 100, 1)
+        unit = "%"
     elif sub_DPT == 3:
         decoded = round(value / 255 * 360, 1)
-    else:
-        decoded = value # 4, 5, 6 & 10 all return the initial value unchanged
-    return decoded
+        unit ="°"
+    elif sub_DPT == 4:
+        unit = "%"
+    return (decoded, unit)
 
 
 def DPT6(sub_DPT, value):
