@@ -4,6 +4,20 @@ To build the knxLogger as described, you'll need the following parts.
 
 Your outlay will be approximately $USD200 / $AUD260, although this does _not_ include shipping costs or the cost of a 3D-printed enclusure.
 
+## Variations
+
+There are a couple of different variations:
+
+- Drive storage
+  -   an external USB3 SSD
+  -   a PCIe NVMe drive
+  -   microSD card. Not officially supported. More about that here
+- KNX interface board
+  -  Tijl's board from Tindie
+  -  the Weinzierl 838 kBerry
+
+<hr/>
+
 ### Raspberry Pi 5
 
 You DEFINITELY need a Pi 5, as we're asking a lot of this poor little SBC.
@@ -24,18 +38,13 @@ Don't skimp and re-use an old Pi4 power supply, as you run the risk of the Pi no
 
 We've gone with a discrete 30x30x7mm cooling fan here, and it's essential it has a 4-pin JST connector.
 
-You can't use the official 'Active Cooler' because it won't fit under either of the suggested KNX 'hats'. It's also a 'blower' fan so it won't do even if you separate it from the heatsink and mount it to the side of the box.
+You can't use the official 'Active Cooler' because it won't fit under either of the suggested KNX 'HATs'. It's also a 'blower' fan so it won't do even if you separate it from the heatsink and mount it to the side of the box.
 
 Here are the only ones we've found so far:
 * [Ali Express](https://www.aliexpress.com/item/1005006278639024.html)
 * [eBay AU](https://www.ebay.com/itm/305302554079) (but shipping from China)
 * Amazon AU - none found
 * Amazon US - none found
-
-### Raspberry Pi "stackable" header (Tijl hat only)
-
-This header extends the lengths of the Pi's GPIO header pins so they'll reach the KNX hat mounted high above.
-Core has a [Raspberry Pi Extra-Long Stacking Header (2x20 pins)](https://core-electronics.com.au/stacking-2x20.html) for $AUD2.40, and the [Pololu-2748 Stackable 0.100″ Female Header: 2x20-pin, Straight](https://core-electronics.com.au/stackable-0-100-female-header-2x20-pin-straight.html) for $4.95. ([Pololu link](https://www.pololu.com/product/2748))
 
 ### Solid State Drive
 
@@ -55,11 +64,31 @@ Make sure you get a USB3 version.
 
 You'll get similar from [Amazon](https://amzn.to/3AJnPr3) in the US for $US10.
 
-### KNX Pi hat
+<hr/> 
+### KNX Pi HAT - option 1: Tijl/Tindie
 
-I used Tijl's KNX Pi hat from [Tindie](https://www.tindie.com/products/cpu20/knx-raspberry-pi-hat/) for all my development. This seems to be permanently out of stock until enough people join the waitlist, then they do a production run of new boards.
+I used Tijl's KNX Pi HAT from [Tindie](https://www.tindie.com/products/cpu20/knx-raspberry-pi-hat/) for most of my development. This seems to be permanently out of stock until enough people join the waitlist, then they do a production run of new boards.
 
 $USD67 / $AUD100
+
+### Raspberry Pi "stackable" header (Tijl hat only)
+
+This header extends the lengths of the Pi's GPIO header pins so they'll reach the KNX hat mounted high above.
+Core has a [Raspberry Pi Extra-Long Stacking Header (2x20 pins)](https://core-electronics.com.au/stacking-2x20.html) for $AUD2.40, and the [Pololu-2748 Stackable 0.100″ Female Header: 2x20-pin, Straight](https://core-electronics.com.au/stackable-0-100-female-header-2x20-pin-straight.html) for $4.95. ([Pololu link](https://www.pololu.com/product/2748))
+
+### KNX Pi HAT - option 2: Weinzierl 838 kBerry
+
+![image](https://github.com/user-attachments/assets/0d0d85d4-6b17-463c-901e-e14561c4833a)
+
+Image credit: [KNX Shop online UK](https://knxshoponline.co.uk/knx-baos-module-838-kberry/).
+
+The [Weinzierl 838 kBerry](https://weinzierl.de/en/products/knx-baos-modul-838/) is another plugin daughterboard (HAT) for the Pi.
+
+You can get those in Australia, NZ or the UK from [Ivory Egg](https://ivoryegg.com.au/shop/products/weinzierl-weinzierl-knx-baos-module-838-kberry).
+
+$USD123 / $AUD180
+
+<hr/> 
 
 ### Mounting screws and spacers (Tijl hat only)
 
