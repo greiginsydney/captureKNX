@@ -196,6 +196,15 @@ Check Grafana and InfluxDB are getting along:
    
 ![image](https://github.com/user-attachments/assets/f496dea5-5e5e-4396-96af-5a1fd90e69a1)
 
+You might alternatively see an error here, indicating authorisation has failed between InfluxDB & Grafana:
+
+![image](https://github.com/user-attachments/assets/898d19ed-2d64-479c-9a9c-b970dabe8f44)
+
+This is usually due to a 'token' error.
+
+Resolution: TODO
+
+
 <br>
 
 [Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
