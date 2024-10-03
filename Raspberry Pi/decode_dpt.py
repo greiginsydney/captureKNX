@@ -123,6 +123,30 @@ def DPT7(sub_DPT, value):
     return (value, unit)
 
 
+def DPT8(sub_DPT, value):
+    '''
+    2-octet signed value. Counter, delta time and others
+    '''
+    unit = ""
+    if sub_DPT == 1:
+        pass
+    elif sub_DPT in (2, 3, 4):
+        unit = "ms"
+    elif sub_DPT == 5:
+        unit = "s"
+    elif sub_DPT == 6:
+        unit = "min"
+    elif sub_DPT == 7:
+        unit = "h"
+    elif sub_DPT == 10:
+        unit = "%"
+    elif sub_DPT == 11:
+        unit = "°"
+    elif sub_DPT == 12:
+        unit = "m"
+    return (value, unit)
+
+
 def DPT16(sub_DPT, value):
     '''
     It looks like knxd has already decoded DPT 16
