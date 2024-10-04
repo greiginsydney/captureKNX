@@ -146,12 +146,12 @@ setup1()
   		# knxLogger.env:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env /etc/influxdb/knxLogger.env;
+			mkdir -p /etc/influxdb/
+			if [ -f /etc/influxdb/knxLogger.env ];
 			then
-				echo "Skipped: the file '/etc/influxdb/knxLogger.env' already exists & the new version is unchanged"
+				# Copy new file over as '.new' & leave existing in-situ
+				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env /etc/influxdb/knxLogger.env.new
 			else
-				[ -f /etc/influxdb/knxLogger.env ] && mv -fv /etc/influxdb/knxLogger.env /etc/influxdb/knxLogger.env.old
-				mkdir -p /etc/influxdb/
 				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env /etc/influxdb/knxLogger.env
 			fi
 		fi
@@ -175,7 +175,7 @@ setup1()
 			echo -e "\n"$YELLOW"Error trying to 'chgrp' logrotate"$RESET""
 		fi
 
-		touch /home/${SUDO_USER}/knxLogger/knxLogger.log		
+		touch /home/${SUDO_USER}/knxLogger/knxLogger.log
 		chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/knxLogger/knxLogger.log
 
 		# version:
@@ -234,7 +234,7 @@ setup1()
 	if [[ ! $isTelegraf  ]];
 	then
 		echo -e "\n"$GREEN"Installing telegraf"$RESET""
-		rm -rf /home/$SUDO_USER/staging/telegraf		
+		rm -rf /home/$SUDO_USER/staging/telegraf
 		mkdir -pv /home/$SUDO_USER/staging/telegraf
 		cd /home/${SUDO_USER}/staging/telegraf/
 		curl -s https://repos.influxdata.com/influxdata-archive.key > influxdata-archive.key
@@ -258,11 +258,11 @@ setup1()
 	set -e #Resume the error trap
 	if [[ ! $isInfluxd ]];
 	then
-		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""		
+		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
 		rm -rf /home/$SUDO_USER/staging/influxd
   		mkdir -pv /home/$SUDO_USER/staging/influxd
 		cd /home/${SUDO_USER}/staging/influxd/
-		
+
 		curl -LO https://download.influxdata.com/influxdb/releases/influxdb2_2.7.8-1_arm64.deb
 		dpkg -i influxdb2_2.7.8-1_arm64.deb
 	else
@@ -276,11 +276,11 @@ setup1()
 	set -e #Resume the error trap
 	if [[ ! $isInfluxCLI ]];
 	then
-		echo -e "\n"$GREEN"Installing InfluxCLI "$RESET""		
+		echo -e "\n"$GREEN"Installing InfluxCLI "$RESET""
 		rm -rf /home/$SUDO_USER/staging/influxd
   		mkdir -pv /home/$SUDO_USER/staging/influxd
 		cd /home/${SUDO_USER}/staging/influxd/
-		
+
 		wget https://download.influxdata.com/influxdb/releases/influxdb2-client-2.7.5-linux-arm64.tar.gz
 		tar xvzf influxdb2-client-2.7.5-linux-arm64.tar.gz
 		dest=${isInfluxd%/*}/
@@ -289,7 +289,7 @@ setup1()
 		echo -e "\n"$GREEN"InfluxCLI is already installed - skipping"$RESET""
 		# TODO: Check version and update if there's newer.
 	fi
- 
+
 
 	set +e #Suspend the error trap
 	isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
@@ -319,7 +319,7 @@ setup1()
 		fi
 	fi
 
- 
+
 	# hciuart needs to be stopped and disabled before we can control the TTY port
 	systemctl stop hciuart.service
 	systemctl disable hciuart.service
@@ -357,7 +357,7 @@ setup1()
 		echo -e 'dtparam=uart0' >> /boot/firmware/config.txt
 		NEEDS_REBOOT='yes'
 	fi
-	
+
 	if [[ $NEEDS_REBOOT ]];
 	then
 		touch /home/${SUDO_USER}/setup1_complete
@@ -432,7 +432,6 @@ setup3()
 	OLD_CLTNBR=$(sed -n -E 's/^KNXD_OPTS.* -E [[:digit:]]+.[[:digit:]]+.[[:digit:]]+:([[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
 
 	HAT_TYPE=$(sed -n -E 's/^KNXD_OPTS.* (.*):\/dev\/ttyKNX1\"$/\1/p' /etc/knxd.conf)
-	echo $HAT_TYPE
 	if [[ $HAT_TYPE == "tpuarts" ]];
 	then
 		HAT_INDEX=0
@@ -443,7 +442,6 @@ setup3()
 	HAT_METHOD=("tpuarts" "ft12cemi")
 	echo ''
 	echo "The knxLogger is set to use the ${HATS[HAT_INDEX]} HAT"
-	echo ''
 	read -p "Change to the ${HATS[1 - HAT_INDEX]} HAT? [y/N]: " CHG_HAT
 	case $CHG_HAT in
 		(y|Y)
@@ -472,7 +470,7 @@ setup3()
 	sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)(:.*$)|\1$CLIENTADDR\3|" /etc/knxd.conf
 	sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+:)([[:digit:]]+)( .*$)|\1\2$CLIENTNBR\4|" /etc/knxd.conf
 	sed -i -E "s|(^KNXD_OPTS.*-b )(.*)(:/dev/ttyKNX1\")$|\1$HAT_TYPE\3|" /etc/knxd.conf
- 
+
  	# Delete "-u /tmp/eib":
 	sed -i -E "s|^(KNXD_OPTS=.*)( -u /tmp/eib)(.*)|\1\3|" /etc/knxd.conf
 	# Insert hostname:
@@ -500,7 +498,7 @@ setup3()
 	# Extract the current values:
 	OLD_USERNAME=$(sed -n -E 's/^\s*INFLUXDB_INIT_USERNAME=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
 	OLD_PASSWORD=$(sed -n -E 's/^\s*INFLUXDB_INIT_PASSWORD=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
-	
+
 	# We won't prompt the user for the token but do it here:
 	if grep -q "INFLUXDB_INIT_ADMIN_TOKEN=changeme" /etc/influxdb/knxLogger.env;
 	then
@@ -508,7 +506,7 @@ setup3()
 	else
 		TOKEN=$(sed -n -E 's/^\s*INFLUXDB_INIT_ADMIN_TOKEN=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
 	fi
-	
+
 	OLD_ORG=$(sed -n -E 's/^\s*INFLUXDB_INIT_ORG=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
 	OLD_BUCKET=$(sed -n -E 's/^\s*INFLUXDB_INIT_BUCKET=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
 	OLD_RETENTION=$(sed -n -E 's/^\s*INFLUXDB_INIT_RETENTION=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
@@ -580,29 +578,67 @@ setup3()
 	fi
  	echo ''
 
-	# Create initial influxdb config:
+	# Create initial InfluxDB config:
 	set +e #Suspend the error trap
-	isInfluxSetup=$(influx setup --skip-verify --bucket $BUCKET --retention $RETENTION --token $TOKEN --org $ORG --username $USERNAME --password $PASSWORD --host http://$HOST:8086 --force)
+	isInfluxSetup=$(influx setup --skip-verify --bucket $BUCKET --retention $RETENTION --token $TOKEN --org $ORG --username $USERNAME --password $PASSWORD --host http://$HOST:8086 --force 2>&1)
 	set -e #Resume the error trap
-	if [[ $isInfluxSetup =~ *"has already been set up"* ]];
+	if [[ $isInfluxSetup == *"has already been set up"* ]];
 	then
-		echo -e "\n"$GREEN"Influxdb has already been set up"$RESET""
+		echo -e "\n"$GREEN"InfluxDB has already been set up"$RESET""
+	elif [[ $isInfluxSetup == *"User Organization Bucket"* ]];
+	then
+		echo -e "\n"$GREEN"InfluxDB config created OK"$RESET""
 	else
-		echo -e "\n"$GREEN"Performed initial influxdb setup OK. (TODO: are you SURE?)"$RESET""
+		echo "isInfluxSetup: $isInfluxSetup"
+		echo -e ""$YELLOW"Creating the initial InfluxDB config threw an error. Re-run setup and cross your fingers"$RESET""
 	fi
 
-	# Create initial influxdb *telegraf* config:
+	# Create / update initial InfluxDB telegraf config:
+	# Does one exist already:
 	set +e #Suspend the error trap
-	isTelegrafConfiguration=$(influx telegrafs create -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf )
+	IsInfluxTelegrafs=$(influx telegrafs --hide-headers 2>&1)
 	set -e #Resume the error trap
-	echo '---------' # TODO: remove these debug lines once this is full tested and confirmed 100%
-	echo $isTelegrafConfiguration
-	echo '---------'
-	if [[ $isTelegrafConfiguration =~ *"has already been set up"* ]];
+	if [[ $IsInfluxTelegrafs == *"unknown command"* ]];
 	then
-		echo -e "\n"$GREEN"isTelegrafConfiguration has already been set up"$RESET""
+		echo "isTelegrafConfiguration: $isTelegrafConfiguration"
+		echo -e ""$YELLOW"Querying InfluxDB *telegraf* config threw an error. Re-run setup and cross your fingers"$RESET""
+	elif [[ $IsInfluxTelegrafs == *"knxLogger"* ]];
+	then
+		# Config exists? Run an UPDATE. Pull the ID out of IsInfluxTelegrafs:
+		echo -e "\nInfluxDB telegraf config already exists. Updating"
+		EXISTING_ID=$(echo $IsInfluxTelegrafs | cut -d ' ' -f1)
+		set +e #Suspend the error trap
+		isTelegrafUpdated=$(influx telegrafs update -id $EXISTING_ID -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf --hide-headers 2>&1)
+		set -e #Resume the error trap
+		if [[ $isTelegrafUpdated == *"unknown command"* ]];
+		then
+			echo "isTelegrafUpdated = $isTelegrafUpdated"
+			echo -e ""$YELLOW"Querying InfluxDB *telegraf* config threw an error. Re-run setup and cross your fingers"$RESET""
+		elif [[ $isTelegrafUpdated == *"knxLogger"* ]];
+		then
+			echo -e "\n"$GREEN"InfluxDB telegraf config updated OK"$RESET""
+		fi
+	elif [[ "$IsInfluxTelegrafs" == "" ]];
+	then
+		echo -e "\n"$GREEN"No InfluxDB *telegraf* config found. Creating new"$RESET""
+		# Create new:
+		set +e #Suspend the error trap
+		isTelegrafConfiguration=$(influx telegrafs create -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf 2>&1)
+		set -e #Resume the error trap
+		if [[ $isTelegrafConfiguration == *"has already been set up"* ]];
+		then
+			# This should never be seen, as the previous test should have captured it:
+			echo -e "\n"$GREEN"isTelegrafConfiguration has already been set up"$RESET""
+		elif [[ $isTelegrafConfiguration == *"Created by setup.sh"* ]];
+		then
+			echo -e "\n"$GREEN"InfluxDB telegraf config created OK"$RESET""
+		else
+			echo "isTelegrafConfiguration: $isTelegrafConfiguration"
+			echo -e ""$YELLOW"Creating the initial InfluxDB *telegraf* config threw an error. Re-run setup and cross your fingers"$RESET""
+		fi
 	else
-		echo -e "\n"$GREEN"Performed initial isTelegrafConfiguration setup OK. (TODO: are you SURE?)"$RESET""
+		echo "isTelegrafConfiguration: $isTelegrafConfiguration"
+		echo -e ""$YELLOW"Querying InfluxDB *telegraf* config threw an unexpected error. Re-run setup and cross your fingers"$RESET""
 	fi
 
 	# Copy the TOKEN into the Grafana source yaml file:
@@ -727,7 +763,7 @@ test_install()
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" knxdclient NOT installed"
 	fi
-	
+
 	PIP_LIST=$(pip3 list)
 	if [[ $PIP_LIST == *"requests"* ]];
 	then
@@ -780,7 +816,7 @@ test_install()
 	if [[ $isKnxd ]]; then
 		systemctl is-active --quiet knxd.service   && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxd.service        || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxd.service
 		systemctl is-active --quiet knxd.socket    && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxd.socket         || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxd.socket; fi
-	systemctl is-active --quiet knxLogger          && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxLogger           || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxLogger	
+	systemctl is-active --quiet knxLogger          && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxLogger           || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxLogger
  	if [[ $isTelegraf  ]]; then
 		systemctl is-active --quiet telegraf       && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" telegraf            || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" telegraf; fi
 	if [[ $isInfluxd ]]; then

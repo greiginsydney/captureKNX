@@ -368,14 +368,15 @@ async def main() -> None:
                 telegram['dpt']              = float(DPT) # We only send DPT_main to the knxdclient but the full numerical DPT to Influx (as a float)
 
                 # TODO: is this where we define EVERY sub-type??
+                unit = ""
                 if DPT_main == 1:
                     try:
                         value_true, value_false = DPT1[sub_DPT]
                         value = value_true if (value) else value_false
                     except:
                         pass    # If we fail a lookup (VERY unlikely) we'll send the original DPT value unchanged
-                elif DPT_main in [3, 5, 6]:
-                    value = globals()['DPT' + str(DPT_main)](sub_DPT, value)
+                elif DPT_main in [3, 5, 6, 7, 8, 9, 12]:
+                    value, unit = globals()['DPT' + str(DPT_main)](sub_DPT, value) # decode_dpt.py
 
                 if isinstance(value, str):
                     telegram['info'] = value
@@ -384,11 +385,15 @@ async def main() -> None:
                 elif isinstance(value, (int, bool)):
                     telegram['info'] = str(value)
                 elif isinstance(value, tuple):
-                    print('-- TUPLE COMING THROUGH ')
+                    # I think I've weeded out the tuples. This is for debug purposes:
+                    log(f'-- TUPLE COMING THROUGH: DPT = {DPT} ')
                     telegram['info'] = str("-".join(map(str,value)))
                 else:
-                    print(f'Unhandled object type. Value is {type(value)}')
+                    log(f'Unhandled object type. DPT = {DPT}. Value is {type(value)}')
                     telegram['info'] = value
+                if unit:
+                    # Only add the 'unit' tag if it's not an empty string
+                    telegram['unit'] = unit
                 message = {"telegram" : telegram}
 
                 # Post it to telegraf:

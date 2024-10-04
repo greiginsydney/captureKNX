@@ -59,7 +59,7 @@ def DPT3(sub_DPT, value):
             decoded = (f'{decoded} {stepWidth}%')
     else:
         decoded = str(value)
-    return decoded
+    return (decoded, '')
 
 
 def DPT4(sub_DPT, value):
@@ -67,34 +67,152 @@ def DPT4(sub_DPT, value):
     It looks like knxd has already decoded DPT 4
     This code is never called; it's left here just to remind me why
     '''
-    return value
+    return (value, '')
 
 
 def DPT5(sub_DPT, value):
     '''
-    TODO: return 'decoded' as a tuple with the value's unit
+    8-bit unsigned value. Scaling, angle & percent
     '''
+    decoded = value
+    unit = ""
     if sub_DPT == 1:
         decoded = round(value / 255 * 100, 1)
+        unit = "%"
     elif sub_DPT == 3:
         decoded = round(value / 255 * 360, 1)
-    else:
-        decoded = value # 4, 5, 6 & 10 all return the initial value unchanged
-    return decoded
+        unit ="°"
+    elif sub_DPT == 4:
+        unit = "%"
+    return (decoded, unit)
 
 
 def DPT6(sub_DPT, value):
     '''
-    TODO: return 'decoded' as a tuple with the value's unit
+    8-bit signed relative value
     '''
+    unit = ""
     if sub_DPT == 1:
         unit = "%"
     elif sub_DPT == 10:
-        unit = "pulse"
-
+        pass
     if (value & (1 << (7))) != 0:
         value = value - (1 << bits)
-    return value
+    return (value, unit)
+
+
+def DPT7(sub_DPT, value):
+    '''
+    2-octet unsigned value. Counter, time period and others
+    '''
+    unit = ""
+    if sub_DPT in (2, 3, 4):
+        unit = "ms"
+    elif sub_DPT == 5:
+        unit = "s"
+    elif sub_DPT == 6:
+        unit = "min"
+    elif sub_DPT == 7:
+        unit = "h"
+    elif sub_DPT == 11:
+        unit = "mm"
+    elif sub_DPT == 12:
+        unit = "mA"
+    elif sub_DPT == 13:
+        unit = "lux"
+    return (value, unit)
+
+
+def DPT8(sub_DPT, value):
+    '''
+    2-octet signed value. Counter, delta time and others
+    '''
+    unit = ""
+    if sub_DPT == 1:
+        pass
+    elif sub_DPT in (2, 3, 4):
+        unit = "ms"
+    elif sub_DPT == 5:
+        unit = "s"
+    elif sub_DPT == 6:
+        unit = "min"
+    elif sub_DPT == 7:
+        unit = "h"
+    elif sub_DPT == 10:
+        unit = "%"
+    elif sub_DPT == 11:
+        unit = "°"
+    elif sub_DPT == 12:
+        unit = "m"
+    return (value, unit)
+
+
+def DPT9(sub_DPT, value):
+    '''
+    2-octet float value
+    '''
+    unit = ""
+    if sub_DPT == 1:
+        unit = "°C"
+    elif sub_DPT == 2:
+        unit = "K"
+    elif sub_DPT == 3:
+        unit = "K/h"
+    elif sub_DPT == 4:
+        unit = "lux"
+    elif sub_DPT == 5:
+        unit = "m/s"
+    elif sub_DPT == 6:
+        unit = "Pa"
+    elif sub_DPT == 7:
+        unit = "%"
+    elif sub_DPT == 8:
+        unit = "ppm"
+    elif sub_DPT == 9:
+        unit = "m3/h"
+    elif sub_DPT == 10:
+        unit = "s"
+    elif sub_DPT == 11:
+        unit = "ms"
+    elif sub_DPT == 20:
+        unit = "mV"
+    elif sub_DPT == 21:
+        unit = "mA"
+    elif sub_DPT == 22:
+        unit = "W/m2"
+    elif sub_DPT == 23:
+        unit = "K/%"
+    elif sub_DPT == 24:
+        unit = "kW"
+    elif sub_DPT == 25:
+        unit = "l/h"
+    elif sub_DPT == 26:
+        unit = "l/m2"
+    elif sub_DPT == 27:
+        unit = "°F"
+    elif sub_DPT == 28:
+        unit = "km/h"
+    elif sub_DPT == 29:
+        unit = "g/m-3"
+    elif sub_DPT == 30:
+        unit = "ug"
+    return (value, unit)
+
+
+def DPT12(sub_DPT, value):
+    '''
+    4-octet unsigned value. Counter pulses & operating hours
+    '''
+    unit = ""
+    if sub_DPT == 1:
+        pass
+    elif sub_DPT == 100:
+        unit = "s"
+    elif sub_DPT == 101:
+        unit = "min"
+    elif sub_DPT == 102:
+        unit = "h"
+    return (value, unit)
 
 
 def DPT16(sub_DPT, value):
@@ -102,4 +220,4 @@ def DPT16(sub_DPT, value):
     It looks like knxd has already decoded DPT 16
     This code is never called; it's left here just to remind me why
     '''
-    return value
+    return (value, '')

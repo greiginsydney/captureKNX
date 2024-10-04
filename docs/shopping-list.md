@@ -9,8 +9,8 @@ Your outlay will be approximately $USD200 / $AUD260, although this does _not_ in
 There are a couple of different variations:
 
 - Drive storage
-  -   an external USB3 SSD
-  -   a PCIe NVMe drive
+  -   a PCIe NVMe drive. The most expensive option, but blindingly fast performance
+  -   an external USB3 SSD. More reliable and still way faster than a microSD card
   -   microSD card. Not officially supported. More about that [here](/docs/FAQ.md#can-i-build-the-knxlogger-using-a-microsd-card)
 - KNX interface board
   -  Tijl's board from Tindie
@@ -48,7 +48,7 @@ Here are the only ones we've found so far:
 
 <hr/>
 
-### Solid State Drive
+### 2.5" Solid State Drive
 
 Buy the smallest 2.5" SATA SSD you can find.
 
@@ -58,13 +58,13 @@ The smallest I can source today is 240G @ $AUD33 ($US22).
 
 [Amazon.com](https://amzn.to/3YYApg4) has a Kingston for $US25.
 
-### SATA SSD adapter cable
+### 2.5" SATA SSD adapter cable
 
-Make sure you get a USB3 version.
+Make sure you get a USB3.x version, and one that's been tested and found compatible with the Pi. (If you buy your adapter from the same place you get your Pi you should be good.)
 
 [Core Electronics](https://core-electronics.com.au/pimoroni-sata-hard-drive-to-usb-adapter.html) sells the [Pimoroni ADP001](https://shop.pimoroni.com/products/sata-hard-drive-to-usb-adapter?variant=14241654983) for $AUD18.
 
-You'll get similar from [Amazon](https://amzn.to/3AJnPr3) in the US for $US10.
+You'll get similar from [Amazon](https://amzn.to/3AJnPr3) in the US for $US10 (but I can't say for sure it's going to work with the Pi).
 
 <hr/> 
 
