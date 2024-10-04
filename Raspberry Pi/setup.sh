@@ -580,13 +580,17 @@ setup3()
 
 	# Create initial influxdb config:
 	set +e #Suspend the error trap
-	isInfluxSetup=$(influx setup --skip-verify --bucket $BUCKET --retention $RETENTION --token $TOKEN --org $ORG --username $USERNAME --password $PASSWORD --host http://$HOST:8086 --force)
+	isInfluxSetup=$(influx setup --skip-verify --bucket $BUCKET --retention $RETENTION --token $TOKEN --org $ORG --username $USERNAME --password $PASSWORD --host http://$HOST:8086 --force 2>&1)
 	set -e #Resume the error trap
-	if [[ $isInfluxSetup =~ *"has already been set up"* ]];
+	if [[ $isInfluxSetup == *"has already been set up"* ]];
 	then
 		echo -e "\n"$GREEN"Influxdb has already been set up"$RESET""
+	elif [[ $isInfluxSetup == *"User Organization Bucket"* ]];
+	then
+		echo -e "\n"$GREEN"Performed initial influxdb setup OK"$RESET""
 	else
-		echo -e "\n"$GREEN"Performed initial influxdb setup OK. (TODO: are you SURE?)"$RESET""
+		echo "isInfluxSetup: $isInfluxSetup"
+		echo -e ""$YELLOW"Creating the initial influxdb config threw an error. Re-run setup and cross your fingers"$RESET""
 	fi
 
 	# Create initial influxdb *telegraf* config:
