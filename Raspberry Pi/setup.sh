@@ -259,34 +259,9 @@ setup1()
 	if [[ ! $isInfluxd ]];
 	then
 		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
-		rm -rf /home/$SUDO_USER/staging/influxd
-  		mkdir -pv /home/$SUDO_USER/staging/influxd
-		cd /home/${SUDO_USER}/staging/influxd/
-
-		curl -LO https://download.influxdata.com/influxdb/releases/influxdb2_2.7.8-1_arm64.deb
-		dpkg -i influxdb2_2.7.8-1_arm64.deb
+		apt-get install influxdb2 -y
 	else
 		echo -e "\n"$GREEN"InfluxDB is already installed - skipping"$RESET""
-		# TODO: Check version and update if there's newer.
-	fi
-
-
-	set +e #Suspend the error trap
-	isInfluxCLI=$(command -v influx)
-	set -e #Resume the error trap
-	if [[ ! $isInfluxCLI ]];
-	then
-		echo -e "\n"$GREEN"Installing InfluxCLI "$RESET""
-		rm -rf /home/$SUDO_USER/staging/influxd
-  		mkdir -pv /home/$SUDO_USER/staging/influxd
-		cd /home/${SUDO_USER}/staging/influxd/
-
-		wget https://download.influxdata.com/influxdb/releases/influxdb2-client-2.7.5-linux-arm64.tar.gz
-		tar xvzf influxdb2-client-2.7.5-linux-arm64.tar.gz
-		dest=${isInfluxd%/*}/
-		cp influx $dest
-	else
-		echo -e "\n"$GREEN"InfluxCLI is already installed - skipping"$RESET""
 		# TODO: Check version and update if there's newer.
 	fi
 
