@@ -9,7 +9,7 @@
 #
 # This script is part of the knxLogger project, which logs all KNX bus traffic to an InfluxDb for reporting via Grafana
 # https://github.com/greiginsydney/knxLogger
-# https://greiginsydney.com/knx-logger
+# https://greiginsydney.com/knxlogger
 
 
 '''
