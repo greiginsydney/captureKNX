@@ -59,7 +59,7 @@ def DPT3(sub_DPT, value):
             decoded = (f'{decoded} {stepWidth}%')
     else:
         decoded = str(value)
-    return decoded
+    return (decoded, '')
 
 
 def DPT4(sub_DPT, value):
