@@ -67,7 +67,7 @@ def DPT4(sub_DPT, value):
     It looks like knxd has already decoded DPT 4
     This code is never called; it's left here just to remind me why
     '''
-    return value
+    return (value, '')
 
 
 def DPT5(sub_DPT, value):
@@ -220,4 +220,4 @@ def DPT16(sub_DPT, value):
     It looks like knxd has already decoded DPT 16
     This code is never called; it's left here just to remind me why
     '''
-    return value
+    return (value, '')
