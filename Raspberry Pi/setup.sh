@@ -578,33 +578,67 @@ setup3()
 	fi
  	echo ''
 
-	# Create initial influxdb config:
+	# Create initial InfluxDB config:
 	set +e #Suspend the error trap
 	isInfluxSetup=$(influx setup --skip-verify --bucket $BUCKET --retention $RETENTION --token $TOKEN --org $ORG --username $USERNAME --password $PASSWORD --host http://$HOST:8086 --force 2>&1)
 	set -e #Resume the error trap
 	if [[ $isInfluxSetup == *"has already been set up"* ]];
 	then
-		echo -e "\n"$GREEN"Influxdb has already been set up"$RESET""
+		echo -e "\n"$GREEN"InfluxDB has already been set up"$RESET""
 	elif [[ $isInfluxSetup == *"User Organization Bucket"* ]];
 	then
-		echo -e "\n"$GREEN"Performed initial influxdb setup OK"$RESET""
+		echo -e "\n"$GREEN"InfluxDB config created OK"$RESET""
 	else
 		echo "isInfluxSetup: $isInfluxSetup"
-		echo -e ""$YELLOW"Creating the initial influxdb config threw an error. Re-run setup and cross your fingers"$RESET""
+		echo -e ""$YELLOW"Creating the initial InfluxDB config threw an error. Re-run setup and cross your fingers"$RESET""
 	fi
 
-	# Create initial influxdb *telegraf* config:
+	# Create / update initial InfluxDB telegraf config:
+	# Does one exist already:
 	set +e #Suspend the error trap
-	isTelegrafConfiguration=$(influx telegrafs create -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf )
+	IsInfluxTelegrafs=$(influx telegrafs --hide-headers 2>&1)
 	set -e #Resume the error trap
-	echo '---------' # TODO: remove these debug lines once this is full tested and confirmed 100%
-	echo $isTelegrafConfiguration
-	echo '---------'
-	if [[ $isTelegrafConfiguration =~ *"has already been set up"* ]];
+	if [[ $IsInfluxTelegrafs == *"unknown command"* ]];
 	then
-		echo -e "\n"$GREEN"isTelegrafConfiguration has already been set up"$RESET""
+		echo "isTelegrafConfiguration: $isTelegrafConfiguration"
+		echo -e ""$YELLOW"Querying InfluxDB *telegraf* config threw an error. Re-run setup and cross your fingers"$RESET""
+	elif [[ $IsInfluxTelegrafs == *"knxLogger"* ]];
+	then
+		# Config exists? Run an UPDATE. Pull the ID out of IsInfluxTelegrafs:
+		echo -e "\nInfluxDB telegraf config already exists. Updating"
+		EXISTING_ID=$(echo $IsInfluxTelegrafs | cut -d ' ' -f1)
+		set +e #Suspend the error trap
+		isTelegrafUpdated=$(influx telegrafs update -id $EXISTING_ID -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf --hide-headers 2>&1)
+		set -e #Resume the error trap
+		if [[ $isTelegrafUpdated == *"unknown command"* ]];
+		then
+			echo "isTelegrafUpdated = $isTelegrafUpdated"
+			echo -e ""$YELLOW"Querying InfluxDB *telegraf* config threw an error. Re-run setup and cross your fingers"$RESET""
+		elif [[ $isTelegrafUpdated == *"knxLogger"* ]];
+		then
+			echo -e "\n"$GREEN"InfluxDB telegraf config updated OK"$RESET""
+		fi
+	elif [[ "$IsInfluxTelegrafs" == "" ]];
+	then
+		echo -e "\n"$GREEN"No InfluxDB *telegraf* config found. Creating new"$RESET""
+		# Create new:
+		set +e #Suspend the error trap
+		isTelegrafConfiguration=$(influx telegrafs create -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf 2>&1)
+		set -e #Resume the error trap
+		if [[ $isTelegrafConfiguration == *"has already been set up"* ]];
+		then
+			# This should never be seen, as the previous test should have captured it:
+			echo -e "\n"$GREEN"isTelegrafConfiguration has already been set up"$RESET""
+		elif [[ $isTelegrafConfiguration == *"Created by setup.sh"* ]];
+		then
+			echo -e "\n"$GREEN"InfluxDB telegraf config created OK"$RESET""
+		else
+			echo "isTelegrafConfiguration: $isTelegrafConfiguration"
+			echo -e ""$YELLOW"Creating the initial InfluxDB *telegraf* config threw an error. Re-run setup and cross your fingers"$RESET""
+		fi
 	else
-		echo -e "\n"$GREEN"Performed initial isTelegrafConfiguration setup OK. (TODO: are you SURE?)"$RESET""
+		echo "isTelegrafConfiguration: $isTelegrafConfiguration"
+		echo -e ""$YELLOW"Querying InfluxDB *telegraf* config threw an unexpected error. Re-run setup and cross your fingers"$RESET""
 	fi
 
 	# Copy the TOKEN into the Grafana source yaml file:
