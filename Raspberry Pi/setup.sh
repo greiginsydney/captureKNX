@@ -243,6 +243,8 @@ setup1()
 		apt-get update && sudo apt-get install telegraf -y
 	else
 		echo -e "\n"$GREEN"telegraf is already installed - skipping"$RESET""
+  		telegrafVersion=$(telegraf --version | cut -d ' ' -f2)
+		echo -e "\rCurrent  installed version of telegraf = $telegrafVersion"
 		# TODO: Check version and update if there's newer.
 	fi
 
@@ -262,7 +264,9 @@ setup1()
 		apt-get install influxdb2 -y
 	else
 		echo -e "\n"$GREEN"InfluxDB is already installed - skipping"$RESET""
-		# TODO: Check version and update if there's newer.
+		influxVersion=$(influxd version | cut -d ' ' -f2)
+		echo -e "\rCurrent  installed version of InfluxDB = $influxVersion"
+  		# TODO: Check version and update if there's newer.
 	fi
 
 
