@@ -120,6 +120,8 @@ def DPT7(sub_DPT, value):
         unit = "mA"
     elif sub_DPT == 13:
         unit = "lux"
+    elif sub_DPT == 600:
+        unit = "°K"
     return (value, unit)
 
 
