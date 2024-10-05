@@ -108,7 +108,7 @@ setup1()
 			fi
 		fi
 
-  		# decode_dpt.py:
+ 		# decode_dpt.py:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_dpt.py ];
 		then
 			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_dpt.py /home/${SUDO_USER}/knxLogger/decode_dpt.py;
@@ -143,7 +143,7 @@ setup1()
 			fi
 		fi
 
-  		# knxLogger.env:
+ 		# knxLogger.env:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env ];
 		then
 			mkdir -p /etc/influxdb/
@@ -206,20 +206,22 @@ setup1()
 	then
 		echo -e "\n"$GREEN"Installing knxd "$RESET""
 		rm -rf /home/$SUDO_USER/staging/knxd
-  		mkdir -pv /home/$SUDO_USER/staging/knxd
+		mkdir -pv /home/$SUDO_USER/staging/knxd
 		cd /home/${SUDO_USER}/staging/knxd/
 		apt-get install git-core -y
 		git clone -b debian https://github.com/knxd/knxd.git
 		sh knxd/install-debian.sh
 
-  		# Paste in knxLogger's new default device addresses:
+		# Paste in knxLogger's new default device addresses:
 		sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\11.1.250\3|" /etc/knxd.conf
 		sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)(:.*$)|\11.1.251\3|" /etc/knxd.conf
 		sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+:)([[:digit:]]+)( .*$)|\1\21\4|" /etc/knxd.conf
-  		# Set data source to be ttyKNX1 & assume Tijl's HAT:
+		# Set data source to be ttyKNX1 & assume Tijl's HAT:
 		sed -i -E "s|^(KNXD_OPTS=.*)( -b ip:)(.*)|\1 -b tpuarts:/dev/ttyKNX1\3|" /etc/knxd.conf
 	else
 		echo -e "\n"$GREEN"knxd is already installed - skipping"$RESET""
+		# knxdVersion=$(dpkg -s knxd | grep "Version: " | cut -d ' ' -f2)
+		# echo -e "\rCurrent  installed version of knxd = $knxdVersion"
 		# TODO: Check version and update if there's newer.
 	fi
 
@@ -243,8 +245,8 @@ setup1()
 		apt-get update && sudo apt-get install telegraf -y
 	else
 		echo -e "\n"$GREEN"telegraf is already installed - skipping"$RESET""
-  		telegrafVersion=$(telegraf --version | cut -d ' ' -f2)
-		echo -e "\rCurrent  installed version of telegraf = $telegrafVersion"
+		# telegrafVersion=$(telegraf --version | cut -d ' ' -f2)
+		# echo -e "\rCurrent  installed version of telegraf = $telegrafVersion"
 		# TODO: Check version and update if there's newer.
 	fi
 
@@ -264,9 +266,9 @@ setup1()
 		apt-get install influxdb2 -y
 	else
 		echo -e "\n"$GREEN"InfluxDB is already installed - skipping"$RESET""
-		influxVersion=$(influxd version | cut -d ' ' -f2)
-		echo -e "\rCurrent  installed version of InfluxDB = $influxVersion"
-  		# TODO: Check version and update if there's newer.
+		# influxVersion=$(influxd version | cut -d ' ' -f2)
+		# echo -e "\rCurrent  installed version of InfluxDB = $influxVersion"
+		# TODO: Check version and update if there's newer.
 	fi
 
 
@@ -284,6 +286,8 @@ setup1()
 		apt-get install grafana-enterprise -y
 	else
 		echo -e "\n"$GREEN"grafana is already installed - skipping"$RESET""
+		# grafanaVersion=$(dpkg -s grafana-enterprise | grep "Version: " | cut -d ' ' -f2)
+		# echo -e "\rCurrent  installed version of grafana = $grafanaVersion"
 		# TODO: Check version and update if there's newer.
 	fi
 
@@ -450,7 +454,7 @@ setup3()
 	sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+:)([[:digit:]]+)( .*$)|\1\2$CLIENTNBR\4|" /etc/knxd.conf
 	sed -i -E "s|(^KNXD_OPTS.*-b )(.*)(:/dev/ttyKNX1\")$|\1$HAT_TYPE\3|" /etc/knxd.conf
 
- 	# Delete "-u /tmp/eib":
+	# Delete "-u /tmp/eib":
 	sed -i -E "s|^(KNXD_OPTS=.*)( -u /tmp/eib)(.*)|\1\3|" /etc/knxd.conf
 	# Insert hostname:
 	HOSTNAME=$(uname -n)
@@ -490,7 +494,7 @@ setup3()
 	OLD_BUCKET=$(sed -n -E 's/^\s*INFLUXDB_INIT_BUCKET=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
 	OLD_RETENTION=$(sed -n -E 's/^\s*INFLUXDB_INIT_RETENTION=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
 	# I'm not prompting the user, however these still need to be read so they can be stuffed into influx setup:
- 	HOST=$(sed -n -E 's/^\s*INFLUXDB_INIT_HOST=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
+	HOST=$(sed -n -E 's/^\s*INFLUXDB_INIT_HOST=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
 	PORT=$(sed -n -E 's/^\s*GRAFANA_PORT=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
 
 	read -e -i "$OLD_USERNAME" -p   'INFLUXDB_INIT_USERNAME    = ' USERNAME
@@ -555,7 +559,7 @@ setup3()
 	then
 		sed -i '/EnvironmentFile=-\/etc\/default\/influxdb2/a EnvironmentFile=-/etc/influxdb/knxLogger.env' /lib/systemd/system/influxdb.service
 	fi
- 	echo ''
+	echo ''
 
 	# Create initial InfluxDB config:
 	set +e #Suspend the error trap
@@ -662,7 +666,7 @@ setup3()
 	# Add a shortcut for the logs folder:
 	ln -sfnv /var/log/ /home/${SUDO_USER}/log
 
- 	echo ''
+	echo ''
 	echo -e "\n"$GREEN"Done!"$RESET""
 	echo ''
 }
@@ -710,7 +714,7 @@ test_install()
 	release=$(sed -n -E 's/^PRETTY_NAME="(.*)"$/\1/p' /etc/os-release)
 	echo $release
 
-	# TY Jesse Nickles https://stackoverflow.com/a/71674677/13102734
+ 	# TY Jesse Nickles https://stackoverflow.com/a/71674677/13102734
 	DISK_SIZE_TOTAL=$(df -kh . | tail -n1 | awk '{print $2}')
 	DISK_SIZE_FREE=$(df -kh . | tail -n1 | awk '{print $4}')
 	DISK_PERCENT_USED=$(df -kh . | tail -n1 | awk '{print $5}')
@@ -946,7 +950,7 @@ case "$1" in
 			setup2
 			setup3
 		fi
-  		test_install
+ 		test_install
 		;;
 	(*)
 		echo -e "\nThe switch '$1' is invalid. Try again.\n"
