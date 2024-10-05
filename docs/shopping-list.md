@@ -72,6 +72,10 @@ You'll get similar from [Amazon](https://amzn.to/3AJnPr3) in the US for $US10 (b
 
 I used Tijl's KNX Pi HAT from [Tindie](https://www.tindie.com/products/cpu20/knx-raspberry-pi-hat/) for most of my development. This seems to be permanently out of stock until enough people join the waitlist, then they do a production run of new boards.
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/956aabb9-2975-4a0e-a448-cbec3ba2f691" width="30%">
+</p>
+
 $USD67 / $AUD100
 
 ### Raspberry Pi "stackable" header (Tijl hat only)
