@@ -703,14 +703,14 @@ test_install()
 		echo -e ""$YELLOW"Version file not found"$RESET""
 	fi
 	echo ''
- 	HOSTNAME=$(uname -n)
+	HOSTNAME=$(uname -n)
 	echo $HOSTNAME
 	cat /proc/device-tree/model
 	echo ''
 	release=$(sed -n -E 's/^PRETTY_NAME="(.*)"$/\1/p' /etc/os-release)
 	echo $release
 
-  	# TY Jesse Nickles https://stackoverflow.com/a/71674677/13102734
+	# TY Jesse Nickles https://stackoverflow.com/a/71674677/13102734
 	DISK_SIZE_TOTAL=$(df -kh . | tail -n1 | awk '{print $2}')
 	DISK_SIZE_FREE=$(df -kh . | tail -n1 | awk '{print $4}')
 	DISK_PERCENT_USED=$(df -kh . | tail -n1 | awk '{print $5}')
@@ -729,7 +729,8 @@ test_install()
 	set -e #Resume the error trap
 	if [[ $isKnxd ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET" knxd installed"
+		knxdVersion=$(dpkg -s knxd | grep "Version: " | cut -d ' ' -f2)
+		echo -e ""$GREEN"PASS:"$RESET" knxd installed ($knxdVersion)"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" knxd NOT installed"
 	fi
@@ -757,7 +758,8 @@ test_install()
 	set -e #Resume the error trap
 	if [[ $isTelegraf  ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET" telegraf installed"
+		telegrafVersion=$(telegraf --version | cut -d ' ' -f2)
+		echo -e ""$GREEN"PASS:"$RESET" telegraf installed ($telegrafVersion)"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" telegraf NOT installed"
 	fi
@@ -767,7 +769,8 @@ test_install()
 	set -e #Resume the error trap
 	if [[ $isInfluxd ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET" InfluxDB installed"
+		influxVersion=$(influxd version | cut -d ' ' -f2)
+		echo -e ""$GREEN"PASS:"$RESET" InfluxDB installed ($influxVersion)"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" InfluxDB NOT installed"
 	fi
@@ -787,7 +790,8 @@ test_install()
 	set -e #Resume the error trap
 	if [[ $isGrafana ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET" grafana installed"
+		grafanaVersion=$(dpkg -s grafana-enterprise | grep "Version: " | cut -d ' ' -f2)
+		echo -e ""$GREEN"PASS:"$RESET" grafana installed ($grafanaVersion)"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" grafana NOT installed"
 	fi
@@ -796,7 +800,7 @@ test_install()
 		systemctl is-active --quiet knxd.service   && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxd.service        || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxd.service
 		systemctl is-active --quiet knxd.socket    && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxd.socket         || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxd.socket; fi
 	systemctl is-active --quiet knxLogger          && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxLogger           || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxLogger
- 	if [[ $isTelegraf  ]]; then
+	if [[ $isTelegraf  ]]; then
 		systemctl is-active --quiet telegraf       && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" telegraf            || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" telegraf; fi
 	if [[ $isInfluxd ]]; then
 		systemctl is-active --quiet influxd        && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" influxd             || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" influxd; fi
