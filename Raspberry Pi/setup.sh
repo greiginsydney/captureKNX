@@ -876,7 +876,7 @@ test_install()
 
 	echo '-------------------------------------'
 
-	isKnxProject=$(find /home/p${SUDO_USER}i/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
+	isKnxProject=$(find /home/${SUDO_USER}/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isKnxProject ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" knx project file $isKnxProject found"
