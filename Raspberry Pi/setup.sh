@@ -562,18 +562,36 @@ setup3()
 	echo ''
 
 	# Create initial InfluxDB config:
+	# Has it already been created?
 	set +e #Suspend the error trap
-	isInfluxSetup=$(influx setup --skip-verify --bucket $BUCKET --retention $RETENTION --token $TOKEN --org $ORG --username $USERNAME --password $PASSWORD --host http://$HOST:8086 --force 2>&1)
+	isInfluxConfigured=$(influx config list --hide-headers 2>&1)
 	set -e #Resume the error trap
-	if [[ $isInfluxSetup == *"has already been set up"* ]];
+	# echo "-----------"
+	echo "OUTPUT >>> $isInfluxConfigured"
+	# echo "-----------"
+	if [[ ! $isInfluxConfigured ]];
 	then
-		echo -e "\n"$GREEN"InfluxDB has already been set up"$RESET""
-	elif [[ $isInfluxSetup == *"User Organization Bucket"* ]];
+		echo -e "\n"$GREEN"InfluxDB has not been set up"$RESET""
+		
+		set +e #Suspend the error trap
+		isInfluxSetup=$(influx setup --skip-verify --org $ORG --bucket $BUCKET --retention $RETENTION --username $USERNAME --password $PASSWORD --token $TOKEN --force --hide-headers 2>&1)
+		set -e #Resume the error trap
+		echo "HERE2"
+		echo "OUTPUT >>> $isInfluxSetup"
+		if [[ $isInfluxSetup == *"has already been set up"* ]];
+		then
+			echo -e "\n"$GREEN"InfluxDB has already been set up"$RESET""
+		elif [[ $isInfluxSetup =~ $ORG ]];
+		then
+			echo -e "\n"$GREEN"InfluxDB config created OK"$RESET""
+		else
+			echo "isInfluxSetup: $isInfluxSetup"
+			echo -e ""$YELLOW"Creating the initial InfluxDB config threw an error. Re-run setup and cross your fingers"$RESET""
+		fi
+
+	elif [[ $isInfluxConfigured == *"knxLogger"* ]];
 	then
-		echo -e "\n"$GREEN"InfluxDB config created OK"$RESET""
-	else
-		echo "isInfluxSetup: $isInfluxSetup"
-		echo -e ""$YELLOW"Creating the initial InfluxDB config threw an error. Re-run setup and cross your fingers"$RESET""
+		echo -e "\n"$GREEN"Skipping: InfluxDB has already been set up"$RESET""
 	fi
 
 	# Create / update initial InfluxDB telegraf config:
@@ -581,9 +599,11 @@ setup3()
 	set +e #Suspend the error trap
 	IsInfluxTelegrafs=$(influx telegrafs --hide-headers 2>&1)
 	set -e #Resume the error trap
+	echo "HERE3"
+	echo "OUTPUT >>> $IsInfluxTelegrafs"
 	if [[ $IsInfluxTelegrafs == *"unknown command"* ]];
 	then
-		echo "isTelegrafConfiguration: $isTelegrafConfiguration"
+		echo "isTelegrafConfiguration returned: $isTelegrafConfiguration"
 		echo -e ""$YELLOW"Querying InfluxDB *telegraf* config threw an error. Re-run setup and cross your fingers"$RESET""
 	elif [[ $IsInfluxTelegrafs == *"knxLogger"* ]];
 	then
@@ -593,9 +613,11 @@ setup3()
 		set +e #Suspend the error trap
 		isTelegrafUpdated=$(influx telegrafs update -id $EXISTING_ID -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf --hide-headers 2>&1)
 		set -e #Resume the error trap
+		echo "HERE4"
+		echo "OUTPUT >>> $isTelegrafUpdated"
 		if [[ $isTelegrafUpdated == *"unknown command"* ]];
 		then
-			echo "isTelegrafUpdated = $isTelegrafUpdated"
+			echo "isTelegrafUpdated returned: $isTelegrafUpdated"
 			echo -e ""$YELLOW"Querying InfluxDB *telegraf* config threw an error. Re-run setup and cross your fingers"$RESET""
 		elif [[ $isTelegrafUpdated == *"knxLogger"* ]];
 		then
@@ -608,6 +630,8 @@ setup3()
 		set +e #Suspend the error trap
 		isTelegrafConfiguration=$(influx telegrafs create -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf 2>&1)
 		set -e #Resume the error trap
+		echo "HERE5"
+		echo "OUTPUT >>> $isTelegrafConfiguration"
 		if [[ $isTelegrafConfiguration == *"has already been set up"* ]];
 		then
 			# This should never be seen, as the previous test should have captured it:
@@ -616,11 +640,11 @@ setup3()
 		then
 			echo -e "\n"$GREEN"InfluxDB telegraf config created OK"$RESET""
 		else
-			echo "isTelegrafConfiguration: $isTelegrafConfiguration"
+			echo "isTelegrafConfiguration returned: $isTelegrafConfiguration"
 			echo -e ""$YELLOW"Creating the initial InfluxDB *telegraf* config threw an error. Re-run setup and cross your fingers"$RESET""
 		fi
 	else
-		echo "isTelegrafConfiguration: $isTelegrafConfiguration"
+		echo "isTelegrafConfiguration returned: $isTelegrafConfiguration"
 		echo -e ""$YELLOW"Querying InfluxDB *telegraf* config threw an unexpected error. Re-run setup and cross your fingers"$RESET""
 	fi
 
