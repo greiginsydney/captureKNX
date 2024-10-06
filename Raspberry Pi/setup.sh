@@ -856,16 +856,22 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" /etc/knxd.conf is missing required config. Re-run setup"
 	fi
 
-	echo -n "Checking /home/${SUDO_USER}/log/telegraf/telegraf.log"
-	telegraf_error=$(sed -n -E '/^(.*) (.*)field type conflict(.*)$/h;${x;p;}' /home/${SUDO_USER}/log/telegraf/telegraf.log)
-	if [[ $telegraf_error ]];
+	if [ -f /home/${SUDO_USER}/log ];
 	then
-		echo -e '\r-------------------------------------      '
-		echo -e "\r"$YELLOW"FAIL:"$RESET" /home/${SUDO_USER}/log/telegraf/telegraf.log shows a 'field type conflict'. Telegrams are being discarded"
-		echo ''
-		echo $telegraf_error
+		echo -n "Checking /home/${SUDO_USER}/log/telegraf/telegraf.log"
+		telegraf_error=$(sed -n -E '/^(.*) (.*)field type conflict(.*)$/h;${x;p;}' /home/${SUDO_USER}/log/telegraf/telegraf.log)
+		if [[ $telegraf_error ]];
+		then
+			echo -e '\r-------------------------------------      '
+			echo -e "\r"$YELLOW"FAIL:"$RESET" /home/${SUDO_USER}/log/telegraf/telegraf.log shows a 'field type conflict'. Telegrams are being discarded"
+			echo ''
+			echo $telegraf_error
+		else
+			echo -e "\r"$GREEN"PASS:"$RESET" /home/${SUDO_USER}/log/telegraf/telegraf.log logged no 'field type conflicts'"
+		fi
 	else
-		echo -e "\r"$GREEN"PASS:"$RESET" /home/${SUDO_USER}/log/telegraf/telegraf.log logged no 'field type conflicts'"
+		echo -e '\r-------------------------------------      '
+		echo -e "\r"$YELLOW"FAIL: SETUP HAS NOT COMPLETED. Re-run setup"$RESET""
 	fi
 
 	echo '-------------------------------------'
