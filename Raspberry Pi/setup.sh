@@ -880,7 +880,7 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" /etc/knxd.conf is missing required config. Re-run setup"
 	fi
 
-	if [ -f /home/${SUDO_USER}/log ];
+	if [ -d /home/${SUDO_USER}/log ];
 	then
 		echo -n "Checking /home/${SUDO_USER}/log/telegraf/telegraf.log"
 		telegraf_error=$(sed -n -E '/^(.*) (.*)field type conflict(.*)$/h;${x;p;}' /home/${SUDO_USER}/log/telegraf/telegraf.log)
