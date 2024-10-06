@@ -739,7 +739,7 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" knxd NOT installed"
 	fi
 
-	isKnxdClient=$(find /home/pi/venv -type d -name knxdclient)
+	isKnxdClient=$(find /home/${SUDO_USER}/venv -type d -name knxdclient)
 	if [[ $isKnxdClient ]];
 	#if [[ -d /home/${SUDO_USER}/venv/lib knxdclient ]];
 	then
@@ -856,27 +856,27 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" /etc/knxd.conf is missing required config. Re-run setup"
 	fi
 
-	echo -n "Checking /home/pi/log/telegraf/telegraf.log"
-	telegraf_error=$(sed -n -E '/^(.*) (.*)field type conflict(.*)$/h;${x;p;}' /home/pi/log/telegraf/telegraf.log)
+	echo -n "Checking /home/${SUDO_USER}/log/telegraf/telegraf.log"
+	telegraf_error=$(sed -n -E '/^(.*) (.*)field type conflict(.*)$/h;${x;p;}' /home/${SUDO_USER}/log/telegraf/telegraf.log)
 	if [[ $telegraf_error ]];
 	then
 		echo -e '\r-------------------------------------      '
-		echo -e "\r"$YELLOW"FAIL:"$RESET" /home/pi/log/telegraf/telegraf.log shows a 'field type conflict'. Telegrams are being discarded"
+		echo -e "\r"$YELLOW"FAIL:"$RESET" /home/${SUDO_USER}/log/telegraf/telegraf.log shows a 'field type conflict'. Telegrams are being discarded"
 		echo ''
 		echo $telegraf_error
 	else
-		echo -e "\r"$GREEN"PASS:"$RESET" /home/pi/log/telegraf/telegraf.log logged no 'field type conflicts'"
+		echo -e "\r"$GREEN"PASS:"$RESET" /home/${SUDO_USER}/log/telegraf/telegraf.log logged no 'field type conflicts'"
 	fi
 
 	echo '-------------------------------------'
 
-	isKnxProject=$(find /home/pi/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
+	isKnxProject=$(find /home/p${SUDO_USER}i/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isKnxProject ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" knx project file $isKnxProject found"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" knx project file NOT found"
-		echo -e "      Copy one across to the /home/pi/ folder and 'sudo systemctl restart knxLogger'"
+		echo -e "      Copy one across to the /home/${SUDO_USER}/ folder and 'sudo systemctl restart knxLogger'"
 	fi
 
 	echo '-------------------------------------'
