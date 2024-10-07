@@ -6,12 +6,12 @@ Your outlay will be approximately $USD200 / $AUD260, although this does _not_ in
 
 ## Variations
 
-There are a couple of different variations:
+There are a number of different variations:
 
 - Drive storage
-  -   a PCIe NVMe drive. The most expensive option, but blindingly fast performance
-  -   an external USB3 SSD. More reliable and still way faster than a microSD card
+  -   an external USB3 SSD. This is the default presented here. More reliable and way faster than a microSD card
   -   microSD card. Not officially supported. More about that [here](/docs/FAQ.md#can-i-build-the-knxlogger-using-a-microsd-card)
+  -   a PCIe NVMe drive. The most expensive option, complicated to setup, but delivers a VERY compact box and blindingly fast performance. See [NVMe storage](/docs/advanced-applications.md#nvme-storage)
 - KNX interface board
   -  Tijl's board from Tindie
   -  the Weinzierl 838 kBerry
