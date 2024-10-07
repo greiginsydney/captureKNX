@@ -239,6 +239,6 @@ sudo -E -H ./setup.sh
 
 ![image](https://github.com/user-attachments/assets/f1776fef-6125-4316-8439-e40f1fc12cc5)
 
-If the Pi isn't plugged in to the KNX bus at this stage, it's expected that knxd.service will show as "dead". In this example I've not copied the project file across, and this is also highlighted.
+If the Pi isn't plugged in to the KNX bus at this stage, it's expected that knxd.service will show as "dead". In this example I hadn't yet copied the project file across, and this is also highlighted.
 
 Next steps are to plug the Pi into the bus and continue with testing.
