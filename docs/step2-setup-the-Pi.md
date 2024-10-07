@@ -231,11 +231,9 @@ sudo -E -H ./setup.sh
 
 ![image](https://github.com/user-attachments/assets/e8c1c9d3-ac1c-4672-be25-8785b0e4e5e6)
 
+41. Here's where the user input foreshadowed at the top comes in. You'll be prompted for answers to these values, but in most cases you'll be OK with hitting return to accept the defaults (although you WILL need to respond correctly to the question of which HAT is installed):
 
-
-41. Here's where the user input foreshadowed at the top comes in. You'll be prompted for answers to these values, but in most cases you'll be OK with hitting return to accept the defaults:
-
-![image](https://github.com/user-attachments/assets/80a069cc-e564-4e82-93a3-d0c50bd7fa91)
+![image](https://github.com/user-attachments/assets/2c15ae5d-bf56-4600-a63b-1e5f9f42205a)
 
 42. When the installation completes the script will report "Done" and execute a test:
 
