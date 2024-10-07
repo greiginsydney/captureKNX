@@ -1,0 +1,70 @@
+# Advanced Applications
+
+The knxLogger described here is a stand-alone on-site device, however if you're a little more adventurous, here are a few more things you can do with it.
+
+## Setup the Pi as a Wi-Fi Access Point
+
+<p align="right">
+  <img src="https://github.com/user-attachments/assets/f5cd44ab-5219-4930-a20e-c2b0d0e73914" width="25%">
+</p>
+
+Let's say you're in the process of configuring and debugging a new KNX installation, but the customer's IT infrastructure's not been commissioned yet. If you can't get the knxLogger onto the network, how can you talk to it?
+
+Not a problem, just turn its host Pi *into* the network! The Raspberry Pi's in-built Wi-Fi radio is able to behave as a Wi-Fi network of its own. You can leave the knxLogger on-site, and each day connect your PC to it and review the logs from overnight and the day before. When the customer's network is provisioned, just flip the knxLogger back to being a client (whether that be wired or wireless).
+
+Note that the Raspberry Pi's on-board hardware only supports 2.4GHz wireless, not 5GHz. (If you have a need for the 5GHz band, you can plug in a USB W-Fi dongle.)
+
+TODO: I hope to add the config options for this to the setup script in the near future (before end CY 2024). 
+
+[Top](/docs/FAQ.md#advanced-applications)
+
+<hr>
+
+## 'Plug and play' - bake the Wi-Fi credentials into the Pi
+
+The knxLogger becomes an even more useful tool if you pre-configure it for 'plug and play' operation. You can automatically add the Wi-Fi credentials when you format the memory card, which can be a real time-saver.
+
+This somewhat hidden menu in the Raspberry Pi Imager software is accessed with control-shift-x:
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ba0f4070-dcd0-4b15-88fd-0a951da6cce6" width="50%">
+</p>
+
+Also, don't forget to enable SSH on the Services tab, and the 'use password authentication' option.
+
+[Top](/docs/FAQ.md#advanced-applications)
+
+<hr>
+
+## InfluxDB Cloud
+
+<table>
+<tr>
+  <td><img src="https://github.com/user-attachments/assets/c10f084f-b698-41cc-ba80-40de2f46dddd" width="40%"></td>
+  <td><img src="https://github.com/user-attachments/assets/b91e0c99-a018-4654-af1c-3a8df782e55a" width="100%"></td>
+</tr>
+</table>
+
+The knxLogger uses the free on-site version of InfluxDB. You might see this referenced as their "OSS" version.
+
+They also have a cloud offering, [InfluxDB Cloud](https://www.influxdata.com/products/influxdb-cloud/).
+
+If you're looking at making the knxLogger's captured telegrams accessible off-site, it's possible to have telegraf push them out to an instance of InfluxDB Cloud, and from there you can use [Grafana Cloud](https://grafana.com/products/cloud/) to visualise it.
+
+The setup and config of these are beyond the scope of this project, but they remain an option.
+
+All you need to do is add a new `[[outputs.influxdb_v2]]` section to `/etc/telegraf/telegraf.conf`.
+
+[Top](/docs/FAQ.md#advanced-applications)
+
+<hr>
+
+## Add remote.it for remote access
+
+For those looking for a way of keeping the KNX telegrams on-site but still having access on-demand, check out [remote.it](https://www.remote.it/), which is free for non-commercial use.
+
+I've previously used it on the intvlm8r project (which also uses the Raspberry Pi). The setup process for that is [here](https://github.com/greiginsydney/Intervalometerator/blob/master/docs/setup-remote.it.md#install-remoteit).
+
+[Top](/docs/FAQ.md#advanced-applications)
+
+<hr>
