@@ -1,8 +1,10 @@
 # Setup the Pi
 
-If you're starting a Pi build from scratch, start here at Step 1.
+If you're starting a Pi build from scratch, jump back to [step2-prepare-the-pi.md](/docs/step2-prepare-the-pi.md).
 
-If you're upgrading or re-running the setup script, you should be able to SSH to the Pi and jump to Step 37.
+The upgrade process is a lot simpler, and that's on the [upgrade](/docs/upgrade.md) page.
+
+If you have previously formatted your drive and the Pi is ready to go, stay here.
 
 <hr />
 
@@ -35,32 +37,7 @@ You'll also be asked for an 'organisation' and a 'bucket'. Neither name are part
 ## Let's Go!
 
 
-1. Prepare the memory card with the [64-bit Raspberry Pi OS 'Lite'](https://www.raspberrypi.org/software/operating-systems/) image.
 
-> The ["Raspberry Pi Imager"](https://www.raspberrypi.org/software/) app can download and write the image to a memory card for you quickly and easily.
-
-Click `CHOOSE DEVICE`:
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/48df65a7-738b-493f-9e3f-3e3defbd3766" width="50%">
-</p>
-
- Select a Pi 5:
- 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/a9378ecd-231c-4dd5-99e9-89180171a1d0" width="50%">
-</p>
-
-Having selected the device, now click `CHOOSE OS`. Select `Raspberry Pi OS (other)`:
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/1583d726-06c1-4b54-b280-9537ce648574" width="50%">
-</p>
-
-You want the `Raspberry Pi OS Lite (64-bit)` `A port of Debian Bookworm with no desktop environment (Compatible with Raspberry Pi 3/4/400/5` version.
-
-<p align="center">
-<img src="https://github.com/user-attachments/assets/a6ff10f2-6b27-4745-953e-fd7cd7c4871e" width="50%">
-</p>
 
 2. With that successfully burnt and verified, transfer the memory stick to the Pi.
 3. Add HDMI, power and keyboard connections and turn it on. (You don't need a mouse for this, but add one if you're feeling so inclined).
