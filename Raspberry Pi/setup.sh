@@ -407,7 +407,8 @@ setup3()
 	echo "If you're unsure, just hit Enter/Return"
 
 	# This is the default: KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -u /tmp/eib -b ip:"
-	# Needs to look like:  KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -n knxLogger --layer2=tpuarts:/dev/ttyKNX1"
+	# Needs to look like:  KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -n knxLogger -b tpuarts:/dev/ttyKNX1"  (Tijl)
+ 	#         or           KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -n knxLogger -b ft12cemi:/dev/ttyKNX1" (Weinzierl)
 
 	#Extract the current values:
 	OLD_MYADDRESS=$(sed -n -E 's/^KNXD_OPTS.*-e ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
