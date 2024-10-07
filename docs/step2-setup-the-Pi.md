@@ -227,10 +227,11 @@ sudo -E -H ./setup.sh
 
 39. Reconnect to the Pi after it reboots and return to Step 37. (Pressing up-arrow should offer you the `sudo -E -H ./setup.sh` command to save you re-typing it.)
 
+40. It will seem to instantly prompt for another reboot. Consent to that and again up-arrow to re-run setup when you re-connect:
+
 ![image](https://github.com/user-attachments/assets/e8c1c9d3-ac1c-4672-be25-8785b0e4e5e6)
 
 
-40. Once the required bits have been added, it will stop prompting for reboots (there are two), and continue.
 
 41. Here's where the user input foreshadowed at the top comes in. You'll be prompted for answers to these values, but in most cases you'll be OK with hitting return to accept the defaults:
 
