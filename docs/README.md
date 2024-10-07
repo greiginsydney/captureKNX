@@ -6,7 +6,7 @@ If you're new to the knxLogger, there's plenty of documentation to whet your whi
 
 The [shopping list](/docs/shopping-list.md) itemises everything you'll need, and gives some config options.
 
-## Installation steps
+## Installation & commissioning steps
 
 1. [prepare the topology export](/docs/step1-prepare-the-topology-export.md) - start here by exporting the topology (project file) in ETS.
 
@@ -24,6 +24,9 @@ The upgrade process is the same as a fresh installation. The setup script detect
 
 Read more on the [Upgrade](/docs/upgrade.md) page. (TODO)
 
+## Advanced Applications
+
+If you're wondering if the knxLogger has any more tricks up its sleeve, have a look at the [Advanced Applications](/docs/advanced-applications.md) page.
 <br>
 
 <hr />
