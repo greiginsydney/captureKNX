@@ -687,12 +687,9 @@ setup3()
 	systemctl enable grafana-server
 	systemctl restart grafana-server
 
-
-	# chmod 644 /etc/systemd/system/knxLogger.service - TODO. DO I NEED THIS??
 	echo -e ""$GREEN"Enabling knxLogger.service"$RESET""
 	systemctl enable knxLogger.service
 	systemctl start knxLogger.service
-
 
 	echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
 	sudo rm -f influxdb2_2.7.8-1_arm64.deb
