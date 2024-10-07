@@ -119,7 +119,7 @@ setup1()
 			fi
 		fi
 
-  		# decode_topo.py:
+		# decode_topo.py:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_topo.py ];
 		then
 			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_topo.py /home/${SUDO_USER}/knxLogger/decode_topo.py;
@@ -419,7 +419,7 @@ setup3()
 
 	# This is the default: KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -u /tmp/eib -b ip:"
 	# Needs to look like:  KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -n knxLogger -b tpuarts:/dev/ttyKNX1"  (Tijl)
- 	#         or           KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -n knxLogger -b ft12cemi:/dev/ttyKNX1" (Weinzierl)
+	#         or           KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -n knxLogger -b ft12cemi:/dev/ttyKNX1" (Weinzierl)
 
 	#Extract the current values:
 	OLD_MYADDRESS=$(sed -n -E 's/^KNXD_OPTS.*-e ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
@@ -537,6 +537,7 @@ setup3()
 	fi
 
 	# Paste the values into telegraf.conf:
+	OLD_TELEGRAF_CHECKSUM=$(md5sum /etc/telegraf/telegraf.conf)
 	outputLine=$(sed -n '/^\[\[outputs.influxdb_v2\]\]/=' /etc/telegraf/telegraf.conf) #This is the line number that the output plugin starts at
 	if [[ $outputLine ]];
 	then
@@ -544,22 +545,20 @@ setup3()
 		if ! grep -q "^token = \"$TOKEN\"$" /etc/telegraf/telegraf.conf;
 		then
 			sed -i -E "$outputLine,$ s|^(^token = \")(.*)$|\1$TOKEN\"|"   /etc/telegraf/telegraf.conf
-			restartTelegraf='true'
 		fi
 		if ! grep -q "^organization = \"$ORG\"$" /etc/telegraf/telegraf.conf;
 		then
 			sed -i -E "$outputLine,$ s|^(^organization = \")(.*)$|\1$ORG\"|"   /etc/telegraf/telegraf.conf
-			restartTelegraf='true'
 		fi
 		if ! grep -q "^bucket = \"$BUCKET\"$" /etc/telegraf/telegraf.conf;
 		then
 			sed -i -E "$outputLine,$ s|^(^bucket = \")(.*)$|\1$BUCKET\"|"   /etc/telegraf/telegraf.conf
-			restartTelegraf='true'
 		fi
 	else
 		echo -e ""$YELLOW"Failed to find [[outputs.influxdb_v2]] in /etc/telegraf/telegraf.conf"$RESET""
 	fi
-	if [[ $restartTelegraf ]]
+	NEW_TELEGRAF_CHECKSUM=$(md5sum /etc/telegraf/telegraf.conf)
+	if [[ $NEW_TELEGRAF_CHECKSUM != $OLD_TELEGRAF_CHECKSUM ]];
 	then
 		echo -e ""$GREEN"Changed values written to /etc/telegraf/telegraf.conf OK."$RESET""
 	else
@@ -671,6 +670,7 @@ setup3()
 	# -----------------------------------
 
 	systemctl daemon-reload
+
 	if [[ $NEW_KNXD_CHECKSUM != $OLD_KNXD_CHECKSUM ]];
 	then
 		# The config has changed. Restart the services to pickup the new values
@@ -678,10 +678,15 @@ setup3()
 		systemctl restart knxd.socket
 		echo -e ""$GREEN"Config has changed. Restarting knxd.service"$RESET""
 		systemctl restart knxd.service
-	else
-		if ! systemctl is-active --quiet knxd.socket;  then echo "Starting knxd.socket";  systemctl start knxd.socket; fi
-		if ! systemctl is-active --quiet knxd.service; then echo "Starting knxd.service"; systemctl start knxd.service; fi
 	fi
+
+	if [[ $NEW_TELEGRAF_CHECKSUM != $OLD_TELEGRAF_CHECKSUM ]];
+	then
+		# The config has changed. Restart the services to pickup the new values
+		echo -e ""$GREEN"Config has changed. Restarting telegraf"$RESET""
+		systemctl restart telegraf
+	fi
+	
 	systemctl enable influxdb
 	systemctl restart influxdb
 	systemctl enable grafana-server
@@ -689,7 +694,8 @@ setup3()
 
 	echo -e ""$GREEN"Enabling knxLogger.service"$RESET""
 	systemctl enable knxLogger.service
-	systemctl start knxLogger.service
+	systemctl restart knxLogger.service
+
 
 	echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
 	sudo rm -f influxdb2_2.7.8-1_arm64.deb
