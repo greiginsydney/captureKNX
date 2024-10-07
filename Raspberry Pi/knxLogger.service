@@ -17,6 +17,9 @@ Description=knxLogger script. Runs continuously, asynchronously reading KNX bus 
 Requires=knxd.service
 After=knxd.service
 
+StartLimitIntervalSec=600
+StartLimitBurst=5
+
 [Service]
 Type=simple
 User=pi
@@ -25,6 +28,9 @@ WorkingDirectory=/home/pi/knxLogger
 Environment="PATH=/home/pi/knxLogger"
 ExecStart=/home/pi/venv/bin/python3 /home/pi/knxLogger/knxLogger.py
 StandardError=journal
+
+Restart=on-failure
+RestartSec=10s
 
 [Install]
 WantedBy=multi-user.target
