@@ -119,6 +119,17 @@ setup1()
 			fi
 		fi
 
+  		# decode_topo.py:
+		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_topo.py ];
+		then
+			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_topo.py /home/${SUDO_USER}/knxLogger/decode_topo.py;
+			then
+				echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/decode_topo.py' already exists & the new version is unchanged"
+			else
+				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_topo.py /home/${SUDO_USER}/knxLogger/decode_topo.py
+			fi
+		fi
+
 		# knxLogger.service:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service ];
 		then
