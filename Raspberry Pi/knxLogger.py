@@ -22,6 +22,8 @@ from decode_dpt  import *           # Decodes popular DPT sub-types
 from decode_topo import *           # Read the topo file & decode pysical and group addresses
 
 import common
+from common import ETS_0_XML_FILE as ETS_0_XML_FILE
+from common import ETS_PROJECT_XML_FILE as ETS_PROJECT_XML_FILE
 from common import log
 
 
@@ -38,9 +40,9 @@ HEADERS            = {'Content-type': 'application/json', 'Accept': 'text/plain'
 
 common.init()          # Initialise the common variables and logging
 unzip_topo_archive()
-GALevels = decode_GroupLevels(common.ETS_PROJECT_XML_FILE)
-Individual_Data = decode_Individual_Addresses(common.ETS_0_XML_FILE)
-GA_Data   = decode_Group_Addresses(common.ETS_0_XML_FILE, GALevels)
+GALevels        = decode_GroupLevels(ETS_PROJECT_XML_FILE)
+Individual_Data = decode_Individual_Addresses(ETS_0_XML_FILE)
+GA_Data         = decode_Group_Addresses(ETS_0_XML_FILE, GALevels)
 
 
 async def main() -> None:
