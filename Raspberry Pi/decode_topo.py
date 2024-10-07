@@ -110,7 +110,6 @@ def decode_GroupLevels(filename):
 def decode_Individual_Addresses(filename):
     '''
     Decodes individual addresses from 0.xml. Aborts if file not found: its existence at this stage ISN'T mandatory
-    TODO: Loop through again and extract the Location information
     Returns a dictionary where the key is the individual address, and the value is a tuple of location and name
     '''
     data = {}
@@ -196,7 +195,7 @@ def decode_Individual_Addresses(filename):
 def decode_Group_Addresses(filename, grpAddLevels):
     '''
     Decodes group addresses from 0.xml. Aborts if file not found - a fatal error
-    Handles either two- and three-level GA's, using a STATIC VAR declared above, set/changed by the setup script (TODO)
+    Handles one, two or three-level GA's, as previously extracted from PROJECT.XML
     Returns a dictionary where the key is the GA address, and the value is a tuple of datapoint type and name
     '''
     data = {}
