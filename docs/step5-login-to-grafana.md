@@ -48,7 +48,7 @@ OK, here's where all the fun happens.
 
 There are a few things you can easily do with this view:
 - click (7) and (8) to maximise the view, removing some of the clutter
-- Click the vertical ellipsis (9) to edit this dashboard "panel". Let's not go there just yet...
+- Click the vertical ellipsis (9) to edit this dashboard "panel". (It only becomes visible when your mouse is within the panel.) Let's not go there just yet...
 - (10) lets you filter the time window you're seeing
 - (11) will refresh the view, and to its right (hidden by the 8) is a "v" that lets you choose an auto-refresh rate
 - Click any of the column headings (12) to sort the view by that element
