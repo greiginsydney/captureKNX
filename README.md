@@ -1,31 +1,37 @@
 # knxLogger
-Build a Raspberry Pi that will log all KNX traffic to InfluxDB &amp; query it from a browser any time.
+Build a Raspberry Pi that will log all KNX telegrams to InfluxDB that you can query from a browser any time.
 
-TODO: photo goes here
+<table>
+<tr>
+<td>TODO A picture of the completed Pi in its box</td>
+<td><p>&#10132;</p></td>
+<td width="60%"><p align="center"><img src="https://github.com/user-attachments/assets/4e9b8f70-2fc2-4b0b-b88b-9a16e99a4797">(Click on the image for a higher-resolution view)</p></td>
+</tr>
+  
+</table>
 
 ## Features
 
-- Log all KNX network traffic for a year (or longer!) without needing to leave ETS running and connected.
+- Log all KNX network traffic for a year (or longer!) without needing to leave behind a laptop running ETS.
 - No fancy hardware. Buy a Raspberry Pi 5, plug a KNX shield on top, add a solid-state drive, stick it in a box (artwork provided here to print your own) and apply power!
+- No ETS dongle to risk losing.
 - Plugs directly into the KNX bus. This means your KNX telegrams aren't permanently spamming your IP network to get to the logger, and means you can log tiny KNX installations that don't have a full-time router or programming interface.
 - Easy setup. A bash script installs all the software components. You only need to copy the topology/project file across after exporting it from ETS.
 - A fully on-premises solution. Once you've bought the hardware, that's your total outlay. (Late 2024 estimate circa $AUD250 / $US170 / €150.)
 - With Grafana you can easily visualise data like daily temperatures or light levels, and overlay heating/lighting control signals.
 - A dedicated dashboard replicates ETS' Diagnostics / Group Monitor feature. Debug your logic and other occurrences by filtering the log view by time/date, Group Address, sending device or the value sent.
-- Add "[remote.it](https://www.remote.it/)" for full remote access, without needing firewall holes or other complicated setup. (Remote.it is free for non-commercial use!)
 
 ## Limitations / Restrictions
 
 - The direct-connection to the KNX bus means it can only log the Telegrams seen on that network Line. This will prevent it from seeing all traffic in a multi-area or multi-line network.
 - It's not an off-the-shelf product. You buy the components and build it yourself - but there's heaps of documentation here to help you.
 - Every telegram to a known Group Address is logged, however it only decodes the most commonly-used DPT types. (This is expected to evolve over time).
-- Even though the Raspberry Pi 5 is the fastest Pi made it can still be a little slow, especially on initial login to the Influx or Grafana web pages.
 
 ## Software architecture
 
 The knxLogger is a consolidation of multiple open-source & freeware software components, all running on the one Raspberry Pi 5 single board computer.
 
-The 'hat' provides the physical interface to the KNX TP Line, and the ensuing components read and format the telegrams, then stuff them in the InfluxDB database. Grafana is the 'visualisation' component that lets you easily review and filter the raw logs, and/or create dashboards of useful values, all of which you access from a web browser.
+The 'HAT' provides the physical interface to the KNX TP Line, and the ensuing components read and format the telegrams, then stuff them in the InfluxDB database. Grafana is the 'visualisation' component that lets you easily review and filter the raw logs, and/or create dashboards of useful values, all of which you access from a web browser.
 
 ![image](https://github.com/user-attachments/assets/e46410d2-74dd-42a9-acd8-e19f3be63a16)
 
