@@ -97,38 +97,9 @@ setup1()
 	if [[ -d /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi ]];
 	then
 		echo -e "\n"$GREEN"Moving repo files."$RESET""
-		# knxLogger.py:
-		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.py ];
-		then
-			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py;
-			then
-				echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/knxLogger.py' already exists & the new version is unchanged"
-			else
-				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.py /home/${SUDO_USER}/knxLogger/knxLogger.py
-			fi
-		fi
 
- 		# decode_dpt.py:
-		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_dpt.py ];
-		then
-			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_dpt.py /home/${SUDO_USER}/knxLogger/decode_dpt.py;
-			then
-				echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/decode_dpt.py' already exists & the new version is unchanged"
-			else
-				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_dpt.py /home/${SUDO_USER}/knxLogger/decode_dpt.py
-			fi
-		fi
-
-		# decode_topo.py:
-		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_topo.py ];
-		then
-			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_topo.py /home/${SUDO_USER}/knxLogger/decode_topo.py;
-			then
-				echo "Skipped: the file '/home/${SUDO_USER}/knxLogger/decode_topo.py' already exists & the new version is unchanged"
-			else
-				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/decode_topo.py /home/${SUDO_USER}/knxLogger/decode_topo.py
-			fi
-		fi
+		# Python files: knxLogger, decode_topo, decode_dpt & common.py:
+		mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/*.py /home/${SUDO_USER}/knxLogger/
 
 		# knxLogger.service:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service ];
@@ -166,7 +137,7 @@ setup1()
 				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
 			fi
 		fi
-		
+
 		# knxLogger-dashboards.yaml:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/knxLogger-dashboards.yaml ];
 		then
@@ -179,7 +150,7 @@ setup1()
 				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/knxLogger-dashboards.yaml /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml
 			fi
 		fi
-		
+
 		# group-monitor.json:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/group-monitor.json ];
 		then
@@ -622,7 +593,7 @@ setup3()
 	if [[ ! $isInfluxConfigured ]];
 	then
 		echo -e "\n"$GREEN"InfluxDB has not been set up"$RESET""
-		
+
 		set +e #Suspend the error trap
 		isInfluxSetup=$(influx setup --skip-verify --org $ORG --bucket $BUCKET --retention $RETENTION --username $USERNAME --password $PASSWORD --token $TOKEN --force --hide-headers 2>&1)
 		set -e #Resume the error trap
@@ -725,7 +696,7 @@ setup3()
 		echo -e ""$GREEN"Config has changed. Restarting telegraf"$RESET""
 		systemctl restart telegraf
 	fi
-	
+
 	systemctl enable influxdb
 	systemctl restart influxdb
 	systemctl enable grafana-server
