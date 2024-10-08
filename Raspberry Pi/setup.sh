@@ -154,6 +154,19 @@ setup1()
 			fi
 		fi
 
+    		# grafana-source.yaml:
+		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/grafana-source.yaml ];
+		then
+			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/sources/grafana-source.yaml;
+			then
+				echo "Skipped: the file /etc/grafana/provisioning/sources/grafana-source.yaml' already exists & the new version is unchanged"
+			else
+				[ -f /etc/grafana/provisioning/sources/grafana-source.yaml ] && mv -fv /etc/grafana/provisioning/sources/grafana-source.yaml /etc/grafana/provisioning/sources/grafana-source.yaml.old
+				mkdir -p /etc/grafana/provisioning/sources/
+				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/sources/grafana-source.yaml
+			fi
+		fi
+
  		# knxLogger.env:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env ];
 		then
