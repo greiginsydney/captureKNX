@@ -99,7 +99,10 @@ setup1()
 		echo -e "\n"$GREEN"Moving repo files."$RESET""
 
 		# Python files: knxLogger, decode_topo, decode_dpt & common.py:
-		mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/*.py /home/${SUDO_USER}/knxLogger/
+		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/*.py ];
+		then
+			mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/*.py /home/${SUDO_USER}/knxLogger/
+		fi
 
 		# knxLogger.service:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service ];
