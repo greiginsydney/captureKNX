@@ -53,13 +53,13 @@ There are a few things you can easily do with this view:
 - (11) will refresh the view, and to its right (hidden by the 8) is a "v" that lets you choose an auto-refresh rate
 - Click any of the column headings (12) to sort the view by that element
 
-  ## Welcome to your knxLogger!
+## Welcome to your knxLogger!
 
-  In [step6-grafana-tips.md](/docs/step6-grafana-tips.md) (TODO) you'll find some tips to help you do things like re-size, hide/reveal, re-label, and more.
+In [step6-grafana-tips.md](/docs/step6-grafana-tips.md) (TODO) you'll find some tips to help you do things like re-size, hide/reveal, re-label, and more.
 
-  You might also find some answers on the [FAQ page](/docs/faq.md).
+You might also find some answers on the [FAQ page](/docs/faq.md).
 
-  <br>
+<br>
 
 [Top](/docs/step5-login-to-grafana#login-to-grafana)
 
