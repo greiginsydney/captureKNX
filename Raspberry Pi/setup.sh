@@ -154,20 +154,46 @@ setup1()
 			fi
 		fi
 
-    		# grafana-source.yaml:
+		# grafana-source.yaml:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/grafana-source.yaml ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/sources/grafana-source.yaml;
+			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
 			then
-				echo "Skipped: the file /etc/grafana/provisioning/sources/grafana-source.yaml' already exists & the new version is unchanged"
+				echo "Skipped: the file /etc/grafana/provisioning/datasources/grafana-source.yaml' already exists & the new version is unchanged"
 			else
-				[ -f /etc/grafana/provisioning/sources/grafana-source.yaml ] && mv -fv /etc/grafana/provisioning/sources/grafana-source.yaml /etc/grafana/provisioning/sources/grafana-source.yaml.old
-				mkdir -p /etc/grafana/provisioning/sources/
-				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/sources/grafana-source.yaml
+				[ -f /etc/grafana/provisioning/datasources/grafana-source.yaml ] && mv -fv /etc/grafana/provisioning/datasources/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml.old
+				mkdir -p /etc/grafana/provisioning/datasources/
+				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
+			fi
+		fi
+		
+		# knxLogger-dashboards.yaml:
+		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/knxLogger-dashboards.yaml ];
+		then
+			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/knxLogger-dashboards.yaml /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml;
+			then
+				echo "Skipped: the file /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml' already exists & the new version is unchanged"
+			else
+				[ -f /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml ] && mv -fv /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml.old
+				mkdir -p /etc/grafana/provisioning/dashboards/
+				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/knxLogger-dashboards.yaml /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml
+			fi
+		fi
+		
+		# group-monitor.json:
+		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/group-monitor.json ];
+		then
+			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json;
+			then
+				echo "Skipped: the file /etc/grafana/provisioning/dashboards/group-monitor.json' already exists & the new version is unchanged"
+			else
+				[ -f /etc/grafana/provisioning/dashboards/group-monitor.json ] && mv -fv /etc/grafana/provisioning/dashboards/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json.old
+				mkdir -p /etc/grafana/provisioning/dashboards/
+				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json
 			fi
 		fi
 
- 		# knxLogger.env:
+		# knxLogger.env:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env ];
 		then
 			mkdir -p /etc/influxdb/
