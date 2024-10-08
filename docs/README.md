@@ -8,7 +8,7 @@ The [shopping list](/docs/shopping-list.md) itemises everything you'll need, and
 
 ## Installation & commissioning steps
 
-1. [prepare the topology export](/docs/step1-prepare-the-topology-export.md) - start here by exporting the topology (project file) in ETS.
+1. [Prepare the topology export](/docs/step1-prepare-the-topology-export.md) - start here by exporting the topology (project file) in ETS.
 
 2. [Prepare the Pi](/docs/step2-prepare-the-pi.md) shows you how to get the operating system image onto a solid state drive.
 
