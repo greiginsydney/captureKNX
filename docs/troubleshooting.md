@@ -117,6 +117,16 @@ An established (healthy) knxLogger should report this frequently.
 
 If the issue you're chasing is missing telegrams, copy a fresh project file across and restart the knxLogger service with `sudo systemtctl restart knxLogger.service`.
 
+### Still can't start the knxLogger service?
+
+Run it manually (rather than in the background as a service). This should flush out any issues with the script itself:
+```
+cd ~ && source venv/bin/activate
+cd knxLogger
+python3 knxLogger.py
+```
+If it runs OK, you'll need to control-C to break out.
+
 <br>
 
 [Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
