@@ -83,11 +83,11 @@ Short-form build steps:
 
 That takes care of the Pi, but doesn't help you get the OS onto the NVMe drive. Here you have two options:
 - if you have an NVMe drive caddy, use that and the basic process on [step2-prepare-the-pi.md](/docs/step2-prepare-the-pi.md) to burn the os.
-- without a caddy, boot to the Pi the drive you used in the above process, then install the Raspberry Pi Imager software on the Pi itself (`sudo apt install rpi-imager`), and use the Pi to burn the NVMe drive.
+- without a caddy, boot the Pi with the drive you used in the above process, then install the Raspberry Pi Imager software on the Pi itself (`sudo apt install rpi-imager`), and use the Pi to burn the NVMe drive.
 
-  > If you're using rpi-imager on the Pi to burn the NVMe you DON'T want to be on Wi-Fi, as it will be painfully slow to download the image from the Internet. Find a cabled network connection!
+  > If you're using rpi-imager on the Pi to burn the NVMe you DON'T want to be on Wi-Fi, as it will be painfully slow to download the image from the Internet. Find a cabled network connection
 
-In our builds of this process we've used the [Pimoroni NVMe Base for Raspberry Pi 5](https://shop.pimoroni.com/products/nvme-base?variant=41219587178579), which we source from [Core Electronics](https://core-electronics.com.au/nvme-base-for-raspberry-pi-5-nvme-base.html) here in Newcastle for $AUD31.
+In our builds of this process we've used the [Pimoroni NVMe Base for Raspberry Pi 5](https://shop.pimoroni.com/products/nvme-base?variant=41219587178579), which we sourced from [Core Electronics](https://core-electronics.com.au/nvme-base-for-raspberry-pi-5-nvme-base.html) here in Newcastle for $AUD31.
 
 [Amazon.com](https://amzn.to/47WDNKM) has a Chinese equivalent for $USD16.
 
