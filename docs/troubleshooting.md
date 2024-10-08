@@ -42,7 +42,31 @@ The tests check common errors and misconfigurations, and will be added to as the
 
 knxd reads what's coming from the bus and makes it available for KNXDClient and the knxLogger script.
 
-TODO
+You can check if knxd is running OK with `sudo systemctl status knxd`. If there's any red in the output, check if there's anything of interest in the journal (`journalctl | grep knxd`):
+
+#### Opening /dev/ttyKNX1 failed: No such file or directory
+
+```
+Oct 08 14:24:41 knxLogger-Weinzierl systemd[1]: Stopped knxd.service - KNX Daemon.
+Oct 08 14:24:41 knxLogger-Weinzierl systemd[1]: Starting knxd.service - KNX Daemon...
+Oct 08 14:24:41 knxLogger-Weinzierl knxd[1309]: E00000067: [19:B.tpuarts] Opening /dev/ttyKNX1 failed: No such file or directory
+Oct 08 14:24:41 knxLogger-Weinzierl knxd[1309]: F00000105: [16:B.tpuarts] Link down, terminating
+Oct 08 14:24:41 knxLogger-Weinzierl systemd[1]: Started knxd.service - KNX Daemon.
+Oct 08 14:24:41 knxLogger-Weinzierl systemd[1]: knxd.service: Main process exited, code=exited, status=1/FAILURE
+Oct 08 14:24:41 knxLogger-Weinzierl systemd[1]: knxd.service: Failed with result 'exit-code'.
+```
+
+The config looked good for this one. This is what it's meant to look like, with ttyAMA0 owned by knxd/dialout and its alias ttyKNX1 by root/root:
+```
+pi@knxLogger-Weinzierl:~ $ ls -l /dev/tty[A-Z]*
+crw-rw---- 1 knxd dialout 204, 64 Oct  8 14:35 /dev/ttyAMA0
+crw-rw---- 1 root dialout 204, 74 Oct  8 14:32 /dev/ttyAMA10
+lrwxrwxrwx 1 root root          7 Oct  8 14:31 /dev/ttyKNX1 -> ttyAMA0
+crw-rw---- 1 root dialout   4, 64 Oct  8 14:31 /dev/ttyS0
+pi@knxLogger-Weinzierl:~ $
+```
+
+This issue was fixed by a reboot.
 
 <br>
 
