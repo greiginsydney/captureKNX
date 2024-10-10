@@ -19,7 +19,7 @@ import math                         # Sending the 'floor' (main DPT) value to kn
 import requests                     # To push the values to telegraf
 
 from decode_dpt  import *           # Decodes popular DPT sub-types
-from decode_project import *           # Read the topo file & decode pysical and group addresses
+from decode_project import *        # Read the topo file & decode pysical and group addresses
 
 import common
 from common import ETS_0_XML_FILE as ETS_0_XML_FILE
@@ -70,7 +70,7 @@ async def main() -> None:
                 except Exception as e:
                     # We failed to ID the source. Not fatal, it will be sent as 'Unknown'
                     source_name = ''
-                    print(f'main: Exception decoding a telegram from packet.src {packet.src} - {e}')
+                    log(f'main: Exception decoding a telegram from packet.src {packet.src} - {e}')
 
                 # Decode the DESTINATION (a Group Address):
                 DPT = GA_name = ''
@@ -81,7 +81,7 @@ async def main() -> None:
                 except Exception as e:
                     # We failed to match on the destination
                     # Discard this telegram as we don't know how to decode the data
-                    print(f'main: Exception decoding a telegram to packet.dst {packet.dst}. The telegram has been discarded. {e}')
+                    log(f'main: Exception decoding a telegram to packet.dst {packet.dst}. The telegram has been discarded. {e}')
                     continue
 
                 try:
@@ -89,9 +89,9 @@ async def main() -> None:
                 except Exception as e:
                     # We failed to decode the payload
                     # Discard this telegram as we don't know how to decode the data
-                    print(f'main: Exception decoding the payload of a telegram to packet.dst {packet.dst}. The telegram has been discarded. {e}')
+                    log(f'main: Exception decoding the payload of a telegram to packet.dst {packet.dst}. The telegram has been discarded. {e}')
                     continue
-                # print(f'Telegram from {packet.src} to GAD {packet.dst}: {value}') # Raw data, retained here for debugging
+                # log(f'Telegram from {packet.src} to GAD {packet.dst}: {value}') # Raw data, retained here for debugging
 
                 telegram = {}
                 telegram['source_address']   = ".".join(map(str,packet.src))
@@ -138,14 +138,15 @@ async def main() -> None:
                     status_code = response.status_code
                     reason = response.reason
                     if response.ok:
-                        print(f"Telegram from {telegram['source_address']:7.7} ({telegram['source_name']:30.30}) to GAD {telegram['destination']:7.7} ({telegram['destination_name']:30.30}): {str(telegram['dpt']):6.6} = {telegram['info']}")
+                        pass
+                        #log(f"Telegram from {telegram['source_address']:7.7} ({telegram['source_name']:30.30}) to GAD {telegram['destination']:7.7} ({telegram['destination_name']:30.30}): {str(telegram['dpt']):6.6} = {telegram['info']}")
                     else:
-                        print(f"Telegram from {telegram['source_address']:7.7} ({telegram['source_name']:30.30}) to GAD {telegram['destination']:7.7} ({telegram['destination_name']:30.30}): {str(telegram['dpt']):6.6} = {telegram['info']} - failed with {status_code}, {reason}")
+                        log(f"Telegram from {telegram['source_address']:7.7} ({telegram['source_name']:30.30}) to GAD {telegram['destination']:7.7} ({telegram['destination_name']:30.30}): {str(telegram['dpt']):6.6} = {telegram['info']} - failed with {status_code}, {reason}")
                 except Exception as e:
-                    print(f'Exception POSTing: {e}')
+                    log(f'Exception POSTing: {e}')
 
     except Exception as e:
-        print(f'Exception in main: {e}\nDestination was {packet.dst}')
+        log(f'Exception in main: {e}\nDestination was {packet.dst}')
 
     finally:
         # Let's stop the connection and wait for graceful termination of the receive loop:
