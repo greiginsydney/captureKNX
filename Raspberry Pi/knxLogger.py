@@ -19,7 +19,7 @@ import math                         # Sending the 'floor' (main DPT) value to kn
 import requests                     # To push the values to telegraf
 
 from decode_dpt  import *           # Decodes popular DPT sub-types
-from decode_topo import *           # Read the topo file & decode pysical and group addresses
+from decode_project import *           # Read the topo file & decode pysical and group addresses
 
 import common
 from common import ETS_0_XML_FILE as ETS_0_XML_FILE
@@ -39,7 +39,7 @@ HEADERS            = {'Content-type': 'application/json', 'Accept': 'text/plain'
 
 
 common.init()          # Initialise the common variables and logging
-unzip_topo_archive()
+unzip_project_archive()
 GALevels        = decode_GroupLevels(ETS_PROJECT_XML_FILE)
 Individual_Data = decode_Individual_Addresses(ETS_0_XML_FILE)
 GA_Data         = decode_Group_Addresses(ETS_0_XML_FILE, GALevels)
