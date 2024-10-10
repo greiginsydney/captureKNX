@@ -46,7 +46,9 @@ sudo systemctl restart knxLogger
 
 ### How can I delete all the data in InfluxDB and start again?
 
-If you have a need to flush all the captured Telegrams and start over, InfluxCLI has the solution. Edit this code snippet from the [CLI documentation](https://docs.influxdata.com/influxdb/cloud/write-data/delete-data/) with a start date before you commenced the build, and a stop date that's tomorrow or later. (It's OK with you flushing data to a future-dated event).
+If you're re-deploying a knxLogger to a new site you'll want to cleanse the existing site's telegrams first, and for that you use the InfluxCLI.
+
+Edit this code snippet from the [CLI documentation](https://docs.influxdata.com/influxdb/cloud/write-data/delete-data/) with a start date before you commenced the build, and a stop date that's tomorrow or later. (It's OK with you flushing data to a future-dated event).
 
 ```text
 sudo influx delete --bucket knxLogger --start 2024-01-01T00:00:00Z --stop 2024-12-31T00:00:00Z
@@ -63,7 +65,7 @@ By default Grafana seems to treat DPT values as though they're currency, and wil
 
 You can fix this by editing the panel and adding a "field override", then select "fields with name" and the DPT field. Now add an "override property", choose "standard options - decimals" and give it a value of 3. Finally, Apply and Save.
 
-This is what the final result will look like:
+This is what the end result will look like:
 
 ![image](https://github.com/user-attachments/assets/b783f5bd-cd51-44c1-9a51-ae0bef4e08de)
 
@@ -73,9 +75,11 @@ This is what the final result will look like:
 
 ### Why are some Group Addresses not showing in the reports or logs?
 
-This is usually because the Group Address has been created since the topology/project file that knxLogger is using, and as knxLogger doesn't know what type of DataPoint the GA is, it's discarded.
+This is usually because the Group Address was added after the project file was exported for knxLogger. As knxLogger doesn't know what type of DataPoint the GA is, it's discarded.
 
-Export a new topo file, copy it to the Pi and restart the knxLogger service. See [How do I update the logger with a new topology file?](/docs/FAQ.md#How-do-i-update-the-logger-with-a-new-topology-file)
+Search the knxLogger.log file (in `/home/pi/knxLogger/log`) for the Group Address, or the text 'The telegram has been discarded'.
+
+To resolve this issue, export a new project file, copy it to the Pi and restart the knxLogger service. See [How do I update the logger with a new project file?](/docs/FAQ.md#How-do-i-update-the-logger-with-a-new-project-file)
 
 [Top](/docs/FAQ.md#frequently-asked-questions)
 <hr>
