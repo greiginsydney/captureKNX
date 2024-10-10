@@ -2,7 +2,7 @@
 
 ## General
 - [Can I build the knxLogger using a microSD card?](/docs/FAQ.md#can-i-build-the-knxlogger-using-a-microsd-card)
-- [How do I update the logger with a new topology file?](/docs/FAQ.md#how-do-i-update-the-logger-with-a-new-topology-file)
+- [How do I update the logger with a new project file?](/docs/FAQ.md#how-do-i-update-the-logger-with-a-new-project-file)
 
 ## InfluxDB
 - [How can I delete all the data in InfluxDB and start again?](/docs/FAQ.md#how-can-i-delete-all-the-data-in-influxdb-and-start-again)
@@ -28,7 +28,7 @@ As the knxLogger isn't perhaps as 'mission critical' an application as some othe
 
 <hr>
 
-### How do I update the logger with a new topology file?
+### How do I update the logger with a new project file?
 
 1. Follow the process in [Prepare The Topology Export](/docs/step1-prepare-the-topology-export.md).
 2. Copy the file to `/home/pi/`. (I use [WinSCP](https://winscp.net/) for this, but there are plenty of other tools that can do the same job.)
@@ -37,7 +37,7 @@ As the knxLogger isn't perhaps as 'mission critical' an application as some othe
 ```text
 sudo systemctl restart knxLogger
 ```
-4. When it restarts, the logger script will detect the presence of a newer topo file and extract its content.
+4. When it restarts, the logger script will detect the presence of a newer project file and extract its content.
 
 [Top](/docs/FAQ.md#frequently-asked-questions)
 
