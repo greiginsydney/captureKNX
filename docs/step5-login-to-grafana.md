@@ -57,7 +57,7 @@ There are a few things you can easily do with this view:
 
 In [step6-grafana-tips.md](/docs/step6-grafana-tips.md) (TODO) you'll find some tips to help you do things like re-size, hide/reveal, re-label, and more.
 
-You might also find some answers on the [FAQ page](/docs/faq.md).
+You might also find some answers on the [FAQ page](/docs/FAQ.md).
 
 <br>
 
