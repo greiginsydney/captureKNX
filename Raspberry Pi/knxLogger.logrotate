@@ -1,4 +1,4 @@
-#Global settings:
+# Global settings:
 
     daily
     missingok
@@ -11,4 +11,4 @@
     copytruncate
 
 /var/log/telegraf/debug_output.log {}
-/home/pi/knxLogger/knxLogger.log {}
+/home/pi/knxLogger/log/knxLogger.log {}
