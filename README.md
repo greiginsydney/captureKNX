@@ -35,6 +35,15 @@ The 'HAT' provides the physical interface to the KNX TP Line, and the ensuing co
 
 ![image](https://github.com/user-attachments/assets/e46410d2-74dd-42a9-acd8-e19f3be63a16)
 
+## InfluxDB & Grafana
+
+KnxLogger stores all the telegrams in a 'time series' database called InfluxDB, and the reporting all happens in Grafana.
+
+If you're wanting to better understand the architecture and what you're getting yourself in for before you take the plunge and buy a Pi and HAT, have a look at the pages [step5-login-to-grafana.md](step5-login-to-grafana.md) and [step6-more-grafana-tips.md](step6-more-grafana-tips.md).
+
+I also STRONGLY recommend you watch the YouTube video playlist ["What is Observability - Grafana for Beginners"](https://youtube.com/playlist?list=PLDGkOdUX1Ujo27m6qiTPPCpFHVfyKq9jT&si=q5BIC9lkn3LJmBc6). That playlist builds a great understanding, and by Episode 8 you're creating a dashboard that looks remarkably like the one provided here in [step6-more-grafana-tips.md](step6-more-grafana-tips.md).
+
+InfluxDB and Grafana both have active supporter communities should you want to delve deeper into the reporting of your stored Telegrams. (By all means I welcome you sharing your Dashboards with fellow knxLogger users - the project's Wiki page [TODO] would be a great place for those.)
 
 ## Credits
 
