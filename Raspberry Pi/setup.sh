@@ -122,9 +122,13 @@ setup1()
 			then
 				echo "Skipped: the file '/etc/telegraf/telegraf.conf' already exists & the new version is unchanged"
 			else
-				[ -f /etc/telegraf/telegraf.conf ] && mv -fv /etc/telegraf/telegraf.conf /etc/telegraf/telegraf.conf.old
-				mkdir -p /etc/telegraf/
-				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf
+				if [ -f /etc/telegraf/telegraf.conf ];
+				then
+					echo "Skipped: a customised version of '/etc/telegraf/telegraf.conf' already exists"
+				else
+					mkdir -p /etc/telegraf/
+					mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf
+				fi
 			fi
 		fi
 
