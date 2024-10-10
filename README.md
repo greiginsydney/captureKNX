@@ -12,9 +12,9 @@ Build a Raspberry Pi that will log all KNX telegrams to InfluxDB that you can qu
 
 ## Features
 
-- Log all KNX network traffic for a year (or longer!) without needing to leave behind a laptop running ETS.
+- Log all KNX network traffic for a year (or longer!) without needing to leave behind a laptop running ETS. (ETS6 will only capture 1,000 telegrams before over-writing them.)
 - No fancy hardware. Buy a Raspberry Pi 5, plug a KNX shield on top, add a solid-state drive, stick it in a box (artwork provided here to print your own) and apply power!
-- No ETS dongle to risk losing.
+- No ETS dongle left unguarded on site.
 - Plugs directly into the KNX bus. This means your KNX telegrams aren't permanently spamming your IP network to get to the logger, and means you can log tiny KNX installations that don't have a full-time router or programming interface.
 - Easy setup. A bash script installs all the software components. You only need to copy the topology/project file across after exporting it from ETS.
 - A fully on-premises solution. Once you've bought the hardware, that's your total outlay. (Late 2024 estimate circa $AUD250 / $US170 / €150.)
