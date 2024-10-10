@@ -174,13 +174,17 @@ setup1()
 		# knxLogger.env:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env ];
 		then
-			mkdir -p /etc/influxdb/
-			if [ -f /etc/influxdb/knxLogger.env ];
+			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env /etc/influxdb/knxLogger.env;
 			then
-				# Copy new file over as '.new' & leave existing in-situ
-				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env /etc/influxdb/knxLogger.env.new
+				echo "Skipped: the file '/etc/influxdb/knxLogger.env' already exists & the new version is unchanged"
 			else
-				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env /etc/influxdb/knxLogger.env
+				if [ -f /etc/influxdb/knxLogger.env ];
+				then
+					echo "Skipped: a customised version of '/etc/influxdb/knxLogger.env' already exists"
+				else
+					mkdir -p /etc/influxdb/
+					mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env /etc/influxdb/knxLogger.env
+				fi
 			fi
 		fi
 
