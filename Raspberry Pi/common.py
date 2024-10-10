@@ -23,7 +23,7 @@ else:
     PI_USER_HOME = os.path.expanduser('~')
 
 KNXLOGGER_DIR    = os.path.join(PI_USER_HOME, 'knxLogger')
-LOGFILE_NAME     = os.path.join(KNXLOGGER_DIR, 'knxLogger.log')
+LOGFILE_NAME     = os.path.join(KNXLOGGER_DIR, 'log', 'knxLogger.log')
 ETS_0_XML_FILE     = os.path.join(KNXLOGGER_DIR, '0.xml')
 ETS_PROJECT_XML_FILE     = os.path.join(KNXLOGGER_DIR, 'project.xml')
 
