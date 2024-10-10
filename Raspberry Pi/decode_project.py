@@ -12,12 +12,12 @@
 # https://greiginsydney.com/knxlogger
 
 
-import glob                         # Finding the most recent (youngest) topo file
+import glob                         # Finding the most recent (youngest) project file
 import os                           # Path manipulation
 import re                           # Used to decode the topology + escape text fields sent to telegraf
 import requests                     # To push the values to telegraf
 from xml.dom.minidom import parse   # Decoding the ETS XML file
-import zipfile                      # Reading the topology file (it's just a ZIP file!)
+import zipfile                      # Reading the project file (it's just a ZIP file!)
 
 import common
 from common import log
@@ -26,12 +26,12 @@ from common import ETS_0_XML_FILE as ETS_0_XML_FILE
 from common import ETS_PROJECT_XML_FILE as ETS_PROJECT_XML_FILE
 
 
-def unzip_topo_archive():
+def unzip_project_archive():
     '''
-    Walk through the user's root folder recursively in search of the most recent (youngest) topo file.
-    If topo file is found, compare its creation time to existing 0.XML & project.XML. If they're *younger*, exit.
-    If topo file and 0 or Project are OLDER, extract the files.
-    If topo file not found, just exit, as previous 0.XML & project.XML may already exist.
+    Walk through the user's root folder recursively in search of the most recent (youngest) project file.
+    If project file is found, compare its creation time to existing 0.XML & project.XML. If they're *younger*, exit.
+    If project file and 0 or Project are OLDER, extract the files.
+    If project file not found, just exit, as previous 0.XML & project.XML may already exist.
     '''
     try:
         oldest = 0  # Initialise to 1970
@@ -40,12 +40,12 @@ def unzip_topo_archive():
             # Check their datestamps:
             oldest = min(os.path.getmtime(ETS_0_XML_FILE),os.path.getmtime(ETS_PROJECT_XML_FILE))
 
-        topo_files = glob.glob(PI_USER_HOME + "/**/*.knxproj", recursive = True)
-        if topo_files:
-            topo_file = max(topo_files, key=os.path.getctime)
-            if os.path.getctime(topo_file) > oldest:
-                log(f'unzip_topo_archive: Unzipping {topo_file}')
-                with zipfile.ZipFile(topo_file) as z:
+        project_files = glob.glob(PI_USER_HOME + "/**/*.knxproj", recursive = True)
+        if project_files:
+            project_file = max(project_files, key=os.path.getctime)
+            if os.path.getctime(project_file) > oldest:
+                log(f'unzip_project_archive: Unzipping {project_file}')
+                with zipfile.ZipFile(project_file) as z:
                     allFiles = z.namelist()
                     for etsFile in (os.path.split(ETS_0_XML_FILE)[1], os.path.split(ETS_PROJECT_XML_FILE)[1]):
                         for thisFile in allFiles:
@@ -54,11 +54,11 @@ def unzip_topo_archive():
                                     f.write(z.read(thisFile))
                                 break
             else:
-                log(f'unzip_topo_archive: existing XML files are younger than {topo_file}. Skipping extraction')
+                log(f'unzip_project_archive: existing XML files are younger than {project_file}. Skipping extraction')
         else:
-            log(f'unzip_topo_archive: No topology file found')
+            log(f'unzip_project_archive: No project file found')
     except Exception as e:
-        log(f'unzip_topo_archive: Exception thrown trying to unzip archive: {e}')
+        log(f'unzip_project_archive: Exception thrown trying to unzip archive: {e}')
 
     return
 
