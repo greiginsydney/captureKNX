@@ -89,7 +89,7 @@ setup1()
 		exit 1
 	fi
 
-	mkdir -p /home/$SUDO_USER/knxLogger
+	mkdir -p /home/$SUDO_USER/knxLogger/log
 	chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/knxLogger/
 	mkdir -p /home/$SUDO_USER/staging
 	#cd /home/$SUDO_USER/knxLogger
@@ -199,8 +199,8 @@ setup1()
 			echo -e "\n"$YELLOW"Error trying to 'chgrp' logrotate"$RESET""
 		fi
 
-		touch /home/${SUDO_USER}/knxLogger/knxLogger.log
-		chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/knxLogger/knxLogger.log
+		touch /home/${SUDO_USER}/knxLogger/log/knxLogger.log
+		chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/knxLogger/log/knxLogger.log
 
 		# version:
 		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/version ];
