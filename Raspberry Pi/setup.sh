@@ -331,7 +331,14 @@ setup1()
 		fi
 	fi
 
-
+	if [ $SUDO_USER != 'pi' ];
+	then
+		echo -e ""$GREEN"Changing user from default:"$RESET" Updated hard-coded user references to new user $SUDO_USER"
+		sed -i "s|/pi/|/$SUDO_USER/|g" /etc/systemd/system/knxLogger.service
+		sed -i "s|User=pi|User=$SUDO_USER|g" /etc/systemd/system/knxLogger.service
+		sed -i "s|/pi/|/$SUDO_USER/|g" /etc/logrotate.d/knxLogger.logrotate
+	fi
+ 
 	# hciuart needs to be stopped and disabled before we can control the TTY port
 	systemctl stop hciuart.service
 	systemctl disable hciuart.service
