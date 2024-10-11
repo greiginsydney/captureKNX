@@ -255,9 +255,9 @@ setup1()
 	fi
 
 	echo -e "\n"$GREEN"Installing knxdclient"$RESET""
- 	sudo -i -u ${SUDO_USER} pip3 install knxdclient
-  	echo -e "\n"$GREEN"Installing requests"$RESET""
-	sudo -i -u ${SUDO_USER} python3 -m pip install requests
+	sudo  -u ${SUDO_USER} bash -c "source /home/pi/venv/bin/activate && pip3 install knxdclient"
+	echo -e "\n"$GREEN"Installing requests"$RESET""
+	sudo -u ${SUDO_USER} bash  -c "source /home/pi/venv/bin/activate && python3 -m pip install requests"
 
 	set +e #Suspend the error trap
 	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
