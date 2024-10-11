@@ -34,6 +34,8 @@ OK, here's where all the fun happens.
   <img src="https://github.com/user-attachments/assets/30546847-fbaa-4d5f-aff6-4269c2bfe492" width="100%">
 </p>
 
+> If it says "0 measurements found" that's bad. The most likely cause is you've not yet copied the KNX Project file to the Pi, or forgot to restart the knxLogger service after doing so.
+
 6. Click Dashboards in the navigation tree, then select the Group Monitor:
 
 <p align="center">
