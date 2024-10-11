@@ -338,7 +338,7 @@ setup1()
 		sed -i "s|User=pi|User=$SUDO_USER|g" /etc/systemd/system/knxLogger.service
 		sed -i "s|/pi/|/$SUDO_USER/|g" /etc/logrotate.d/knxLogger.logrotate
 	fi
- 
+
 	# hciuart needs to be stopped and disabled before we can control the TTY port
 	systemctl stop hciuart.service
 	systemctl disable hciuart.service
@@ -612,8 +612,7 @@ setup3()
 		set +e #Suspend the error trap
 		isInfluxSetup=$(influx setup --skip-verify --org $ORG --bucket $BUCKET --retention $RETENTION --username $USERNAME --password $PASSWORD --token $TOKEN --force --hide-headers 2>&1)
 		set -e #Resume the error trap
-		echo "HERE2"
-		echo "OUTPUT >>> $isInfluxSetup"
+		# echo "OUTPUT >>> $isInfluxSetup"
 		if [[ $isInfluxSetup == *"has already been set up"* ]];
 		then
 			echo -e "\n"$GREEN"InfluxDB has already been set up"$RESET""
@@ -635,8 +634,7 @@ setup3()
 	set +e #Suspend the error trap
 	IsInfluxTelegrafs=$(influx telegrafs --hide-headers 2>&1)
 	set -e #Resume the error trap
-	echo "HERE3"
-	echo "OUTPUT >>> $IsInfluxTelegrafs"
+	# echo "OUTPUT >>> $IsInfluxTelegrafs"
 	if [[ $IsInfluxTelegrafs == *"unknown command"* ]];
 	then
 		echo "isTelegrafConfiguration returned: $isTelegrafConfiguration"
@@ -649,8 +647,7 @@ setup3()
 		set +e #Suspend the error trap
 		isTelegrafUpdated=$(influx telegrafs update -id $EXISTING_ID -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf --hide-headers 2>&1)
 		set -e #Resume the error trap
-		echo "HERE4"
-		echo "OUTPUT >>> $isTelegrafUpdated"
+		# echo "OUTPUT >>> $isTelegrafUpdated"
 		if [[ $isTelegrafUpdated == *"unknown command"* ]];
 		then
 			echo "isTelegrafUpdated returned: $isTelegrafUpdated"
@@ -666,8 +663,7 @@ setup3()
 		set +e #Suspend the error trap
 		isTelegrafConfiguration=$(influx telegrafs create -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf 2>&1)
 		set -e #Resume the error trap
-		echo "HERE5"
-		echo "OUTPUT >>> $isTelegrafConfiguration"
+		# echo "OUTPUT >>> $isTelegrafConfiguration"
 		if [[ $isTelegrafConfiguration == *"has already been set up"* ]];
 		then
 			# This should never be seen, as the previous test should have captured it:
@@ -778,7 +774,7 @@ test_install()
 	release=$(sed -n -E 's/^PRETTY_NAME="(.*)"$/\1/p' /etc/os-release)
 	echo $release
 
- 	# TY Jesse Nickles https://stackoverflow.com/a/71674677/13102734
+	# TY Jesse Nickles https://stackoverflow.com/a/71674677/13102734
 	DISK_SIZE_TOTAL=$(df -kh . | tail -n1 | awk '{print $2}')
 	DISK_SIZE_FREE=$(df -kh . | tail -n1 | awk '{print $4}')
 	DISK_PERCENT_USED=$(df -kh . | tail -n1 | awk '{print $5}')
@@ -1020,7 +1016,7 @@ case "$1" in
 			setup2
 			setup3
 		fi
- 		test_install
+		test_install
 		;;
 	(*)
 		echo -e "\nThe switch '$1' is invalid. Try again.\n"
