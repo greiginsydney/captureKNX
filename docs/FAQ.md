@@ -77,7 +77,7 @@ This is what the end result will look like:
 
 #### It's not in the project file the knxLogger is using
 
-This is usually because the Group Address was added after the project file was exported for knxLogger. As knxLogger doesn't know what type of DataPoint the GA is, it's discarded.
+This is usually because the Group Address was added after the project file was exported for knxLogger. As knxLogger doesn't know what type of DataPoint the GA is, any telegrams to it are discarded.
 
 Search the knxLogger.log file (in `/home/pi/knxLogger/log`) for the Group Address, or the text 'The telegram has been discarded'.
 
