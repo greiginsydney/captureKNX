@@ -75,11 +75,16 @@ This is what the end result will look like:
 
 ### Why are some Group Addresses not showing in the reports or logs?
 
+#### It's not in the project file the knxLogger is using
+
 This is usually because the Group Address was added after the project file was exported for knxLogger. As knxLogger doesn't know what type of DataPoint the GA is, it's discarded.
 
 Search the knxLogger.log file (in `/home/pi/knxLogger/log`) for the Group Address, or the text 'The telegram has been discarded'.
 
 To resolve this issue, export a new project file, copy it to the Pi and restart the knxLogger service. See [How do I update the logger with a new project file?](/docs/FAQ.md#How-do-i-update-the-logger-with-a-new-project-file)
+
+#### Your knxLogger hasn't seen any traffic to it yet
+A less common cause only manifests in new knxLogger installations. Grafana doesn't know a Group Address exists until a Telegram has been sent to it and it's logged in the database. If in doubt, toggle the GA on/off or otherwise send it a message.
 
 [Top](/docs/FAQ.md#frequently-asked-questions)
 <hr>
