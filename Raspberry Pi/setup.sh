@@ -717,10 +717,10 @@ setup3()
 	systemctl enable knxLogger.service
 	systemctl restart knxLogger.service
 
-
 	echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
-	sudo rm -f influxdb2_2.7.8-1_arm64.deb
-	sudo rm -f grafana-enterprise_11.1.3_arm64.deb
+	apt-get purge bluez -y	
+ 	rm -f influxdb2_2.7.8-1_arm64.deb
+	rm -f grafana-enterprise_11.1.3_arm64.deb
 	rm -rfd /home/${SUDO_USER}/staging/
 
 	# Add a shortcut for the logs folder:
