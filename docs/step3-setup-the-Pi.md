@@ -168,14 +168,7 @@ git clone --depth=1 https://github.com/greiginsydney/knxLogger staging/knxLogger
 
 > Advanced tip: if you're testing code and want to install a new branch direct from the repo, add `-b <branchName>` on the end of the line.
 
-32. The knxdclient & requests go in here:
-
-```txt
-pip3 install knxdclient
-```
-```txt
-python3 -m pip install requests
-```
+32. This step currently spare.
 
 33. Now we need to move the setup.sh script file into its final location:
 
