@@ -143,7 +143,18 @@ Review the error log for obvious issues: `journalctl --no-pager --unit telegraf`
 
 Edit `/etc/telegraf/telegraf.conf` to enable debug logging:
 
-  ```text
+##### FROM
+
+```text
+## Log at debug level.
+debug = false
+## Log only error level messages.
+quiet = true
+```
+
+#### TO
+
+```text
 ## Log at debug level.
 debug = true
 ## Log only error level messages.
