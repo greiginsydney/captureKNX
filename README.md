@@ -30,11 +30,14 @@ Build a Raspberry Pi that will capture all KNX telegrams to InfluxDB that you ca
 
 ## Software architecture
 
-The captureKNX is a consolidation of multiple open-source & freeware software components, all running on the one Raspberry Pi 5 single board computer.
+captureKNX is a consolidation of multiple open-source & freeware software components, all running on the one Raspberry Pi 5 single board computer.
 
 The 'HAT' provides the physical interface to the KNX TP Line, and the ensuing components read and format the telegrams, then stuff them in the InfluxDB database. Grafana is the 'visualisation' component that lets you easily review and filter the raw captures, and/or create dashboards of useful values, all of which you access from a web browser.
 
-![image](https://github.com/user-attachments/assets/e46410d2-74dd-42a9-acd8-e19f3be63a16)
+
+
+
+![image](https://github.com/user-attachments/assets/a4ba8e35-8c87-4f54-a2df-e4ff7d9a9aaa)
 
 ## InfluxDB & Grafana
 
