@@ -1,6 +1,6 @@
 # Shopping list
 
-To build the knxLogger as described, you'll need the following parts.
+To build the captureKNX as described, you'll need the following parts.
 
 Your outlay will be approximately $USD200 / $AUD260, although this does _not_ include shipping costs or the cost of a 3D-printed enclusure.
 
@@ -10,7 +10,7 @@ There are a number of different variations:
 
 - Drive storage
   -   an external USB3 SSD. This is the default presented here. More reliable and way faster than a microSD card
-  -   microSD card. Not officially supported. More about that [here](/docs/FAQ.md#can-i-build-the-knxlogger-using-a-microsd-card)
+  -   microSD card. Not officially supported. More about that [here](/docs/FAQ.md#can-i-build-the-captureKNX-using-a-microsd-card)
   -   a PCIe NVMe drive. The most expensive option, complicated to setup, but delivers a VERY compact box and blindingly fast performance. See [NVMe storage](/docs/advanced-applications.md#nvme-storage)
 - KNX interface board
   -  Tijl's board from Tindie
