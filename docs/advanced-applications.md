@@ -2,6 +2,8 @@
 
 The knxLogger described here is a stand-alone on-site device, however if you're a little more adventurous, here are a few more things you can do with it.
 
+<hr/> 
+
 ## Setup the Pi as a Wi-Fi Access Point
 
 <p align="right">
@@ -88,16 +90,14 @@ Thankfully Pimoroni has a [VERY detailed page](https://learn.pimoroni.com/articl
 
 ## Grafana Alerts
 
-Grafana has a powerful alerting capability.
+Grafana has a powerful alerting capability. It can send notifications to a range of destinations, including e-mail and webhooks, as well as numerous third-party applications.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/02fa0eff-ea9a-4147-abe4-53705e951198" width="100%">
 </p>
 
-It can send notifications to a range of destinations, including e-mail and webhooks.
-
 - [Get started with Grafana Alerting - Part 1](https://grafana.com/tutorials/alerting-get-started/)
-- 
+- Watch [Creating alerts with Grafana | Grafana for Beginners Ep 11](https://youtu.be/6W8Nu4b_PXM?si=J4pcHWQqumGRUV31)
 
 
 [Top](/docs/FAQ.md#advanced-applications)
