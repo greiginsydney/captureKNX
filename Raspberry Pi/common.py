@@ -7,9 +7,9 @@
 # You should have received a copy of the GNU General Public License along with this program.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
-# This script is part of the knxLogger project, which logs all KNX bus traffic to an InfluxDb for reporting via Grafana
-# https://github.com/greiginsydney/knxLogger
-# https://greiginsydney.com/knxlogger
+# This script is part of the captureKNX project, which logs all KNX bus traffic to an InfluxDb for reporting via Grafana
+# https://github.com/greiginsydney/captureKNX
+# https://greiginsydney.com/captureKNX
 
 
 import os
@@ -22,9 +22,9 @@ if sudo_username:
 else:
     PI_USER_HOME = os.path.expanduser('~')
 
-KNXLOGGER_DIR    = os.path.join(PI_USER_HOME, 'knxLogger')
-LOGFILE_NAME     = os.path.join(KNXLOGGER_DIR, 'log', 'knxLogger.log')
-ETS_0_XML_FILE     = os.path.join(KNXLOGGER_DIR, '0.xml')
+CAPTUREKNX_DIR    = os.path.join(PI_USER_HOME, 'captureKNX')
+LOGFILE_NAME     = os.path.join(CAPTUREKNX_DIR, 'log', 'captureKNX.log')
+ETS_0_XML_FILE     = os.path.join(CAPTUREKNX_DIR, '0.xml')
 ETS_PROJECT_XML_FILE     = os.path.join(KNXLOGGER_DIR, 'project.xml')
 
 
