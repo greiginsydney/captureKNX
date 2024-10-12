@@ -9,9 +9,9 @@
 # You should have received a copy of the GNU General Public License along with this program.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
-# This script is part of the knxLogger project, which logs all KNX bus traffic to an InfluxDb for reporting via Grafana
-# https://github.com/greiginsydney/knxLogger
-# https://greiginsydney.com/knxlogger
+# This script is part of the captureKNX project, which logs all KNX bus traffic to an InfluxDb for reporting via Grafana
+# https://github.com/greiginsydney/captureKNX
+# https://greiginsydney.com/captureKNX
 
 
 
@@ -71,7 +71,7 @@ activate_venv()
 	then
 		echo -e "\n"$YELLOW"The required virtual environment could not be activated"$RESET""
 		echo "Please execute the command 'source venv/bin/activate' and re-run the script."
-		echo -e "If that fails, check you have correctly created the required VENV. Review \nReview \nhttps://github.com/greiginsydney/knxLogger/blob/bookworm/docs/step1-setup-the-Pi.md"
+		echo -e "If that fails, check you have correctly created the required VENV. Review \nReview \nhttps://github.com/greiginsydney/captureKNX/blob/bookworm/docs/step1-setup-the-Pi.md"
 		echo ''
 		exit
 	fi
@@ -89,33 +89,33 @@ setup1()
 		exit 1
 	fi
 
-	mkdir -p /home/$SUDO_USER/knxLogger/log
-	chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/knxLogger/
+	mkdir -p /home/$SUDO_USER/captureKNX/log
+	chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/captureKNX/
 	mkdir -p /home/$SUDO_USER/staging
-	#cd /home/$SUDO_USER/knxLogger
+	#cd /home/$SUDO_USER/captureKNX
 
-	if [[ -d /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi ]];
+	if [[ -d /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi ]];
 	then
 		echo -e "\n"$GREEN"Moving repo files."$RESET""
 
-		# Python files: knxLogger, decode_project, decode_dpt & common.py:
-		find /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/ -maxdepth 1 -type f -name '*.py*' -exec mv -fv {} /home/${SUDO_USER}/knxLogger/ \;
+		# Python files: captureKNX, decode_project, decode_dpt & common.py:
+		find /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/ -maxdepth 1 -type f -name '*.py*' -exec mv -fv {} /home/${SUDO_USER}/captureKNX/ \;
 
-		# knxLogger.service:
-		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service ];
+		# captureKNX.service:
+		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.service ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service;
+			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.service /etc/systemd/system/captureKNX.service;
 			then
-				echo "Skipped: the file '/etc/systemd/system/knxLogger.service' already exists & the new version is unchanged"
+				echo "Skipped: the file '/etc/systemd/system/captureKNX.service' already exists & the new version is unchanged"
 			else
-				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.service /etc/systemd/system/knxLogger.service
+				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.service /etc/systemd/system/captureKNX.service
 			fi
 		fi
 
 		# telegraf.conf:
-		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/telegraf.conf ];
+		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/telegraf.conf ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf;
+			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf;
 			then
 				echo "Skipped: the file '/etc/telegraf/telegraf.conf' already exists & the new version is unchanged"
 			else
@@ -124,93 +124,93 @@ setup1()
 					echo "Skipped: a customised version of '/etc/telegraf/telegraf.conf' already exists"
 				else
 					mkdir -p /etc/telegraf/
-					mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf
+					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf
 				fi
 			fi
 		fi
 
 		# grafana-source.yaml:
-		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/grafana-source.yaml ];
+		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
+			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
 			then
 				echo "Skipped: the file /etc/grafana/provisioning/datasources/grafana-source.yaml' already exists & the new version is unchanged"
 			else
 				[ -f /etc/grafana/provisioning/datasources/grafana-source.yaml ] && mv -fv /etc/grafana/provisioning/datasources/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml.old
 				mkdir -p /etc/grafana/provisioning/datasources/
-				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
+				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
 			fi
 		fi
 
-		# knxLogger-dashboards.yaml:
-		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/knxLogger-dashboards.yaml ];
+		# captureKNX-dashboards.yaml:
+		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/knxLogger-dashboards.yaml /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml;
+			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml;
 			then
-				echo "Skipped: the file /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml' already exists & the new version is unchanged"
+				echo "Skipped: the file /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml' already exists & the new version is unchanged"
 			else
-				[ -f /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml ] && mv -fv /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml.old
+				[ -f /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml ] && mv -fv /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml.old
 				mkdir -p /etc/grafana/provisioning/dashboards/
-				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/knxLogger-dashboards.yaml /etc/grafana/provisioning/dashboards/knxLogger-dashboards.yaml
+				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml
 			fi
 		fi
 
 		# group-monitor.json:
-		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/group-monitor.json ];
+		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json;
+			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json;
 			then
 				echo "Skipped: the file /etc/grafana/provisioning/dashboards/group-monitor.json' already exists & the new version is unchanged"
 			else
 				[ -f /etc/grafana/provisioning/dashboards/group-monitor.json ] && mv -fv /etc/grafana/provisioning/dashboards/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json.old
 				mkdir -p /etc/grafana/provisioning/dashboards/
-				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json
+				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json
 			fi
 		fi
 
-		# knxLogger.env:
-		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env ];
+		# captureKNX.env:
+		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.env ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env /etc/influxdb/knxLogger.env;
+			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.env /etc/influxdb/captureKNX.env;
 			then
-				echo "Skipped: the file '/etc/influxdb/knxLogger.env' already exists & the new version is unchanged"
+				echo "Skipped: the file '/etc/influxdb/captureKNX.env' already exists & the new version is unchanged"
 			else
-				if [ -f /etc/influxdb/knxLogger.env ];
+				if [ -f /etc/influxdb/captureKNX.env ];
 				then
-					echo "Skipped: a customised version of '/etc/influxdb/knxLogger.env' already exists"
+					echo "Skipped: a customised version of '/etc/influxdb/captureKNX.env' already exists"
 				else
 					mkdir -p /etc/influxdb/
-					mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.env /etc/influxdb/knxLogger.env
+					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.env /etc/influxdb/captureKNX.env
 				fi
 			fi
 		fi
 
-		# knxLogger.logrotate:
-		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.logrotate ];
+		# captureKNX.logrotate:
+		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.logrotate /etc/logrotate.d/knxLogger.logrotate;
+			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate /etc/logrotate.d/captureKNX.logrotate;
 			then
-				echo "Skipped: the file '/etc/logrotate.d/knxLogger.logrotate' already exists & the new version is unchanged"
+				echo "Skipped: the file '/etc/logrotate.d/captureKNX.logrotate' already exists & the new version is unchanged"
 			else
-				mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/knxLogger.logrotate /etc/logrotate.d/knxLogger.logrotate
+				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate /etc/logrotate.d/captureKNX.logrotate
 			fi
 		fi
-		if ! chown --quiet root /etc/logrotate.d/knxLogger.logrotate ;
+		if ! chown --quiet root /etc/logrotate.d/captureKNX.logrotate ;
 		then
 			echo -e "\n"$YELLOW"Error trying to 'chown' logrotate"$RESET""
 		fi
-		if ! chgrp --quiet root /etc/logrotate.d/knxLogger.logrotate ;
+		if ! chgrp --quiet root /etc/logrotate.d/captureKNX.logrotate ;
 		then
 			echo -e "\n"$YELLOW"Error trying to 'chgrp' logrotate"$RESET""
 		fi
 
-		touch /home/${SUDO_USER}/knxLogger/log/knxLogger.log
-		chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/knxLogger/log/knxLogger.log
+		touch /home/${SUDO_USER}/captureKNX/log/captureKNX.log
+		chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/captureKNX/log/captureKNX.log
 
 		# version:
-		if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/version ];
+		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/version ];
 		then
-			mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/version /home/${SUDO_USER}/knxLogger/version
+			mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/version /home/${SUDO_USER}/captureKNX/version
 		fi
 
 		#TODO: once all wanted files are removed, delete the staging folder - this needs to take place at the END of the script.
@@ -241,7 +241,7 @@ setup1()
 		git clone -b debian https://github.com/knxd/knxd.git
 		sh knxd/install-debian.sh
 
-		# Paste in knxLogger's new default device addresses:
+		# Paste in captureKNX's new default device addresses:
 		sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\11.1.250\3|" /etc/knxd.conf
 		sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)(:.*$)|\11.1.251\3|" /etc/knxd.conf
 		sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+:)([[:digit:]]+)( .*$)|\1\21\4|" /etc/knxd.conf
@@ -321,22 +321,22 @@ setup1()
 	fi
 
 	# grafana-source.yaml:
-	if [ -f /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana-source.yaml ];
+	if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml ];
 	then
-		if cmp -s /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
+		if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
 		then
 			echo "Skipped: the file '/etc/grafana/provisioning/datasources/grafana-source.yaml' already exists & the new version is unchanged"
 		else
-			mv -fv /home/${SUDO_USER}/staging/knxLogger/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
+			mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
 		fi
 	fi
 
 	if [ $SUDO_USER != 'pi' ];
 	then
 		echo -e ""$GREEN"Changing user from default:"$RESET" Updated hard-coded user references to new user $SUDO_USER"
-		sed -i "s|/pi/|/$SUDO_USER/|g" /etc/systemd/system/knxLogger.service
-		sed -i "s|User=pi|User=$SUDO_USER|g" /etc/systemd/system/knxLogger.service
-		sed -i "s|/pi/|/$SUDO_USER/|g" /etc/logrotate.d/knxLogger.logrotate
+		sed -i "s|/pi/|/$SUDO_USER/|g" /etc/systemd/system/captureKNX.service
+		sed -i "s|User=pi|User=$SUDO_USER|g" /etc/systemd/system/captureKNX.service
+		sed -i "s|/pi/|/$SUDO_USER/|g" /etc/logrotate.d/captureKNX.logrotate
 	fi
 
 	# hciuart needs to be stopped and disabled before we can control the TTY port
@@ -347,10 +347,10 @@ setup1()
 
 	# Customise /boot/firmware/config.txt:
 	NEEDS_REBOOT=''
-	if ! grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt;
+	if ! grep -q '# Added by setup.sh for captureKNX' /boot/firmware/config.txt;
 	then
 		echo -e "\n"$GREEN"Adding UART changes to config.txt"$RESET""
-		echo -e '\n# Added by setup.sh for the knxLogger' >> /boot/firmware/config.txt
+		echo -e '\n# Added by setup.sh for captureKNX' >> /boot/firmware/config.txt
 	fi
 
 	if ! grep -q '^enable_uart=1' /boot/firmware/config.txt;
@@ -443,8 +443,8 @@ setup3()
 	echo "If you're unsure, just hit Enter/Return"
 
 	# This is the default: KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -u /tmp/eib -b ip:"
-	# Needs to look like:  KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -n knxLogger -b tpuarts:/dev/ttyKNX1"  (Tijl)
-	#         or           KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -n knxLogger -b ft12cemi:/dev/ttyKNX1" (Weinzierl)
+	# Needs to look like:  KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -n captureKNX -b tpuarts:/dev/ttyKNX1"  (Tijl)
+	#         or           KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -n captureKNX -b ft12cemi:/dev/ttyKNX1" (Weinzierl)
 
 	#Extract the current values:
 	OLD_MYADDRESS=$(sed -n -E 's/^KNXD_OPTS.*-e ([[:digit:]]+.[[:digit:]]+.[[:digit:]]+) .*$/\1/p' /etc/knxd.conf)
@@ -461,7 +461,7 @@ setup3()
 	HATS=("Tijl/Tindie" "Weinzierl kBerry")
 	HAT_METHOD=("tpuarts" "ft12cemi")
 	echo ''
-	echo "The knxLogger is set to use the ${HATS[HAT_INDEX]} HAT"
+	echo "captureKNX is set to use the ${HATS[HAT_INDEX]} HAT"
 	read -p "Change to the ${HATS[1 - HAT_INDEX]} HAT? [y/N]: " CHG_HAT
 	case $CHG_HAT in
 		(y|Y)
@@ -516,23 +516,23 @@ setup3()
 	echo "If you're unsure, just hit Enter/Return"
 
 	# Extract the current values:
-	OLD_USERNAME=$(sed -n -E 's/^\s*INFLUXDB_INIT_USERNAME=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
-	OLD_PASSWORD=$(sed -n -E 's/^\s*INFLUXDB_INIT_PASSWORD=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
+	OLD_USERNAME=$(sed -n -E 's/^\s*INFLUXDB_INIT_USERNAME=(.*)$/\1/p' /etc/influxdb/captureKNX.env)
+	OLD_PASSWORD=$(sed -n -E 's/^\s*INFLUXDB_INIT_PASSWORD=(.*)$/\1/p' /etc/influxdb/captureKNX.env)
 
 	# We won't prompt the user for the token but do it here:
-	if grep -q "INFLUXDB_INIT_ADMIN_TOKEN=changeme" /etc/influxdb/knxLogger.env;
+	if grep -q "INFLUXDB_INIT_ADMIN_TOKEN=changeme" /etc/influxdb/captureKNX.env;
 	then
 		TOKEN=$(openssl rand -hex 32)
 	else
-		TOKEN=$(sed -n -E 's/^\s*INFLUXDB_INIT_ADMIN_TOKEN=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
+		TOKEN=$(sed -n -E 's/^\s*INFLUXDB_INIT_ADMIN_TOKEN=(.*)$/\1/p' /etc/influxdb/captureKNX.env)
 	fi
 
-	OLD_ORG=$(sed -n -E 's/^\s*INFLUXDB_INIT_ORG=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
-	OLD_BUCKET=$(sed -n -E 's/^\s*INFLUXDB_INIT_BUCKET=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
-	OLD_RETENTION=$(sed -n -E 's/^\s*INFLUXDB_INIT_RETENTION=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
+	OLD_ORG=$(sed -n -E 's/^\s*INFLUXDB_INIT_ORG=(.*)$/\1/p' /etc/influxdb/captureKNX.env)
+	OLD_BUCKET=$(sed -n -E 's/^\s*INFLUXDB_INIT_BUCKET=(.*)$/\1/p' /etc/influxdb/captureKNX.env)
+	OLD_RETENTION=$(sed -n -E 's/^\s*INFLUXDB_INIT_RETENTION=(.*)$/\1/p' /etc/influxdb/captureKNX.env)
 	# I'm not prompting the user, however these still need to be read so they can be stuffed into influx setup:
-	HOST=$(sed -n -E 's/^\s*INFLUXDB_INIT_HOST=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
-	PORT=$(sed -n -E 's/^\s*GRAFANA_PORT=(.*)$/\1/p' /etc/influxdb/knxLogger.env)
+	HOST=$(sed -n -E 's/^\s*INFLUXDB_INIT_HOST=(.*)$/\1/p' /etc/influxdb/captureKNX.env)
+	PORT=$(sed -n -E 's/^\s*GRAFANA_PORT=(.*)$/\1/p' /etc/influxdb/captureKNX.env)
 
 	read -e -i "$OLD_USERNAME" -p   'INFLUXDB_INIT_USERNAME    = ' USERNAME
 	read -e -i "$OLD_PASSWORD" -p   'INFLUXDB_INIT_PASSWORD    = ' PASSWORD
@@ -543,22 +543,22 @@ setup3()
 	# read -e -i "$OLD_HOST" -p       'INFLUXDB_INIT_HOST        = ' HOST
 	# read -e -i "$OLD_PORT" -p       'GRAFANA_PORT              = ' PORT
 
-	OLD_INFLUX_CHECKSUM=$(md5sum /etc/influxdb/knxLogger.env)
+	OLD_INFLUX_CHECKSUM=$(md5sum /etc/influxdb/captureKNX.env)
 	#Paste in the new settings. (I used "|" as the delimiter for all, as "/" is in the replacement for the path
-	sed -i -E "s|^(\s*INFLUXDB_INIT_USERNAME=)(.*)|\1$USERNAME|"   /etc/influxdb/knxLogger.env
-	sed -i -E "s|^(\s*INFLUXDB_INIT_PASSWORD=)(.*)|\1$PASSWORD|"   /etc/influxdb/knxLogger.env
-	sed -i -E "s|^(\s*INFLUXDB_INIT_ADMIN_TOKEN=)(.*)|\1$TOKEN|"   /etc/influxdb/knxLogger.env
-	sed -i -E "s|^(\s*INFLUXDB_INIT_ORG=)(.*)|\1$ORG|"             /etc/influxdb/knxLogger.env
-	sed -i -E "s|^(\s*INFLUXDB_INIT_BUCKET=)(.*)|\1$BUCKET|"       /etc/influxdb/knxLogger.env
-	sed -i -E "s|^(\s*INFLUXDB_INIT_RETENTION=)(.*)|\1$RETENTION|" /etc/influxdb/knxLogger.env
-	# sed -i -E "s|^(\s*INFLUXDB_INIT_HOST=)(.*)|\1$HOST|"           /etc/influxdb/knxLogger.env
-	# sed -i -E "s|^(\s*GRAFANA_PORT=)(.*)|\1$PORT|"                 /etc/influxdb/knxLogger.env
-	NEW_INFLUX_CHECKSUM=$(md5sum /etc/influxdb/knxLogger.env)
+	sed -i -E "s|^(\s*INFLUXDB_INIT_USERNAME=)(.*)|\1$USERNAME|"   /etc/influxdb/captureKNX.env
+	sed -i -E "s|^(\s*INFLUXDB_INIT_PASSWORD=)(.*)|\1$PASSWORD|"   /etc/influxdb/captureKNX.env
+	sed -i -E "s|^(\s*INFLUXDB_INIT_ADMIN_TOKEN=)(.*)|\1$TOKEN|"   /etc/influxdb/captureKNX.env
+	sed -i -E "s|^(\s*INFLUXDB_INIT_ORG=)(.*)|\1$ORG|"             /etc/influxdb/captureKNX.env
+	sed -i -E "s|^(\s*INFLUXDB_INIT_BUCKET=)(.*)|\1$BUCKET|"       /etc/influxdb/captureKNX.env
+	sed -i -E "s|^(\s*INFLUXDB_INIT_RETENTION=)(.*)|\1$RETENTION|" /etc/influxdb/captureKNX.env
+	# sed -i -E "s|^(\s*INFLUXDB_INIT_HOST=)(.*)|\1$HOST|"           /etc/influxdb/captureKNX.env
+	# sed -i -E "s|^(\s*GRAFANA_PORT=)(.*)|\1$PORT|"                 /etc/influxdb/captureKNX.env
+	NEW_INFLUX_CHECKSUM=$(md5sum /etc/influxdb/captureKNX.env)
 	if [[ $NEW_INFLUX_CHECKSUM != $OLD_INFLUX_CHECKSUM ]];
 	then
-		echo -e ""$GREEN"Changed values written to /etc/influxdb/knxLogger.env OK."$RESET""
+		echo -e ""$GREEN"Changed values written to /etc/influxdb/captureKNX.env OK."$RESET""
 	else
-		echo -e ""$GREEN"No changes made to /etc/influxdb/knxLogger.env"$RESET""
+		echo -e ""$GREEN"No changes made to /etc/influxdb/captureKNX.env"$RESET""
 	fi
 
 	# Paste the values into telegraf.conf:
@@ -591,9 +591,9 @@ setup3()
 	fi
 
 	# Add our custom .env to the service:
-	if ! grep -q '^EnvironmentFile=-/etc/influxdb/knxLogger.env' /lib/systemd/system/influxdb.service;
+	if ! grep -q '^EnvironmentFile=-/etc/influxdb/captureKNX.env' /lib/systemd/system/influxdb.service;
 	then
-		sed -i '/EnvironmentFile=-\/etc\/default\/influxdb2/a EnvironmentFile=-/etc/influxdb/knxLogger.env' /lib/systemd/system/influxdb.service
+		sed -i '/EnvironmentFile=-\/etc\/default\/influxdb2/a EnvironmentFile=-/etc/influxdb/captureKNX.env' /lib/systemd/system/influxdb.service
 	fi
 	echo ''
 
@@ -624,7 +624,7 @@ setup3()
 			echo -e ""$YELLOW"Creating the initial InfluxDB config threw an error. Re-run setup and cross your fingers"$RESET""
 		fi
 
-	elif [[ $isInfluxConfigured == *"knxLogger"* ]];
+	elif [[ $isInfluxConfigured == *"captureKNX"* ]];
 	then
 		echo -e "\n"$GREEN"Skipping: InfluxDB has already been set up"$RESET""
 	fi
@@ -639,20 +639,20 @@ setup3()
 	then
 		echo "isTelegrafConfiguration returned: $isTelegrafConfiguration"
 		echo -e ""$YELLOW"Querying InfluxDB *telegraf* config threw an error. Re-run setup and cross your fingers"$RESET""
-	elif [[ $IsInfluxTelegrafs == *"knxLogger"* ]];
+	elif [[ $IsInfluxTelegrafs == *"captureKNX"* ]];
 	then
 		# Config exists? Run an UPDATE. Pull the ID out of IsInfluxTelegrafs:
 		echo -e "\nInfluxDB telegraf config already exists. Updating"
 		EXISTING_ID=$(echo $IsInfluxTelegrafs | cut -d ' ' -f1)
 		set +e #Suspend the error trap
-		isTelegrafUpdated=$(influx telegrafs update -id $EXISTING_ID -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf --hide-headers 2>&1)
+		isTelegrafUpdated=$(influx telegrafs update -id $EXISTING_ID -n "captureKNX" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf --hide-headers 2>&1)
 		set -e #Resume the error trap
 		# echo "OUTPUT >>> $isTelegrafUpdated"
 		if [[ $isTelegrafUpdated == *"unknown command"* ]];
 		then
 			echo "isTelegrafUpdated returned: $isTelegrafUpdated"
 			echo -e ""$YELLOW"Querying InfluxDB *telegraf* config threw an error. Re-run setup and cross your fingers"$RESET""
-		elif [[ $isTelegrafUpdated == *"knxLogger"* ]];
+		elif [[ $isTelegrafUpdated == *"captureKNX"* ]];
 		then
 			echo -e "\n"$GREEN"InfluxDB telegraf config updated OK"$RESET""
 		fi
@@ -661,7 +661,7 @@ setup3()
 		echo -e "\n"$GREEN"No InfluxDB *telegraf* config found. Creating new"$RESET""
 		# Create new:
 		set +e #Suspend the error trap
-		isTelegrafConfiguration=$(influx telegrafs create -n "knxLogger" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf 2>&1)
+		isTelegrafConfiguration=$(influx telegrafs create -n "captureKNX" -d "Created by setup.sh" -f /etc/telegraf/telegraf.conf 2>&1)
 		set -e #Resume the error trap
 		# echo "OUTPUT >>> $isTelegrafConfiguration"
 		if [[ $isTelegrafConfiguration == *"has already been set up"* ]];
@@ -713,12 +713,12 @@ setup3()
 	systemctl enable grafana-server
 	systemctl restart grafana-server
 
-	echo -e ""$GREEN"Enabling knxLogger.service"$RESET""
-	systemctl enable knxLogger.service
-	systemctl restart knxLogger.service
+	echo -e ""$GREEN"Enabling captureKNX.service"$RESET""
+	systemctl enable captureKNX.service
+	systemctl restart captureKNX.service
 
 	echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
-	apt-get purge bluez -y	
+	apt-get purge bluez -y
  	rm -f influxdb2_2.7.8-1_arm64.deb
 	rm -f grafana-enterprise_11.1.3_arm64.deb
 	rm -rfd /home/${SUDO_USER}/staging/
@@ -752,16 +752,16 @@ read_TTY()
 test_install()
 {
 	echo ''
-	latestknxLoggerRls=$(curl --silent "https://api.github.com/repos/greiginsydney/intervalometerator/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
-	echo "Latest release of knxLogger is    v$latestknxLoggerRls"
-	if [ -f /home/${SUDO_USER}/knxLogger/version ];
+	latestcaptureKNXRls=$(curl --silent "https://api.github.com/repos/greiginsydney/intervalometerator/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+	echo "Latest release of captureKNX is    v$latestcaptureKNXRls"
+	if [ -f /home/${SUDO_USER}/captureKNX/version ];
 	then
-		VERSION=$(cat /home/${SUDO_USER}/knxLogger/version)
-		if [[ $VERSION == $latestknxLoggerRls ]];
+		VERSION=$(cat /home/${SUDO_USER}/captureKNX/version)
+		if [[ $VERSION == $latestcaptureKNXRls ]];
 		then
-			echo -e ""$GREEN"Installed version of knxLogger is v$VERSION""$RESET"
+			echo -e ""$GREEN"Installed version of captureKNX is v$VERSION""$RESET"
 		else
-			echo -e ""$YELLOW"Installed version of knxLogger is v$VERSION""$RESET"
+			echo -e ""$YELLOW"Installed version of captureKNX is v$VERSION""$RESET"
 		fi
 	else
 		echo -e ""$YELLOW"Version file not found"$RESET""
@@ -863,7 +863,7 @@ test_install()
 	if [[ $isKnxd ]]; then
 		systemctl is-active --quiet knxd.service   && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxd.service        || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxd.service
 		systemctl is-active --quiet knxd.socket    && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxd.socket         || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxd.socket; fi
-	systemctl is-active --quiet knxLogger          && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" knxLogger           || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" knxLogger
+	systemctl is-active --quiet captureKNX          && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" captureKNX           || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" captureKNX
 	if [[ $isTelegraf  ]]; then
 		systemctl is-active --quiet telegraf       && printf ""$GREEN"PASS:"$RESET" %-15s service is running\n" telegraf            || printf ""$YELLOW"FAIL:"$RESET" %-15s service is dead\n" telegraf; fi
 	if [[ $isInfluxd ]]; then
@@ -874,7 +874,7 @@ test_install()
 
 	echo '-------------------------------------'
 	test_config=0
-	if grep -q '# Added by setup.sh for the knxLogger' /boot/firmware/config.txt; then
+	if grep -q '# Added by setup.sh for captureKNX' /boot/firmware/config.txt; then
 		((test_config=test_config+1)); fi
 	if grep -q '^enable_uart=1' /boot/firmware/config.txt; then
 		((test_config=test_config+2)); fi
@@ -942,7 +942,7 @@ test_install()
 		echo -e ""$GREEN"PASS:"$RESET" knx project file $isKnxProject found"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" knx project file NOT found"
-		echo -e "      Copy one across to the /home/${SUDO_USER}/ folder and 'sudo systemctl restart knxLogger'"
+		echo -e "      Copy one across to the /home/${SUDO_USER}/ folder and 'sudo systemctl restart captureKNX'"
 	fi
 
 	echo '-------------------------------------'
