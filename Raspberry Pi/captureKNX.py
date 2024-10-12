@@ -7,9 +7,9 @@
 # You should have received a copy of the GNU General Public License along with this program.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
-# This script is part of the knxLogger project, which logs all KNX bus traffic to an InfluxDb for reporting via Grafana
-# https://github.com/greiginsydney/knxLogger
-# https://greiginsydney.com/knxlogger
+# This script is part of the captureKNX project, which logs all KNX bus traffic to an InfluxDb for reporting via Grafana
+# https://github.com/greiginsydney/captureKNX
+# https://greiginsydney.com/captureKNX
 
 
 import asyncio
