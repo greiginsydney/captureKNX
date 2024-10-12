@@ -128,4 +128,6 @@ My partner Rocky has designed a case you can print for all this to fit inside. T
 <br>
 Note that any Amazon links on this page are Affiliate links. I may earn some recognition if you go there, but you pay no extra for this.
 
+<br>
+
 [Top](#shopping-list)
