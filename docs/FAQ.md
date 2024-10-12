@@ -2,7 +2,7 @@
 
 ## General
 - [Can I build captureKNX using a microSD card?](#can-i-build-captureKNX-using-a-microsd-card)
-- [How do I update the logger with a new project file?](#how-do-i-update-the-logger-with-a-new-project-file)
+- [How do I update captureKNX with a new project file?](#how-do-i-update-captureKNX-with-a-new-project-file)
 
 ## InfluxDB
 - [How can I delete all the data in InfluxDB and start again?](#how-can-i-delete-all-the-data-in-influxdb-and-start-again)
@@ -28,7 +28,7 @@ As captureKNX isn't perhaps as 'mission critical' an application as some others,
 
 <hr>
 
-### How do I update the logger with a new project file?
+### How do I update captureKNX with a new project file?
 
 1. Follow the process in [Prepare The Topology Export](/docs/step1-prepare-the-topology-export.md).
 2. Copy the file to `/home/pi/`. (I use [WinSCP](https://winscp.net/) for this, but there are plenty of other tools that can do the same job.)
@@ -37,7 +37,7 @@ As captureKNX isn't perhaps as 'mission critical' an application as some others,
 ```text
 sudo systemctl restart captureKNX
 ```
-4. When it restarts, the logger script will detect the presence of a newer project file and extract its content.
+4. When it restarts, the captureKNX script will detect the presence of a newer project file and extract its content.
 
 [Top](#frequently-asked-questions)
 <hr>
@@ -80,7 +80,7 @@ This is usually because the Group Address was added after the project file was e
 
 Search the captureKNX.log file (in `/home/pi/captureKNX/log`) for the Group Address, or the text 'The telegram has been discarded'.
 
-To resolve this issue, export a new project file, copy it to the Pi and restart the captureKNX service. See [How do I update the logger with a new project file?](/docs/FAQ.md#How-do-i-update-the-logger-with-a-new-project-file)
+To resolve this issue, export a new project file, copy it to the Pi and restart the captureKNX service. See [How do I update captureKNX with a new project file?](/docs/FAQ.md#How-do-i-update-captureKNX-with-a-new-project-file)
 
 #### Your captureKNX hasn't seen any traffic to it yet
 A less common cause only manifests in new captureKNX installations. Grafana doesn't know a Group Address exists until a Telegram has been sent to it and it's logged in the database. If in doubt, toggle the GA on/off or otherwise send it a message.
