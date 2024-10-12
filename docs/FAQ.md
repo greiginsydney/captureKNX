@@ -1,7 +1,7 @@
 # Frequently Asked Questions
 
 ## General
-- [Can I build the captureKNX using a microSD card?](#can-i-build-the-captureKNX-using-a-microsd-card)
+- [Can I build captureKNX using a microSD card?](#can-i-build-captureKNX-using-a-microsd-card)
 - [How do I update the logger with a new project file?](#how-do-i-update-the-logger-with-a-new-project-file)
 
 ## InfluxDB
@@ -14,7 +14,7 @@
 <br/>
 <hr/>
 
-### Can I build the captureKNX using a microSD card?
+### Can I build captureKNX using a microSD card?
 
 Sure - but it's not best practice for what we're doing here.
 
@@ -22,7 +22,7 @@ Sure - but it's not best practice for what we're doing here.
 
 We've gone with external storage that's designed to survive the read/write onslaught, and as a bonus the Pi is a LOT faster.
 
-As the captureKNX isn't perhaps as 'mission critical' an application as some others, you might choose to build it onto an SD card. None of the installation steps change if you do this.
+As captureKNX isn't perhaps as 'mission critical' an application as some others, you might choose to build it onto an SD card. None of the installation steps change if you do this.
 
 [Top](#frequently-asked-questions)
 
@@ -74,7 +74,7 @@ This is what the end result will look like:
 
 ### Why are some Group Addresses not showing in the reports or logs?
 
-#### It's not in the project file the captureKNX is using
+#### It's not in the project file captureKNX is using
 
 This is usually because the Group Address was added after the project file was exported for captureKNX. As captureKNX doesn't know what type of DataPoint the GA is, any telegrams to it are discarded.
 
