@@ -85,3 +85,11 @@ Thankfully Pimoroni has a [VERY detailed page](https://learn.pimoroni.com/articl
 [Top](/docs/FAQ.md#advanced-applications)
 
 <hr>
+
+## Grafana Alerts
+
+TODO
+
+[Top](/docs/FAQ.md#advanced-applications)
+
+<hr>
