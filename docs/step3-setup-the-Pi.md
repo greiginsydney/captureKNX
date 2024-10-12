@@ -2,7 +2,7 @@
 
 If you're starting a Pi o/s build from scratch, jump back to [step2-prepare-the-pi.md](/docs/step2-prepare-the-pi.md).
 
-If you're upgrading an existing knxLogger the upgrade process is a lot simpler, and that's on the [upgrade](/docs/upgrade.md) page.
+If you're upgrading an existing captureKNX the upgrade process is a lot simpler, and that's on the [upgrade](/docs/upgrade.md) page.
 
 If you have previously formatted your drive and the Pi is ready to go, stay here.
 
@@ -14,9 +14,9 @@ The KNX "hat" on the Pi needs some addresses within the KNX topology. It only ev
 
 The installation will prompt you for them. The default values are four addresses starting from 1.1.250 (hoping they're well out of your active range). Please change these when prompted if they're already in use.
 
-The script installs the reporting component `InfluxDB`, which also requires a user login name and password for its web interface. The terribly unsecure 'knxLogger' is the default for both, and you should please change them when prompted. 
+The script installs the reporting component `InfluxDB`, which also requires a user login name and password for its web interface. The terribly unsecure 'captureKNX' is the default for both, and you should please change them when prompted. 
 
-You'll also be asked for an 'organisation' and a 'bucket'. Neither name are particularly important. The former could be the name of the building, its street name, or something like that. The 'bucket' is the name of the database. 'knxLogger' is as good a value for that as any, but feel free to change it - but be aware it will be visible all the time on the data visualisation screens. (Keep it short too).
+You'll also be asked for an 'organisation' and a 'bucket'. Neither name are particularly important. The former could be the name of the building, its street name, or something like that. The 'bucket' is the name of the database. 'captureKNX' is as good a value for that as any, but feel free to change it - but be aware it will be visible all the time on the data visualisation screens. (Keep it short too).
 
 
 | Prompt | What is it? | Default value |
@@ -24,10 +24,10 @@ You'll also be asked for an 'organisation' and a 'bucket'. Neither name are part
 | My KNX network client address | A spare physical address | 1.1.250 |
 | Sending KNX network client start address | A spare physical address | The above + 1 |
 | Sending KNX network client count | How many sending client addresses to reserve | 1 |
-| INFLUXDB_INIT_USERNAME | Influx web user login | knxLogger |
-| INFLUXDB_INIT_PASSWORD | InfluxDB web user password | knxLogger |
-| INFLUXDB_INIT_ORG | An 'organisation name' | knxLogger |
-| INFLUXDB_INIT_BUCKET | The database name | knxLogger |
+| INFLUXDB_INIT_USERNAME | Influx web user login | captureKNX |
+| INFLUXDB_INIT_PASSWORD | InfluxDB web user password | captureKNX |
+| INFLUXDB_INIT_ORG | An 'organisation name' | captureKNX |
+| INFLUXDB_INIT_BUCKET | The database name | captureKNX |
 | INFLUXDB_INIT_RETENTION | How long to retain the data | "52w", a full year |
 
 <br>
@@ -163,7 +163,7 @@ cd ~
 sudo rm -rfd staging
 ```
 ```txt
-git clone --depth=1 https://github.com/greiginsydney/knxLogger staging/knxLogger
+git clone --depth=1 https://github.com/greiginsydney/captureKNX staging/captureKNX
 ```
 
 > Advanced tip: if you're testing code and want to install a new branch direct from the repo, add `-b <branchName>` on the end of the line.
@@ -173,7 +173,7 @@ git clone --depth=1 https://github.com/greiginsydney/knxLogger staging/knxLogger
 33. Now we need to move the setup.sh script file into its final location:
 
 ```txt
-mv -fv "staging/knxLogger/Raspberry Pi/setup.sh" ~
+mv -fv "staging/captureKNX/Raspberry Pi/setup.sh" ~
 ``` 
 
 34. All the hard work is done by the script, but it needs to be made executable first:
