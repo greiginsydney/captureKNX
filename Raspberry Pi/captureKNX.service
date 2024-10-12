@@ -7,13 +7,13 @@
 # You should have received a copy of the GNU General Public License along with this program.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
-# This script is part of the knxLogger project, an on-prem Pi-based logging system for your KNX network:
-# https://github.com/greiginsydney/knxLogger
-# https://greiginsydney.com/knxLogger
+# This script is part of the captureKNX project, an on-prem Pi-based logging system for your KNX network:
+# https://github.com/greiginsydney/captureKNX
+# https://greiginsydney.com/captureKNX
 
 
 [Unit]
-Description=knxLogger script. Runs continuously, asynchronously reading KNX bus data & POSTing it to telegraf
+Description=captureKNX script. Runs continuously, asynchronously reading KNX bus data & POSTing it to telegraf
 Requires=knxd.service
 After=knxd.service
 
@@ -24,9 +24,9 @@ StartLimitBurst=5
 Type=simple
 User=pi
 Group=www-data
-WorkingDirectory=/home/pi/knxLogger
-Environment="PATH=/home/pi/knxLogger"
-ExecStart=/home/pi/venv/bin/python3 /home/pi/knxLogger/knxLogger.py
+WorkingDirectory=/home/pi/captureKNX
+Environment="PATH=/home/pi/captureKNX"
+ExecStart=/home/pi/venv/bin/python3 /home/pi/captureKNX/captureKNX.py
 StandardError=journal
 
 Restart=on-failure
