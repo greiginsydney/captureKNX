@@ -96,7 +96,7 @@ Thankfully Pimoroni has a [VERY detailed page](https://learn.pimoroni.com/articl
 
 <hr>
 
-## Grafana Alerts
+## Setup Grafana Alerts
 
 Grafana has a powerful alerting capability. It can send notifications to a range of destinations, including e-mail and webhooks, as well as numerous third-party applications.
 
