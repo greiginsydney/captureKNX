@@ -88,7 +88,17 @@ Thankfully Pimoroni has a [VERY detailed page](https://learn.pimoroni.com/articl
 
 ## Grafana Alerts
 
-TODO
+Grafana has a powerful alerting capability.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/02fa0eff-ea9a-4147-abe4-53705e951198" width="100%">
+</p>
+
+It can send notifications to a range of destinations, including e-mail and webhooks.
+
+- [Get started with Grafana Alerting - Part 1](https://grafana.com/tutorials/alerting-get-started/)
+- 
+
 
 [Top](/docs/FAQ.md#advanced-applications)
 
