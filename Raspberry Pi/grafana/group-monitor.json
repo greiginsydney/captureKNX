@@ -74,7 +74,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 60
+                "value": 80
               }
             ]
           },
@@ -198,7 +198,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 60
+                "value": 80
               }
             ]
           },
@@ -214,7 +214,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 60
+                "value": 80
               }
             ]
           },
@@ -230,7 +230,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 40
+                "value": 80
               }
             ]
           }
