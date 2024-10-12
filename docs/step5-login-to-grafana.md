@@ -42,18 +42,20 @@ OK, here's where all the fun happens.
   <img src="https://github.com/user-attachments/assets/5001028f-9350-418e-8925-6c26e5c062b2" width="100%">
 </p>
 
-7. The telegrams that have been received since the installation will be here:
+7. The telegrams that have been received since the installation will be here: <br id="demo"/>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/7531f7d6-8b13-4b17-b838-6e539359be4e" width="100%">
+  <img src="https://github.com/user-attachments/assets/37bdf35d-dd13-4d7c-a1ba-51e3e7edc2fe" width="100%">
 </p>
 
 There are a few things you can easily do with this view:
 - click (7) and (8) to maximise the view, removing some of the clutter
 - Click the vertical ellipsis (9) to edit this dashboard "panel". (It only becomes visible when your mouse is within the panel.) Let's not go there just yet...
-- (10) lets you filter the time window you're seeing
-- (11) will refresh the view, and to its right (hidden by the 8) is a "v" that lets you choose an auto-refresh rate
-- Click any of the column headings (12) to sort the view by that element
+- (10) lets you adjust the time window you're seeing. 'last five minutes' is the narrowest, through 'today so far' and many longer time periods
+- (11) will refresh the view, and to its right is a "v" that lets you choose an auto-refresh rate (with every 5 seconds selected at the moment)
+- Click the arrow next to the Time label (12) to order all records by oldest or newest at the top
+- Click any of the OTHER column headings to instead sort them alphabetically ascending or descending. (The arrow will move to that column to show the view is being sorted by that element.)
+- Click the funnel icon (14) next to any of the titles to filter to one or more values. This is INCREDIBLY powerful!! You can filter on multiple columns at the same time, and each will show the funnel in blue so you can see at a glance what's flavouring the current view. 
 
 ## Welcome to your knxLogger!
 
