@@ -1,6 +1,14 @@
 # Advanced Applications
 
-The knxLogger described here is a stand-alone on-site device, however if you're a little more adventurous, here are a few more things you can do with it.
+The knxLogger described here is a stand-alone on-site device, however if you're a little more adventurous, here are a few more things you can do with it:
+
+- [Setup the Pi as a Wi-Fi Access Point](/docs/advanced-applicationsFAQ.md#setup-the-pi-as-a-wi-fi-access-point)
+- ['Plug and play' - bake the Wi-Fi credentials into the Pi](/docs/advanced-applicationsFAQ.md#plug-and-play-bake-the-wi-fi-credentials-into-the-pi)
+- [InfluxDB Cloud](/docs/advanced-applicationsFAQ.md#influsxb-cloud)
+- [Add remote.it for remote access](/docs/advanced-applicationsFAQ.md#add-remote-it-for-remote-access)
+- [NVMe Storage](/docs/advanced-applicationsFAQ.md#nvme-storage)
+- [Setup Grafana Alerts](/docs/advanced-applicationsFAQ.md#setup-grafana-alerts)
+
 
 <hr/> 
 
@@ -10,13 +18,13 @@ The knxLogger described here is a stand-alone on-site device, however if you're 
   <img src="https://github.com/user-attachments/assets/f5cd44ab-5219-4930-a20e-c2b0d0e73914" width="25%">
 </p>
 
-Let's say you're in the process of configuring and debugging a new KNX installation, but the customer's IT infrastructure's not been commissioned yet. If you can't get the knxLogger onto the network, how can you talk to it?
+Let's say you're in the process of configuring and debugging a new KNX installation, but the customer's IT infrastructure's not been commissioned yet. If you can't get the knxLogger onto a network, how can you talk to it?
 
 Not a problem, just turn its host Pi *into* the network! The Raspberry Pi's in-built Wi-Fi radio is able to behave as a Wi-Fi network of its own. You can leave the knxLogger on-site, and each day connect your PC to it and review the logs from overnight and the day before. When the customer's network is provisioned, just flip the knxLogger back to being a client (whether that be wired or wireless).
 
 Note that the Raspberry Pi's on-board hardware only supports 2.4GHz wireless, not 5GHz. (If you have a need for the 5GHz band, you can plug in a USB W-Fi dongle.)
 
-TODO: I hope to add the config options for this to the setup script in the near future (before end CY 2024). 
+TODO: I plan to add the config options for this to the setup script in the near future (before end CY 2024). 
 
 [Top](/docs/FAQ.md#advanced-applications)
 
