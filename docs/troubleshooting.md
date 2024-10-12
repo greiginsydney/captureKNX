@@ -1,26 +1,26 @@
 # Troubleshooting
 
-The knxLogger is a consolidation of multiple open-source & freeware software components, all running on the one Raspberry Pi 5 single board computer.
+The captureKNX is a consolidation of multiple open-source & freeware software components, all running on the one Raspberry Pi 5 single board computer.
 
 The 'hat' provides the physical interface to the KNX TP Line, and the ensuing components read and format the telegrams, then stuff them in the InfluxDB database. Grafana is the 'visualisation' component that lets you easily review and filter the raw logs, and/or create dashboards of useful values, all of which you access from a web browser.
 
 ![image](https://github.com/user-attachments/assets/e46410d2-74dd-42a9-acd8-e19f3be63a16)
 
-If you're encountering problems with the knxLogger, use this diagram to help understand the flow and where to focus your attention.
+If you're encountering problems with the captureKNX, use this diagram to help understand the flow and where to focus your attention.
 
-- [Start here](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#start-here)
-- [knxd](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#knxd)
-- [KNXDClient](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#knxdclient)
-- [knxLogger](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#knxLogger)
-- [telegraf](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#telegraf)
-- [InfluxDB](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#influxdb)
-- [Grafana](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#grafana)
+- [Start here](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#start-here)
+- [knxd](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#knxd)
+- [KNXDClient](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#knxdclient)
+- [captureKNX](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#captureKNX)
+- [telegraf](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#telegraf)
+- [InfluxDB](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#influxdb)
+- [Grafana](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#grafana)
 
 <hr/>
 
 ## Start here
 
-First off, don't forget the knxLogger is an IT device, so MANY problems will be resolved just by turning it off and back on again - or at least a reboot.
+First off, don't forget the captureKNX is an IT device, so MANY problems will be resolved just by turning it off and back on again - or at least a reboot.
 
 `sudo reboot now`
 
@@ -30,63 +30,63 @@ If the problems are continuing after a reboot, run the setup script's `test` mod
 
 ![image](https://github.com/user-attachments/assets/8afd556d-7d82-4953-a8da-d9ca40f6b516)
 
-The tests check common errors and misconfigurations, and will be added to as the knxLogger evolves. It needs to be said however that sometimes the script will report everying PASSing, but the knxLogger's still misbehaving. Further investigation is required.
+The tests check common errors and misconfigurations, and will be added to as the captureKNX evolves. It needs to be said however that sometimes the script will report everying PASSing, but the captureKNX's still misbehaving. Further investigation is required.
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
 
 ## knxd
 
-knxd reads what's coming from the bus and makes it available for KNXDClient and the knxLogger script.
+knxd reads what's coming from the bus and makes it available for KNXDClient and the captureKNX script.
 
 You can check if knxd is running OK with `sudo systemctl status knxd`. If there's any red in the output, check if there's anything of interest in the journal (`journalctl | grep knxd`):
 
 #### Opening /dev/ttyKNX1 failed: No such file or directory
 
 ```
-Oct 08 14:24:41 knxLogger-Weinzierl systemd[1]: Stopped knxd.service - KNX Daemon.
-Oct 08 14:24:41 knxLogger-Weinzierl systemd[1]: Starting knxd.service - KNX Daemon...
-Oct 08 14:24:41 knxLogger-Weinzierl knxd[1309]: E00000067: [19:B.tpuarts] Opening /dev/ttyKNX1 failed: No such file or directory
-Oct 08 14:24:41 knxLogger-Weinzierl knxd[1309]: F00000105: [16:B.tpuarts] Link down, terminating
-Oct 08 14:24:41 knxLogger-Weinzierl systemd[1]: Started knxd.service - KNX Daemon.
-Oct 08 14:24:41 knxLogger-Weinzierl systemd[1]: knxd.service: Main process exited, code=exited, status=1/FAILURE
-Oct 08 14:24:41 knxLogger-Weinzierl systemd[1]: knxd.service: Failed with result 'exit-code'.
+Oct 08 14:24:41 captureKNX-Weinzierl systemd[1]: Stopped knxd.service - KNX Daemon.
+Oct 08 14:24:41 captureKNX-Weinzierl systemd[1]: Starting knxd.service - KNX Daemon...
+Oct 08 14:24:41 captureKNX-Weinzierl knxd[1309]: E00000067: [19:B.tpuarts] Opening /dev/ttyKNX1 failed: No such file or directory
+Oct 08 14:24:41 captureKNX-Weinzierl knxd[1309]: F00000105: [16:B.tpuarts] Link down, terminating
+Oct 08 14:24:41 captureKNX-Weinzierl systemd[1]: Started knxd.service - KNX Daemon.
+Oct 08 14:24:41 captureKNX-Weinzierl systemd[1]: knxd.service: Main process exited, code=exited, status=1/FAILURE
+Oct 08 14:24:41 captureKNX-Weinzierl systemd[1]: knxd.service: Failed with result 'exit-code'.
 ```
 
 The config looked good for this one. This is what it's meant to look like, with ttyAMA0 owned by knxd/dialout and its alias ttyKNX1 by root/root:
 ```
-pi@knxLogger-Weinzierl:~ $ ls -l /dev/tty[A-Z]*
+pi@captureKNX-Weinzierl:~ $ ls -l /dev/tty[A-Z]*
 crw-rw---- 1 knxd dialout 204, 64 Oct  8 14:35 /dev/ttyAMA0
 crw-rw---- 1 root dialout 204, 74 Oct  8 14:32 /dev/ttyAMA10
 lrwxrwxrwx 1 root root          7 Oct  8 14:31 /dev/ttyKNX1 -> ttyAMA0
 crw-rw---- 1 root dialout   4, 64 Oct  8 14:31 /dev/ttyS0
-pi@knxLogger-Weinzierl:~ $
+pi@captureKNX-Weinzierl:~ $
 ```
 
 This issue was fixed by a reboot.
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
 
 ## KNXDclient
 
-KNXDclient doesn't run as a service, so it's not something you can directly test. Skip to the knxLogger, as it uses KNXDclient to talk to the bus.
+KNXDclient doesn't run as a service, so it's not something you can directly test. Skip to the captureKNX, as it uses KNXDclient to talk to the bus.
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
 
-## knxLogger
+## captureKNX
 
-`sudo systemctl status knxLogger.service` should report more green: a green dot, and `active (running)`.
+`sudo systemctl status captureKNX.service` should report more green: a green dot, and `active (running)`.
 
 ![image](https://github.com/user-attachments/assets/452c757b-8ab2-40f4-b9cf-c55c355b1381)
 
@@ -96,14 +96,14 @@ Press `Q` to exit this view.
 
 Any errors with the script and its service should be visible. 
 
-Review the error log for obvious issues: `journalctl --no-pager --unit knxLogger`.
+Review the error log for obvious issues: `journalctl --no-pager --unit captureKNX`.
 
-Review the content of the `/home/pi/knxLogger/knxLogger.log` file. 
+Review the content of the `/home/pi/captureKNX/captureKNX.log` file. 
 
 Search for occurrences of the text "unzip_topo_archive". This is logged each time the script is launched. Here are the three possible messages:
 
 #### unzip_topo_archive: No topology file found
-Whoops. This is *probably* a fatal error: you've forgotten to copy the project file across, so knxLogger (and KNXDClient) don't know how to interpret the telegrams being received. Worst case: all telegrams are being discarded.
+Whoops. This is *probably* a fatal error: you've forgotten to copy the project file across, so captureKNX (and KNXDClient) don't know how to interpret the telegrams being received. Worst case: all telegrams are being discarded.
 
 (If you've previously copied a file across and the script's already unzipped it to extract 0.xml and project.xml, its absence won't be fatal.)
 
@@ -113,29 +113,29 @@ The script has found a new/newer project file and it's been unzipped and decoded
 
 #### unzip_topo_archive: existing XML files are younger than /home/pi/5AB-20240926.knxproj. Skipping extraction
 
-An established (healthy) knxLogger should report this frequently.
+An established (healthy) captureKNX should report this frequently.
 
-If the issue you're chasing is missing telegrams, copy a fresh project file across and restart the knxLogger service with `sudo systemtctl restart knxLogger.service`.
+If the issue you're chasing is missing telegrams, copy a fresh project file across and restart the captureKNX service with `sudo systemtctl restart captureKNX.service`.
 
-### Still can't start the knxLogger service?
+### Still can't start the captureKNX service?
 
 Run it manually (rather than in the background as a service). This should flush out any issues with the script itself:
 ```
 cd ~ && source venv/bin/activate
-cd knxLogger
-python3 knxLogger.py
+cd captureKNX
+python3 captureKNX.py
 ```
 If it runs OK, you'll need to control-C to break out.
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
 
 ## telegraf
 
-telegraf runs as a service, so check if it's running OK. The output will look similar to that for the knxLogger.
+telegraf runs as a service, so check if it's running OK. The output will look similar to that for the captureKNX.
 
 `sudo systemctl status telegraf.service`
 
@@ -197,7 +197,7 @@ In the same folder as `telegraf.log` is the file `debug_output.log`. This is an 
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
 
@@ -211,7 +211,7 @@ Review the error log for obvious issues: `journalctl --no-pager --unit influxdb`
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
 
@@ -236,7 +236,7 @@ We're running the Enterprise *build* of the software, but it runs unlicenced in 
 Check Grafana and InfluxDB are getting along:
 
 1. Browse to Grafana's Data Sources: http://&lt;YourIP&gt;3000/connections/datasources
-2. Click on the knxLogger entry.
+2. Click on the captureKNX entry.
 3. Scroll to the bottom and click on the Test button. This will hopefully reveal success:
    
 ![image](https://github.com/user-attachments/assets/f496dea5-5e5e-4396-96af-5a1fd90e69a1)
@@ -252,6 +252,6 @@ Resolution: TODO
 
 <br>
 
-[Top](https://github.com/greiginsydney/knxLogger/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
 
 <hr>
