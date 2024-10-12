@@ -3,9 +3,9 @@
 The knxLogger described here is a stand-alone on-site device, however if you're a little more adventurous, here are a few more things you can do with it:
 
 - [Setup the Pi as a Wi-Fi Access Point](#setup-the-pi-as-a-wi-fi-access-point)
-- ['Plug and play' - bake the Wi-Fi credentials into the Pi](#plug-and-play-bake-the-wi-fi-credentials-into-the-pi)
+- ['Plug and play' - bake the Wi-Fi credentials into the Pi](#plug-and-play---bake-the-wi-fi-credentials-into-the-pi)
 - [InfluxDB Cloud](#influxdb-cloud)
-- [Add remote.it for remote access](#add-remote-it-for-remote-access)
+- [Add remote.it for remote access](#add-remoteit-for-remote-access)
 - [NVMe Storage](#nvme-storage)
 - [Setup Grafana Alerts](#setup-grafana-alerts)
 
