@@ -1,6 +1,6 @@
 # Advanced Applications
 
-The knxLogger described here is a stand-alone on-site device, however if you're a little more adventurous, here are a few more things you can do with it:
+The captureKNX described here is a stand-alone on-site device, however if you're a little more adventurous, here are a few more things you can do with it:
 
 - [Setup the Pi as a Wi-Fi Access Point](#setup-the-pi-as-a-wi-fi-access-point)
 - ['Plug and play' - bake the Wi-Fi credentials into the Pi](#plug-and-play---bake-the-wi-fi-credentials-into-the-pi)
@@ -18,9 +18,9 @@ The knxLogger described here is a stand-alone on-site device, however if you're 
   <img src="https://github.com/user-attachments/assets/f5cd44ab-5219-4930-a20e-c2b0d0e73914" width="25%">
 </p>
 
-Let's say you're in the process of configuring and debugging a new KNX installation, but the customer's IT infrastructure's not been commissioned yet. If you can't get the knxLogger onto a network, how can you talk to it?
+Let's say you're in the process of configuring and debugging a new KNX installation, but the customer's IT infrastructure's not been commissioned yet. If you can't get the captureKNX onto a network, how can you talk to it?
 
-Not a problem, just turn its host Pi *into* the network! The Raspberry Pi's in-built Wi-Fi radio is able to behave as a Wi-Fi network of its own. You can leave the knxLogger on-site, and each day connect your PC to it and review the logs from overnight and the day before. When the customer's network is provisioned, just flip the knxLogger back to being a client (whether that be wired or wireless).
+Not a problem, just turn its host Pi *into* the network! The Raspberry Pi's in-built Wi-Fi radio is able to behave as a Wi-Fi network of its own. You can leave the captureKNX on-site, and each day connect your PC to it and review the logs from overnight and the day before. When the customer's network is provisioned, just flip the captureKNX back to being a client (whether that be wired or wireless).
 
 Note that the Raspberry Pi's on-board hardware only supports 2.4GHz wireless, not 5GHz. (If you have a need for the 5GHz band, you can plug in a USB W-Fi dongle.)
 
@@ -32,7 +32,7 @@ TODO: I plan to add the config options for this to the setup script in the near 
 
 ## 'Plug and play' - bake the Wi-Fi credentials into the Pi
 
-The knxLogger becomes an even more useful tool if you pre-configure it for 'plug and play' operation. You can automatically add the Wi-Fi credentials when you format the memory card, which can be a real time-saver.
+The captureKNX becomes an even more useful tool if you pre-configure it for 'plug and play' operation. You can automatically add the Wi-Fi credentials when you format the memory card, which can be a real time-saver.
 
 This somewhat hidden menu in the Raspberry Pi Imager software is accessed with control-shift-x:
 
@@ -55,11 +55,11 @@ Also, don't forget to enable SSH on the Services tab, and the 'use password auth
 </tr>
 </table>
 
-The knxLogger uses the free on-site version of InfluxDB. You might see this referenced as their "OSS" version.
+The captureKNX uses the free on-site version of InfluxDB. You might see this referenced as their "OSS" version.
 
 They also have a cloud offering, [InfluxDB Cloud](https://www.influxdata.com/products/influxdb-cloud/).
 
-If you're looking at making the knxLogger's captured telegrams accessible off-site, it's possible to have telegraf push them out to an instance of InfluxDB Cloud, and from there you can use [Grafana Cloud](https://grafana.com/products/cloud/) to visualise it.
+If you're looking at making the captureKNX's captured telegrams accessible off-site, it's possible to have telegraf push them out to an instance of InfluxDB Cloud, and from there you can use [Grafana Cloud](https://grafana.com/products/cloud/) to visualise it.
 
 The setup and config of these are beyond the scope of this project, but they remain an option.
 
