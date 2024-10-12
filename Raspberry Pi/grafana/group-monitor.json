@@ -25,7 +25,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "knxLogger"
+        "uid": "captureKNX"
       },
       "description": "",
       "fieldConfig": {
@@ -261,7 +261,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "knxLogger"
+            "uid": "captureKNX"
           },
           "groupBy": [],
           "measurement": "telegram",
