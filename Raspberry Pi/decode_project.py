@@ -7,9 +7,9 @@
 # You should have received a copy of the GNU General Public License along with this program.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
-# This script is part of the knxLogger project, which logs all KNX bus traffic to an InfluxDb for reporting via Grafana
-# https://github.com/greiginsydney/knxLogger
-# https://greiginsydney.com/knxlogger
+# This script is part of the captureKNX project, which logs all KNX bus traffic to an InfluxDb for reporting via Grafana
+# https://github.com/greiginsydney/captureKNX
+# https://greiginsydney.com/captureKNX
 
 
 import glob                         # Finding the most recent (youngest) project file
@@ -50,7 +50,7 @@ def unzip_project_archive():
                     for etsFile in (os.path.split(ETS_0_XML_FILE)[1], os.path.split(ETS_PROJECT_XML_FILE)[1]):
                         for thisFile in allFiles:
                             if etsFile == thisFile.split('/')[-1]:
-                                with open(PI_USER_HOME + '/knxLogger/' + etsFile , 'wb') as f:
+                                with open(PI_USER_HOME + '/captureKNX/' + etsFile , 'wb') as f:
                                     f.write(z.read(thisFile))
                                 break
             else:
