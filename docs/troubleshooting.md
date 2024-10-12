@@ -1,12 +1,12 @@
 # Troubleshooting
 
-The captureKNX is a consolidation of multiple open-source & freeware software components, all running on the one Raspberry Pi 5 single board computer.
+captureKNX is a consolidation of multiple open-source & freeware software components, all running on the one Raspberry Pi 5 single board computer.
 
-The 'hat' provides the physical interface to the KNX TP Line, and the ensuing components read and format the telegrams, then stuff them in the InfluxDB database. Grafana is the 'visualisation' component that lets you easily review and filter the raw logs, and/or create dashboards of useful values, all of which you access from a web browser.
+The 'HAT' provides the physical interface to the KNX TP Line, and the ensuing components read and format the telegrams, then stuff them in the InfluxDB database. Grafana is the 'visualisation' component that lets you easily review and filter the raw logs, and/or create dashboards of useful values, all of which you access from a web browser.
 
-![image](https://github.com/user-attachments/assets/e46410d2-74dd-42a9-acd8-e19f3be63a16)
+![image](https://github.com/user-attachments/assets/3d10536b-f79e-4b1d-bc2f-a06846e15518)
 
-If you're encountering problems with the captureKNX, use this diagram to help understand the flow and where to focus your attention.
+If you're encountering problems with captureKNX, use this diagram to help understand the flow and where to focus your attention.
 
 - [Start here](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#start-here)
 - [knxd](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#knxd)
@@ -20,7 +20,7 @@ If you're encountering problems with the captureKNX, use this diagram to help un
 
 ## Start here
 
-First off, don't forget the captureKNX is an IT device, so MANY problems will be resolved just by turning it off and back on again - or at least a reboot.
+First off, don't forget that captureKNX is an IT device, so MANY problems will be resolved just by turning it off and back on again - or at least a reboot.
 
 `sudo reboot now`
 
@@ -28,13 +28,13 @@ If the problems are continuing after a reboot, run the setup script's `test` mod
 
 `sudo -E -H ./setup.sh test`
 
-![image](https://github.com/user-attachments/assets/8afd556d-7d82-4953-a8da-d9ca40f6b516)
+![image](https://github.com/user-attachments/assets/ef482497-89e7-4168-bf66-2583abc1ab4a)
 
-The tests check common errors and misconfigurations, and will be added to as the captureKNX evolves. It needs to be said however that sometimes the script will report everying PASSing, but the captureKNX's still misbehaving. Further investigation is required.
+The tests check common errors and misconfigurations, and will be added to as captureKNX evolves. It needs to be said however that sometimes the script will report everying PASSing, but captureKNX's still misbehaving. Further investigation is required.
 
 <br>
 
-[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](#troubleshooting)
 
 <hr>
 
@@ -70,17 +70,17 @@ This issue was fixed by a reboot.
 
 <br>
 
-[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](#troubleshooting)
 
 <hr>
 
 ## KNXDclient
 
-KNXDclient doesn't run as a service, so it's not something you can directly test. Skip to the captureKNX, as it uses KNXDclient to talk to the bus.
+KNXDclient doesn't run as a service, so it's not something you can directly test. Skip to captureKNX, as it uses KNXDclient to talk to the bus.
 
 <br>
 
-[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](#troubleshooting)
 
 <hr>
 
@@ -88,7 +88,7 @@ KNXDclient doesn't run as a service, so it's not something you can directly test
 
 `sudo systemctl status captureKNX.service` should report more green: a green dot, and `active (running)`.
 
-![image](https://github.com/user-attachments/assets/452c757b-8ab2-40f4-b9cf-c55c355b1381)
+![image](https://github.com/user-attachments/assets/2a681ca7-4814-4e1d-9dba-4106c41decc8)
 
 If text has vanished off to the RHS of the screen (like as shown on the bottom line here) use your right arrow key to scroll the view (and left arrow to return).
 
@@ -125,17 +125,17 @@ cd ~ && source venv/bin/activate
 cd captureKNX
 python3 captureKNX.py
 ```
-If it runs OK, you'll need to control-C to break out.
+Fatal errors will be output to the screen. If it runs OK you'll see no output, as anything of interest is logged to `/home/pi/captureKNX/captureKNX.log`. You'll need to control-C to break out.
 
 <br>
 
-[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](#troubleshooting)
 
 <hr>
 
 ## telegraf
 
-telegraf runs as a service, so check if it's running OK. The output will look similar to that for the captureKNX.
+telegraf runs as a service, so check if it's running OK. The output will look similar to that for captureKNX.
 
 `sudo systemctl status telegraf.service`
 
@@ -197,7 +197,7 @@ In the same folder as `telegraf.log` is the file `debug_output.log`. This is an 
 
 <br>
 
-[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](#troubleshooting)
 
 <hr>
 
@@ -211,7 +211,7 @@ Review the error log for obvious issues: `journalctl --no-pager --unit influxdb`
 
 <br>
 
-[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](#troubleshooting)
 
 <hr>
 
@@ -231,15 +231,15 @@ logger=licensing.renewal t=2024-10-02T09:05:41.329592241+10:00 level=warn msg="f
 
 We're running the Enterprise *build* of the software, but it runs unlicenced in its freeware guise.
 
-### Not seeing telegrams / Dashboards report TODO?
+### Not seeing telegrams / Dashboards broken?
 
 Check Grafana and InfluxDB are getting along:
 
-1. Browse to Grafana's Data Sources: http://&lt;YourIP&gt;3000/connections/datasources
+1. Browse to Grafana's Data Sources: http://&lt;ThePi'sIP&gt;:3000/connections/datasources
 2. Click on the captureKNX entry.
 3. Scroll to the bottom and click on the Test button. This will hopefully reveal success:
    
-![image](https://github.com/user-attachments/assets/f496dea5-5e5e-4396-96af-5a1fd90e69a1)
+![image](https://github.com/user-attachments/assets/182324e6-8b59-472e-b074-643b34ffd0f6)
 
 You might alternatively see an error here, indicating authorisation has failed between InfluxDB & Grafana:
 
@@ -252,6 +252,6 @@ Resolution: TODO
 
 <br>
 
-[Top](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#troubleshooting)
+[Top](#troubleshooting)
 
 <hr>
