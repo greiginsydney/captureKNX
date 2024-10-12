@@ -1,17 +1,17 @@
-# This script is part of the knxLogger project, which logs all KNX bus traffic to an InfluxDb for reporting via Grafana
-# https://github.com/greiginsydney/knxLogger
-# https://greiginsydney.com/knxlogger
+# This script is part of the captureKNX project, which logs all KNX bus traffic to an InfluxDb for reporting via Grafana
+# https://github.com/greiginsydney/captureKNX
+# https://greiginsydney.com/captureKNX
 
 
 apiVersion: 1
 
 datasources:
-  - name: knxLogger
+  - name: captureKNX
     type: influxdb
     access: proxy
     url: http://localhost:8086
     jsonData:
-      dbName: knxLogger
+      dbName: captureKNX
       httpMode: POST
       httpHeaderName1: 'Authorization'
     secureJsonData:
