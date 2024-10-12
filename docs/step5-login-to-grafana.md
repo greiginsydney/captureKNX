@@ -22,7 +22,7 @@ OK, here's where all the fun happens.
   <img src="https://github.com/user-attachments/assets/1909d0da-4983-4b68-bbcc-6f7102b6be36" width="100%">
 </p>
 
-4. In the navigation tree down the LHS, select Connections, then Data sources, and click on the name of the knxLogger source. (Only the text is clickable, not the whole grey banner.)
+4. In the navigation tree down the LHS, select Connections, then Data sources, and click on the name of the captureKNX source. (Only the text is clickable, not the whole grey banner.)
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/5ffa8aa9-c90d-4a54-8f88-8e28a6b69f3f" width="100%">
@@ -34,7 +34,7 @@ OK, here's where all the fun happens.
   <img src="https://github.com/user-attachments/assets/30546847-fbaa-4d5f-aff6-4269c2bfe492" width="100%">
 </p>
 
-> If it says "0 measurements found" that's bad. The most likely cause is you've not yet copied the KNX Project file to the Pi, or forgot to restart the knxLogger service after doing so.
+> If it says "0 measurements found" that's bad. The most likely cause is you've not yet copied the KNX Project file to the Pi, or forgot to restart the captureKNX service after doing so.
 
 6. Click Dashboards in the navigation tree, then select the Group Monitor:
 
@@ -57,7 +57,7 @@ There are a few things you can easily do with this view:
 - Click any of the OTHER column headings to instead sort them alphabetically ascending or descending. (The arrow will move to that column to show the view is being sorted by that element.)
 - Click the funnel icon (14) next to any of the titles to filter to one or more values. This is INCREDIBLY powerful!! You can filter on multiple columns at the same time, and each will show the funnel in blue so you can see at a glance what's flavouring the current view. 
 
-## Welcome to your knxLogger!
+## Welcome to your captureKNX!
 
 In [step6-grafana-tips.md](/docs/step6-grafana-tips.md) (TODO) you'll find some tips to help you do things like re-size, hide/reveal, re-label, and more.
 
