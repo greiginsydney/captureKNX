@@ -23,7 +23,7 @@ The [shopping list](/docs/shopping-list.md) itemises everything you'll need, and
 
 ## Upgrading
 
-The upgrade process is the same as a fresh installation. The setup script detects the presence of an existing version and reacts accordingly.
+The upgrade process is essentially the same as a new installation. The setup script detects the presence of an existing version and reacts accordingly.
 
 Read more on the [Upgrade](/docs/upgrade.md) page.
 
