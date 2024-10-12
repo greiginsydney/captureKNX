@@ -31,7 +31,7 @@ It doesn't use much memory, so the 2GB version will be fine.
 
 Don't skimp and re-use an old Pi4 power supply, as you run the risk of the Pi not booting up automatically. Remember it also has to power the SSD.
 
-* [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-power-supply-usb-c-pd-27w-white.html) again. $AUD21
+* [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-power-supply-usb-c-pd-27w-white.html) again. $AUD21.
 * [Amazon.com](https://amzn.to/3AGWUvP) has the US version for $US19.
 
 ### Pi 5 cooling fan
@@ -127,3 +127,5 @@ My partner Rocky has designed a case you can print for all this to fit inside. T
 <hr/>
 <br>
 Note that any Amazon links on this page are Affiliate links. I may earn some recognition if you go there, but you pay no extra for this.
+
+[Top](#shopping-list)
