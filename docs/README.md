@@ -1,6 +1,6 @@
-# knxLogger documentation
+# captureKNX documentation
 
-If you're new to the knxLogger, there's plenty of documentation to whet your whistle.
+If you're new to the captureKNX, there's plenty of documentation to whet your whistle.
 
 ## Shopping list
 
@@ -29,10 +29,10 @@ Read more on the [Upgrade](/docs/upgrade.md) page.
 
 ## Advanced Applications
 
-If you're wondering if the knxLogger has any more tricks up its sleeve, have a look at the [Advanced Applications](/docs/advanced-applications.md) page.
+If you're wondering if the captureKNX has any more tricks up its sleeve, have a look at the [Advanced Applications](/docs/advanced-applications.md) page.
 <br>
 
 <hr />
 
-[Top](#knxLogger-documentation)
+[Top](#captureKNX-documentation)
 
