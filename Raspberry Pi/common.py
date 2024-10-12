@@ -25,7 +25,7 @@ else:
 CAPTUREKNX_DIR    = os.path.join(PI_USER_HOME, 'captureKNX')
 LOGFILE_NAME     = os.path.join(CAPTUREKNX_DIR, 'log', 'captureKNX.log')
 ETS_0_XML_FILE     = os.path.join(CAPTUREKNX_DIR, '0.xml')
-ETS_PROJECT_XML_FILE     = os.path.join(KNXLOGGER_DIR, 'project.xml')
+ETS_PROJECT_XML_FILE     = os.path.join(CAPTUREKNX_DIR, 'project.xml')
 
 
 def init():
