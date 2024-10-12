@@ -1,10 +1,10 @@
 # Prepare The Topology Export
 
-knxLogger listens to the KNX bus and logs all it hears.
+captureKNX listens to the KNX bus and logs all it hears.
 
 Unfortunately what's sent on the bus is only the bare minimums for the devices to talk together; they don't need to know the human names that have been assigned to devices or the group addresses, so they're not present.
 
-For knxLogger to 'capture' this information, we need to extract it from the Topology in ETS, and then the logger script will lookup the associated names as each telegram is received.
+For captureKNX to 'capture' this information, we need to extract it from the Topology in ETS, and then the logger script will lookup the associated names as each telegram is received.
 
 
 ## Topology Export
