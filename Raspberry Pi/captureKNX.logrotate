@@ -11,4 +11,4 @@
     copytruncate
 
 /var/log/telegraf/debug_output.log {}
-/home/pi/knxLogger/log/knxLogger.log {}
+/home/pi/captureKNX/log/captureKNX.log {}
