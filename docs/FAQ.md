@@ -1,15 +1,15 @@
 # Frequently Asked Questions
 
 ## General
-- [Can I build the knxLogger using a microSD card?](/docs/FAQ.md#can-i-build-the-knxlogger-using-a-microsd-card)
-- [How do I update the logger with a new project file?](/docs/FAQ.md#how-do-i-update-the-logger-with-a-new-project-file)
+- [Can I build the knxLogger using a microSD card?](#can-i-build-the-knxlogger-using-a-microsd-card)
+- [How do I update the logger with a new project file?](#how-do-i-update-the-logger-with-a-new-project-file)
 
 ## InfluxDB
-- [How can I delete all the data in InfluxDB and start again?](/docs/FAQ.md#how-can-i-delete-all-the-data-in-influxdb-and-start-again)
+- [How can I delete all the data in InfluxDB and start again?](#how-can-i-delete-all-the-data-in-influxdb-and-start-again)
 
 ## Grafana
-- [How do I stop Grafana truncating my DPT values?](/docs/FAQ.md#how-do-i-stop-grafana-truncating-my-dpt-values)
-- [Why are some Group Addresses not showing in the reports or logs?](/docs/FAQ.md#why-are-some-group-addresses-not-showing-in-the-reports-or-logs)
+- [How do I stop Grafana truncating my DPT values?](#how-do-i-stop-grafana-truncating-my-dpt-values)
+- [Why are some Group Addresses not showing in the reports or logs?](#why-are-some-group-addresses-not-showing-in-the-reports-or-logs)
 
 <br/>
 <hr/>
@@ -24,7 +24,7 @@ We've gone with external storage that's designed to survive the read/write onsla
 
 As the knxLogger isn't perhaps as 'mission critical' an application as some others, you might choose to build it onto an SD card. None of the installation steps change if you do this.
 
-[Top](/docs/FAQ.md#frequently-asked-questions)
+[Top](#frequently-asked-questions)
 
 <hr>
 
@@ -39,8 +39,7 @@ sudo systemctl restart knxLogger
 ```
 4. When it restarts, the logger script will detect the presence of a newer project file and extract its content.
 
-[Top](/docs/FAQ.md#frequently-asked-questions)
-
+[Top](#frequently-asked-questions)
 <hr>
 
 
@@ -54,7 +53,7 @@ Edit this code snippet from the [CLI documentation](https://docs.influxdata.com/
 sudo influx delete --bucket knxLogger --start 2024-01-01T00:00:00Z --stop 2024-12-31T00:00:00Z
 ```
 
-[Top](/docs/FAQ.md#frequently-asked-questions)
+[Top](#frequently-asked-questions)
 
 <hr>
 
@@ -70,7 +69,7 @@ This is what the end result will look like:
 ![image](https://github.com/user-attachments/assets/b783f5bd-cd51-44c1-9a51-ae0bef4e08de)
 
 
-[Top](/docs/FAQ.md#frequently-asked-questions)
+[Top](#frequently-asked-questions)
 <hr>
 
 ### Why are some Group Addresses not showing in the reports or logs?
@@ -86,5 +85,5 @@ To resolve this issue, export a new project file, copy it to the Pi and restart 
 #### Your knxLogger hasn't seen any traffic to it yet
 A less common cause only manifests in new knxLogger installations. Grafana doesn't know a Group Address exists until a Telegram has been sent to it and it's logged in the database. If in doubt, toggle the GA on/off or otherwise send it a message.
 
-[Top](/docs/FAQ.md#frequently-asked-questions)
+[Top](#frequently-asked-questions)
 <hr>
