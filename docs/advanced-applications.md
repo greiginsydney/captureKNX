@@ -2,12 +2,12 @@
 
 The knxLogger described here is a stand-alone on-site device, however if you're a little more adventurous, here are a few more things you can do with it:
 
-- [Setup the Pi as a Wi-Fi Access Point](/docs/advanced-applications.md#setup-the-pi-as-a-wi-fi-access-point)
-- ['Plug and play' - bake the Wi-Fi credentials into the Pi](/docs/advanced-applications.md#plug-and-play-bake-the-wi-fi-credentials-into-the-pi)
-- [InfluxDB Cloud](/docs/advanced-applications.md#influsxb-cloud)
-- [Add remote.it for remote access](/docs/advanced-applications.md#add-remote-it-for-remote-access)
-- [NVMe Storage](/docs/advanced-applications.md#nvme-storage)
-- [Setup Grafana Alerts](/docs/advanced-applications.md#setup-grafana-alerts)
+- [Setup the Pi as a Wi-Fi Access Point](#setup-the-pi-as-a-wi-fi-access-point)
+- ['Plug and play' - bake the Wi-Fi credentials into the Pi](#plug-and-play-bake-the-wi-fi-credentials-into-the-pi)
+- [InfluxDB Cloud](#influxdb-cloud)
+- [Add remote.it for remote access](#add-remote-it-for-remote-access)
+- [NVMe Storage](#nvme-storage)
+- [Setup Grafana Alerts](#setup-grafana-alerts)
 
 
 <hr/> 
@@ -26,7 +26,7 @@ Note that the Raspberry Pi's on-board hardware only supports 2.4GHz wireless, no
 
 TODO: I plan to add the config options for this to the setup script in the near future (before end CY 2024). 
 
-[Top](/docs/FAQ.md#advanced-applications)
+[Top](#advanced-applications)
 
 <hr>
 
@@ -42,7 +42,7 @@ This somewhat hidden menu in the Raspberry Pi Imager software is accessed with c
 
 Also, don't forget to enable SSH on the Services tab, and the 'use password authentication' option.
 
-[Top](/docs/FAQ.md#advanced-applications)
+[Top](#advanced-applications)
 
 <hr>
 
@@ -65,7 +65,7 @@ The setup and config of these are beyond the scope of this project, but they rem
 
 All you need to do is add a new `[[outputs.influxdb_v2]]` section to `/etc/telegraf/telegraf.conf`.
 
-[Top](/docs/FAQ.md#advanced-applications)
+[Top](#advanced-applications)
 
 <hr>
 
@@ -75,7 +75,7 @@ For those looking for a way of keeping the KNX telegrams on-site but still havin
 
 I've previously used it on the intvlm8r project (which also uses the Raspberry Pi). The setup process for that is [here](https://github.com/greiginsydney/Intervalometerator/blob/master/docs/setup-remote.it.md#install-remoteit).
 
-[Top](/docs/FAQ.md#advanced-applications)
+[Top](#advanced-applications)
 
 <hr>
 
@@ -92,7 +92,7 @@ We used the [Pimoroni NVMe Base for Raspberry Pi 5](https://shop.pimoroni.com/pr
 Thankfully Pimoroni has a [VERY detailed page](https://learn.pimoroni.com/article/getting-started-with-nvme-base) that takes you though the setup steps.
 
 
-[Top](/docs/FAQ.md#advanced-applications)
+[Top](#advanced-applications)
 
 <hr>
 
@@ -108,6 +108,6 @@ Grafana has a powerful alerting capability. It can send notifications to a range
 - Watch [Creating alerts with Grafana | Grafana for Beginners Ep 11](https://youtu.be/6W8Nu4b_PXM?si=J4pcHWQqumGRUV31)
 
 
-[Top](/docs/FAQ.md#advanced-applications)
+[Top](#advanced-applications)
 
 <hr>
