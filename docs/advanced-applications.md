@@ -2,12 +2,12 @@
 
 The knxLogger described here is a stand-alone on-site device, however if you're a little more adventurous, here are a few more things you can do with it:
 
-- [Setup the Pi as a Wi-Fi Access Point](/docs/advanced-applicationsFAQ.md#setup-the-pi-as-a-wi-fi-access-point)
-- ['Plug and play' - bake the Wi-Fi credentials into the Pi](/docs/advanced-applicationsFAQ.md#plug-and-play-bake-the-wi-fi-credentials-into-the-pi)
-- [InfluxDB Cloud](/docs/advanced-applicationsFAQ.md#influsxb-cloud)
-- [Add remote.it for remote access](/docs/advanced-applicationsFAQ.md#add-remote-it-for-remote-access)
-- [NVMe Storage](/docs/advanced-applicationsFAQ.md#nvme-storage)
-- [Setup Grafana Alerts](/docs/advanced-applicationsFAQ.md#setup-grafana-alerts)
+- [Setup the Pi as a Wi-Fi Access Point](/docs/advanced-applications.md#setup-the-pi-as-a-wi-fi-access-point)
+- ['Plug and play' - bake the Wi-Fi credentials into the Pi](/docs/advanced-applications.md#plug-and-play-bake-the-wi-fi-credentials-into-the-pi)
+- [InfluxDB Cloud](/docs/advanced-applications.md#influsxb-cloud)
+- [Add remote.it for remote access](/docs/advanced-applications.md#add-remote-it-for-remote-access)
+- [NVMe Storage](/docs/advanced-applications.md#nvme-storage)
+- [Setup Grafana Alerts](/docs/advanced-applications.md#setup-grafana-alerts)
 
 
 <hr/> 
