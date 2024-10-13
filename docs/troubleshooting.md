@@ -10,7 +10,7 @@ If you're encountering problems with captureKNX, use this diagram to help unders
 
 - [Start here](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#start-here)
 - [knxd](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#knxd)
-- [KNXDClient](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#knxdclient)
+- [KNXDclient](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#knxdclient)
 - [captureKNX](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#captureKNX)
 - [telegraf](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#telegraf)
 - [InfluxDB](https://github.com/greiginsydney/captureKNX/blob/main/docs/troubleshooting.md#influxdb)
@@ -40,7 +40,7 @@ The tests check common errors and misconfigurations, and will be added to as cap
 
 ## knxd
 
-knxd reads what's coming from the bus and makes it available for KNXDClient and the captureKNX script.
+knxd reads what's coming from the bus and makes it available for KNXDclient and the captureKNX script.
 
 You can check if knxd is running OK with `sudo systemctl status knxd`. If there's any red in the output, check if there's anything of interest in the journal (`journalctl | grep knxd`):
 
@@ -103,7 +103,7 @@ Review the content of the `/home/pi/captureKNX/captureKNX.log` file.
 Search for occurrences of the text "unzip_topo_archive". This is logged each time the script is launched. Here are the three possible messages:
 
 #### unzip_topo_archive: No topology file found
-Whoops. This is *probably* a fatal error: you've forgotten to copy the project file across, so captureKNX (and KNXDClient) don't know how to interpret the telegrams being received. Worst case: all telegrams are being discarded.
+Whoops. This is *probably* a fatal error: you've forgotten to copy the project file across, so captureKNX (and KNXDclient) don't know how to interpret the telegrams being received. Worst case: all telegrams are being discarded.
 
 (If you've previously copied a file across and the script's already unzipped it to extract 0.xml and project.xml, its absence won't be fatal.)
 
@@ -193,7 +193,7 @@ This is an example of a healthy-looking telegraf: The inputs and outputs are 'lo
 
 ### debug_output.log
 
-In the same folder as `telegraf.log` is the file `debug_output.log`. This is an independent log of all telegrams captured by telegraf. Healthy content in this file is a good indicator that everything to this point (the physical connection, hat, knxd, KNXDClient and the knxdLogger) are OK.
+In the same folder as `telegraf.log` is the file `debug_output.log`. This is an independent log of all telegrams captured by telegraf. Healthy content in this file is a good indicator that everything to this point (the physical connection, hat, knxd, KNXDclient and the knxdLogger) are OK.
 
 <br>
 
