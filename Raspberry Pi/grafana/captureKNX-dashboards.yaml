@@ -1,4 +1,8 @@
-# # config file version
+# This script is part of the captureKNX project, which logs all KNX bus traffic to an InfluxDb for reporting via Grafana
+# https://github.com/greiginsydney/captureKNX
+# https://greiginsydney.com/captureKNX
+
+
 apiVersion: 1
 
 providers:
@@ -8,6 +12,6 @@ providers:
    folderUid: ''
    type: file
    allowUiUpdates: true
-   updateIntervalSeconds: 10
+   updateIntervalSeconds: 60
    options: 
      path: /etc/grafana/provisioning/dashboards
