@@ -254,7 +254,7 @@ setup1()
 		# TODO: Check version and update if there's newer.
 	fi
 
-	echo -e "\n"$GREEN"Installing knxdclient"$RESET""
+	echo -e "\n"$GREEN"Installing KNXDclient"$RESET""
 	sudo  -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient"
 	echo -e "\n"$GREEN"Installing requests"$RESET""
 	sudo -u ${SUDO_USER} bash  -c "source /home/${SUDO_USER}/venv/bin/activate && python3 -m pip install requests"
@@ -803,9 +803,9 @@ test_install()
 	if [[ $isKnxdClient ]];
 	#if [[ -d /home/${SUDO_USER}/venv/lib knxdclient ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET" knxdclient installed"
+		echo -e ""$GREEN"PASS:"$RESET" KNXDclient installed"
 	else
-		echo -e ""$YELLOW"FAIL:"$RESET" knxdclient NOT installed"
+		echo -e ""$YELLOW"FAIL:"$RESET" KNXDclient NOT installed"
 	fi
 
 	PIP_LIST=$(pip3 list)
