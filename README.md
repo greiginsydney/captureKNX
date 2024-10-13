@@ -51,7 +51,12 @@ InfluxDB and Grafana both have active supporter communities should you want to d
 
 ## Credits
 
-captureKNX relies upon the open-source [knxd](https://github.com/knxd/knxd) and [knxdclient](https://github.com/mhthies/knxdclient) projects for its communications, and would be lost without them. If you're feeling generous please visit their sites and send some appreciation in your preferred currency.
+captureKNX relies upon the open-source [knxd](https://github.com/knxd/knxd) and [KNXDclient](https://github.com/mhthies/knxdclient) projects for its communications, and would be lost without them. If you're feeling generous please visit their sites and send some appreciation in your preferred currency.
+
+- [knxd](https://github.com/knxd/knxd#compensation--personal-statement)
+- KNXDclient (TODO)
+
+... and you're certainly welcome to [buy me a coffee](https://buymeacoffee.com/greiginsydney) or throw a few currency units into [my PayPal account](https://www.paypal.com/paypalme/greiginsydney/) too!
 
 ## Where to next?
 
