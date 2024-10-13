@@ -86,9 +86,8 @@ Core has a [Raspberry Pi Extra-Long Stacking Header (2x20 pins)](https://core-el
 ### KNX Pi HAT - option 2: Weinzierl 838 kBerry
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/0d0d85d4-6b17-463c-901e-e14561c4833a" width="30%">
+  <img src="https://github.com/user-attachments/assets/858f8284-b68a-489c-af83-7137fa928886" width="30%">
 </p>
-<p align="center">Image credit: <a href="https://knxshoponline.co.uk/knx-baos-module-838-kberry" target="_blank">KNX Shop online UK</a></p>
 
 The [Weinzierl 838 kBerry](https://weinzierl.de/en/products/knx-baos-modul-838/) is another plugin daughterboard (HAT) for the Pi.
 
