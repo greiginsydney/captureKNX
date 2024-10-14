@@ -4,7 +4,7 @@
 - [Can I build captureKNX using a microSD card?](#can-i-build-captureKNX-using-a-microsd-card)
 - [How do I update captureKNX with a new project file?](#how-do-i-update-captureKNX-with-a-new-project-file)
 - [Why is captureKNX logging my valid telegrams as 'error'?](#why-is-captureKNX-logging-my-valid-telegrams-as-error)
-- [Why is captureKNX showing a Source Name of 'unknown'?](#Why-is-captureKNX-showing-a-source-name-of-unknown)
+- [Why is captureKNX showing a Source Name of 'Unknown'?](#Why-is-captureKNX-showing-a-source-name-of-unknown)
 
 ## InfluxDB
 - [How can I delete all the data in InfluxDB and start again?](#how-can-i-delete-all-the-data-in-influxdb-and-start-again)
@@ -56,7 +56,7 @@ Please raise a [bug report](https://github.com/greiginsydney/captureKNX/issues/n
 [Top](#frequently-asked-questions)
 <hr>
 
-### Why is captureKNX showing a Source Name of 'unknown'?
+### Why is captureKNX showing a Source Name of 'Unknown'?
 
 ![image](https://github.com/user-attachments/assets/75c3d95b-9a21-4cff-8413-ac0705bd779e)
 
