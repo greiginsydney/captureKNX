@@ -114,7 +114,13 @@ async def main() -> None:
                         log(f'Exception decoding DPT {DPT} in main at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
                 elif DPT_main in [3, 5, 6, 7, 8, 9, 12]:
-                    value, unit = globals()['DPT' + str(DPT_main)](sub_DPT, value) # decode_dpt.py
+                    try:
+                        value, unit = globals()['DPT' + str(DPT_main)](sub_DPT, value) # decode_dpt.py
+                    except:
+                        log(f'Exception decoding DPT {DPT} in main at line {e.__traceback__.tb_lineno}: {e}')
+                        log(f'Destination was {packet.dst}')
+                        value = 'error'
+                        unit = ''
 
                 if isinstance(value, str):
                     telegram['info'] = value
