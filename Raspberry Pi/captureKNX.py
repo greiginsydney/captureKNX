@@ -109,14 +109,14 @@ async def main() -> None:
                     try:
                         value_true, value_false = DPT1[sub_DPT]
                         value = value_true if (value) else value_false
-                    except:
+                    except Exception as e:
                         # If we fail a lookup (VERY unlikely) we'll send the original DPT value unchanged
                         log(f'Exception decoding DPT {DPT} in main at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
                 elif DPT_main in [3, 5, 6, 7, 8, 9, 12]:
                     try:
                         value, unit = globals()['DPT' + str(DPT_main)](sub_DPT, value) # decode_dpt.py
-                    except:
+                    except Exception as e:
                         log(f'Exception decoding DPT {DPT} in main at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
                         value = 'error'
