@@ -94,14 +94,13 @@ def DPT5(sub_DPT, value):
 def DPT6(sub_DPT, value):
     '''
     8-bit signed relative value
+    knxd has already decoded DPT 6, we're only adding the unit here
     '''
     unit = ""
     if sub_DPT == 1:
         unit = "%"
     elif sub_DPT == 10:
         pass
-    if (value & (1 << (7))) != 0:
-        value = value - (1 << bits)
     return (value, unit)
 
 
