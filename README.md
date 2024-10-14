@@ -20,7 +20,7 @@ Build a Raspberry Pi that will capture all KNX telegrams to InfluxDB that you ca
 - A fully on-premises solution. Once you've bought the hardware, that's your total outlay. (Late 2024 estimate circa $AUD250 / $US170 / €150.)
 - With Grafana you can easily visualise data like daily temperatures or light levels, and overlay heating/lighting control signals.
 - A dedicated dashboard replicates ETS' Diagnostics / Group Monitor feature. Debug your logic and other occurrences by filtering the captured view by time/date, Group Address, sending device or the value sent. (Preview the power of this [here](/docs/step5-login-to-grafana.md#demo)).
-- Hunting down bugs? [Grafana can send you an alert](/docs/advanced-applications.md#grafana-alerts) when a specific telegram is seen!
+- Hunting down bugs? [Grafana can send you an alert](/docs/advanced-applications.md#setup-grafana-alerts) when a specific telegram is seen!
 
 ## Limitations / Restrictions
 
