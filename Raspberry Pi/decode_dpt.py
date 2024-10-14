@@ -69,7 +69,7 @@ def DPT3(sub_DPT, value):
 def DPT4(sub_DPT, value):
     '''
     It looks like knxd has already decoded DPT 4
-    This code is never called; it's left here just to remind me why
+    This code is never called, it's left here just to remind me why
     '''
     return (value, '')
 
@@ -226,6 +226,6 @@ def DPT12(sub_DPT, value):
 def DPT16(sub_DPT, value):
     '''
     It looks like knxd has already decoded DPT 16
-    This code is never called; it's left here just to remind me why
+    This code is never called, it's left here just to remind me why
     '''
     return (value, '')
