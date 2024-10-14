@@ -48,7 +48,9 @@ DPT1 = {
 
 
 def DPT3(sub_DPT, value):
-
+    '''
+    4-bit dimming
+    '''
     direction, count = value
     unit = ""
     if sub_DPT == 7:
