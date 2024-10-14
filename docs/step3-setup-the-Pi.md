@@ -189,22 +189,21 @@ sudo -E -H ./setup.sh
 
 36. The FIRST time you run the script on a brand new Pi it's going to run for ~8-9 minutes (depending on your internet speed) and then prompt you to reboot:
 
-![image](https://github.com/user-attachments/assets/f937f01d-2004-43df-a854-5799a2b7db69)
-
+![image](https://github.com/user-attachments/assets/f9723c88-8f30-4699-b85e-9b024a3c1fe0)
 
 37. Reconnect to the Pi after it reboots and return to Step 37. (Pressing up-arrow should offer you the `sudo -E -H ./setup.sh` command to save you re-typing it.)
 
 38. It will seem to instantly prompt for another reboot. Consent to that and again up-arrow to re-run setup when you re-connect:
 
-![image](https://github.com/user-attachments/assets/e8c1c9d3-ac1c-4672-be25-8785b0e4e5e6)
+![image](https://github.com/user-attachments/assets/ac22daaa-5163-46d9-94d1-385b346f9b65)
 
 39. Here's where the user input foreshadowed at the top comes in. You'll be prompted for answers to these values, but in most cases you'll be OK with hitting return to accept the defaults (although you WILL need to respond correctly to the question of which HAT is installed):
 
-![image](https://github.com/user-attachments/assets/2c15ae5d-bf56-4600-a63b-1e5f9f42205a)
+![image](https://github.com/user-attachments/assets/52cba5f6-31b2-40bc-9a6b-873c048ead13)
 
 40. When the installation completes the script will report "Done" and execute a test:
 
-![image](https://github.com/user-attachments/assets/f1776fef-6125-4316-8439-e40f1fc12cc5)
+![image](https://github.com/user-attachments/assets/ef10b201-0ecc-456d-85c6-fcee46d3cf0d)
 
 If the Pi isn't plugged in to the KNX bus at this stage, it's expected that knxd.service will show as "dead". In this example I hadn't yet copied the project file across, and this is also highlighted.
 
