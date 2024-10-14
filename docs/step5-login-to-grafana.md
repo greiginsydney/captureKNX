@@ -25,13 +25,13 @@ OK, here's where all the fun happens.
 4. In the navigation tree down the LHS, select Connections, then Data sources, and click on the name of the captureKNX source. (Only the text is clickable, not the whole grey banner.)
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/5ffa8aa9-c90d-4a54-8f88-8e28a6b69f3f" width="100%">
+  <img src="https://github.com/user-attachments/assets/a5dd08be-1e5b-4d84-bf6a-b5a244c3632a" width="100%">
 </p>
 
 5. Scroll to the bottom and click `Test`. It should reveal the "datasource is working" message. That confirms we're connecting to InfluxDB and able to read the telegrams stored there.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/30546847-fbaa-4d5f-aff6-4269c2bfe492" width="100%">
+  <img src="https://github.com/user-attachments/assets/5f04b5a0-85ec-4777-a20f-d77c894568d4" width="100%">
 </p>
 
 > If it says "0 measurements found" that's bad. The most likely cause is you've not yet copied the KNX Project file to the Pi, or forgot to restart the captureKNX service after doing so.
