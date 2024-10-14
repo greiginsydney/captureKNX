@@ -65,6 +65,6 @@ You might also find some answers on the [FAQ page](/docs/FAQ.md).
 
 <br>
 
-[Top](/docs/step5-login-to-grafana#login-to-grafana)
+[Top](#login-to-grafana)
 
 <hr>
