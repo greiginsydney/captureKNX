@@ -146,7 +146,8 @@ async def main() -> None:
                     log(f'Exception POSTing: {e}')
 
     except Exception as e:
-        log(f'Exception in main: {e}\nDestination was {packet.dst}')
+        log(f'Fatal exception in main: {e}')
+        log(f'Destination was {packet.dst}')
 
     finally:
         # Let's stop the connection and wait for graceful termination of the receive loop:
