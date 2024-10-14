@@ -50,16 +50,18 @@ DPT1 = {
 def DPT3(sub_DPT, value):
 
     direction, count = value
+    unit = ""
     if sub_DPT == 7:
         if count == 0:
             decoded = "Break"
         else:
             decoded = "+" if direction else "-"
             stepWidth = int(1 / pow(2,count - 1) * 100) # Rounds to align with ETS6
-            decoded = (f'{decoded} {stepWidth}%')
+            decoded = (f'{decoded} {stepWidth}')
+            unit = "%"
     else:
         decoded = str(value)
-    return (decoded, '')
+    return (decoded, unit)
 
 
 def DPT4(sub_DPT, value):
