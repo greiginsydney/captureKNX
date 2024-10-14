@@ -3,6 +3,8 @@
 ## General
 - [Can I build captureKNX using a microSD card?](#can-i-build-captureKNX-using-a-microsd-card)
 - [How do I update captureKNX with a new project file?](#how-do-i-update-captureKNX-with-a-new-project-file)
+- [Why is captureKNX logging my valid telegrams as 'error'?](#why-is-captureKKNX-logging-my-valid-telegrams-as-error)
+- [Why is captureKNX showing a Source Name of 'unknown'?](#Why-is-captureKNX-showing-a-source-name-of-unknown)
 
 ## InfluxDB
 - [How can I delete all the data in InfluxDB and start again?](#how-can-i-delete-all-the-data-in-influxdb-and-start-again)
@@ -42,6 +44,28 @@ sudo systemctl restart captureKNX
 [Top](#frequently-asked-questions)
 <hr>
 
+
+### Why is captureKNX logging my valid telegrams as 'error'?
+
+![image](https://github.com/user-attachments/assets/ded055db-8d12-4ccc-87c4-1a4c8b2eb7d5)
+
+This is an example of a telegram that wasn't able to be decoded correctly. captureKNX threw an error which was logged: see `/home/pi/captureKNX/log/captureKNX.log`.
+
+Please raise a [bug report](https://github.com/greiginsydney/captureKNX/issues/new?assignees=greiginsydney&labels=&projects=&template=bug_report.md&title=) for this, including the relevant message from captureKNX.log and a screen-grab showing how ETS' Group Monitor decodes the same telegram.
+
+[Top](#frequently-asked-questions)
+<hr>
+
+### Why is captureKNX showing a Source Name of 'unknown'?
+
+![image](https://github.com/user-attachments/assets/75c3d95b-9a21-4cff-8413-ac0705bd779e)
+
+Any time captureKNX retrieves a blank value from the project file it writes it to InfluxDB as 'Unknown'.
+
+In this example the source was one of the 'Additional Addresses' assigned to the router, and the message itself was sent from ETS. As at v1.0.0 these Additional Addresses aren't being assigned a name. ('It's complicated'.)
+
+[Top](#frequently-asked-questions)
+<hr>
 
 ### How can I delete all the data in InfluxDB and start again?
 
