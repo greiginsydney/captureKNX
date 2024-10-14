@@ -94,13 +94,16 @@ def DPT5(sub_DPT, value):
 def DPT6(sub_DPT, value):
     '''
     8-bit signed relative value
-    knxd has already decoded DPT 6, we're only adding the unit here
+    knxd has already decoded DPT 6 so for 1 & 10 we're only adding the unit
     '''
     unit = ""
     if sub_DPT == 1:
         unit = "%"
-    elif sub_DPT == 10:
-        pass
+    if sub_DPT == 10:
+        pass # 'counter pulses' isn't a unit
+    if sub_DPT == 20:
+        value = value + 2 ** 8  # Convert from signed back to unsigned
+        value = f'{value:b}'    # Is there a better way to represent this DPT than just as 8 bits?
     return (value, unit)
 
 
