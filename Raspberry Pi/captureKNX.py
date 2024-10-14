@@ -146,7 +146,7 @@ async def main() -> None:
                     log(f'Exception POSTing: {e}')
 
     except Exception as e:
-        log(f'Fatal exception in main: {e}')
+        log(f'Fatal exception in main at line {e.__traceback__.tb_lineno}: {e}')
         log(f'Destination was {packet.dst}')
 
     finally:
