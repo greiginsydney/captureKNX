@@ -207,4 +207,16 @@ sudo -E -H ./setup.sh
 
 If the Pi isn't plugged in to the KNX bus at this stage, it's expected that knxd.service will show as "dead". In this example I hadn't yet copied the project file across, and this is also highlighted.
 
-Next steps are to plug the Pi into the bus and continue with testing.
+41. captureKNX won't send ANY telegrams anywhere without the project file, so if you haven't aready, copy it across before proceeding.
+
+42. Your next step is to to plug the Pi into the bus and continue with testing.
+
+> You should always try to shut the Pi down before you turn it off: `sudo shutdown now`.
+
+[Jump to step5 Login to InfluxDB](/docs/step4-login-to-influxdb.md)
+
+<br>
+
+[Top](#setup-the-pi)
+
+<hr/>
