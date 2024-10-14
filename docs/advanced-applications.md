@@ -7,7 +7,7 @@ The captureKNX described here is a stand-alone on-site device, however if you're
 - [InfluxDB Cloud](#influxdb-cloud)
 - [Add remote.it for remote access](#add-remoteit-for-remote-access)
 - [NVMe Storage](#nvme-storage)
-- [Setup Grafana Alerts](#setup-grafana-alerts)
+- [Setup Grafana Alerting](#setup-grafana-alerting)
 
 
 <hr/> 
@@ -96,7 +96,7 @@ Thankfully Pimoroni has a [VERY detailed page](https://learn.pimoroni.com/articl
 
 <hr>
 
-## Setup Grafana Alerts
+## Setup Grafana Alerting
 
 Grafana has a powerful alerting capability. It can send notifications to a range of destinations, including e-mail and webhooks, as well as numerous third-party applications.
 
@@ -104,9 +104,12 @@ Grafana has a powerful alerting capability. It can send notifications to a range
   <img src="https://github.com/user-attachments/assets/02fa0eff-ea9a-4147-abe4-53705e951198" width="100%">
 </p>
 
+References:
+
 - [Get started with Grafana Alerting - Part 1](https://grafana.com/tutorials/alerting-get-started/)
 - Watch [Creating alerts with Grafana | Grafana for Beginners Ep 11](https://youtu.be/6W8Nu4b_PXM?si=J4pcHWQqumGRUV31)
 
+&nbsp;<br>
 
 [Top](#advanced-applications)
 
