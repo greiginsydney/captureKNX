@@ -3,7 +3,7 @@
 ## General
 - [Can I build captureKNX using a microSD card?](#can-i-build-captureKNX-using-a-microsd-card)
 - [How do I update captureKNX with a new project file?](#how-do-i-update-captureKNX-with-a-new-project-file)
-- [Why is captureKNX logging my valid telegrams as 'error'?](#why-is-captureKKNX-logging-my-valid-telegrams-as-error)
+- [Why is captureKNX logging my valid telegrams as 'error'?](#why-is-captureKNX-logging-my-valid-telegrams-as-error)
 - [Why is captureKNX showing a Source Name of 'unknown'?](#Why-is-captureKNX-showing-a-source-name-of-unknown)
 
 ## InfluxDB
