@@ -98,7 +98,7 @@ Any errors with the script and its service should be visible.
 
 Review the error log for obvious issues: `journalctl --no-pager --unit captureKNX`.
 
-Review the content of the `/home/pi/captureKNX/captureKNX.log` file. 
+Review the content of the `/home/pi/captureKNX/log/captureKNX.log` file. See if the text "fatal" is logged.
 
 Search for occurrences of the text "unzip_topo_archive". This is logged each time the script is launched. Here are the three possible messages:
 
@@ -107,11 +107,11 @@ Whoops. This is *probably* a fatal error: you've forgotten to copy the project f
 
 (If you've previously copied a file across and the script's already unzipped it to extract 0.xml and project.xml, its absence won't be fatal.)
 
-#### unzip_topo_archive: Unzipping /home/pi/5AB-20240926.knxproj
+#### unzip_topo_archive: Unzipping /home/pi/<filename>.knxproj
 
 The script has found a new/newer project file and it's been unzipped and decoded. The subsequent log messages may point to issues here.
 
-#### unzip_topo_archive: existing XML files are younger than /home/pi/5AB-20240926.knxproj. Skipping extraction
+#### unzip_topo_archive: existing XML files are younger than /home/pi/<filename>.knxproj. Skipping extraction
 
 An established (healthy) captureKNX should report this frequently.
 
@@ -125,7 +125,7 @@ cd ~ && source venv/bin/activate
 cd captureKNX
 python3 captureKNX.py
 ```
-Fatal errors will be output to the screen. If it runs OK you'll see no output, as anything of interest is logged to `/home/pi/captureKNX/captureKNX.log`. You'll need to control-C to break out.
+Fatal errors will be output to the screen. If it runs OK you'll see no output, as anything of interest is logged to `/home/pi/captureKNX/log/captureKNX.log`. You'll need to control-C to break out.
 
 <br>
 
