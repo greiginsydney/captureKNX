@@ -42,17 +42,27 @@
             "inspect": false,
             "minWidth": 100
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "Alarm": {
+                  "color": "dark-red",
+                  "index": 0
+                },
+                "error": {
+                  "color": "orange",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
+                "color": "transparent",
+                "value": null		
               }
             ]
           }
@@ -231,6 +241,21 @@
               {
                 "id": "custom.width",
                 "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "info"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "applyToRow": true,
+                  "type": "color-background"
+                }
               }
             ]
           }
