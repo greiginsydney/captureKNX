@@ -49,7 +49,7 @@ sudo systemctl restart captureKNX
 
 ![image](https://github.com/user-attachments/assets/8412ea42-8ff6-40ac-acbc-19dc02b38039)
 
-This is an example of a telegram that wasn't able to be decoded correctly. captureKNX threw an error which was logged: see `/home/pi/captureKNX/log/captureKNX.log`.
+This is an example of a telegram that wasn't able to be decoded correctly. captureKNX threw an error which was logged: see `/home/pi/captureKNX/log/captureKNX.log`
 
 Please raise a [bug report](https://github.com/greiginsydney/captureKNX/issues/new?assignees=greiginsydney&labels=&projects=&template=bug_report.md&title=) for this, including the relevant message from captureKNX.log and a screen-grab showing how ETS' Group Monitor decodes the same telegram.
 
