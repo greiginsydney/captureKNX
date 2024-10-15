@@ -47,7 +47,7 @@ sudo systemctl restart captureKNX
 
 ### Why is captureKNX logging my valid telegrams as 'error'?
 
-![image](https://github.com/user-attachments/assets/ded055db-8d12-4ccc-87c4-1a4c8b2eb7d5)
+![image](https://github.com/user-attachments/assets/8412ea42-8ff6-40ac-acbc-19dc02b38039)
 
 This is an example of a telegram that wasn't able to be decoded correctly. captureKNX threw an error which was logged: see `/home/pi/captureKNX/log/captureKNX.log`.
 
