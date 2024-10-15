@@ -222,6 +222,16 @@ def DPT10(sub_DPT, value):
     return (value, '')
 
 
+def DPT11(sub_DPT, value):
+    '''
+    Date
+    '''
+    import datetime
+    if isinstance(value, datetime.date):
+        value = value.strftime('%d/%m/%Y') # TODO: Do we need to localise this for different regions? How?
+    return (value, '')
+
+
 def DPT12(sub_DPT, value):
     '''
     4-octet unsigned value. Counter pulses & operating hours
