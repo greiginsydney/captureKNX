@@ -27,15 +27,13 @@ Build a Raspberry Pi that will capture all KNX telegrams to InfluxDB that you ca
 - The direct-connection to the KNX bus means it can only capture the Telegrams seen on that network Line. This will prevent it from seeing all traffic in a multi-area or multi-line network.
 - It's not an off-the-shelf product. You buy the components and build it yourself - but there's heaps of documentation here to help you.
 - Every telegram to a known Group Address is captured, however it only currently decodes the most commonly-used DPT types. (This is expected to evolve over time).
+- (Currently) English-only, and hasn't been tested in any other languages. Contributions welcome!
 
 ## Software architecture
 
 captureKNX is a consolidation of multiple open-source & freeware software components, all running on the one Raspberry Pi 5 single board computer.
 
 The 'HAT' provides the physical interface to the KNX TP Line, and the ensuing components read and format the telegrams, then stuff them in the InfluxDB database. Grafana is the 'visualisation' component that lets you easily review and filter the raw captures, and/or create dashboards of useful values, all of which you access from a web browser.
-
-
-
 
 ![image](https://github.com/user-attachments/assets/a4ba8e35-8c87-4f54-a2df-e4ff7d9a9aaa)
 
