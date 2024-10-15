@@ -207,6 +207,21 @@ def DPT9(sub_DPT, value):
     return (value, unit)
 
 
+def DPT10(sub_DPT, value):
+    '''
+    Time of day (with optional day of week)
+    '''
+    DOW = ['Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat', 'Sun']
+    if isinstance(value, tuple):
+        # Which it certainly should be!
+        time, day = value
+        if day:
+            value = f'{DOW[day]} {time}'
+        else:
+            value = f'{time}'
+    return (value, '')
+
+
 def DPT12(sub_DPT, value):
     '''
     4-octet unsigned value. Counter pulses & operating hours
