@@ -51,7 +51,7 @@ OK, here's where all the fun happens.
 There are a few things you can easily do with this view:
 - Click (7) and (8) to maximise the view, removing some of the clutter
 - Click the vertical ellipsis (9) to edit this dashboard "panel". (It only becomes visible when your mouse is within the panel.) Let's not go there just yet...
-- (10) lets you adjust the time window you're seeing. 'last five minutes' is the narrowest, through 'today so far' and many longer time periods
+- (10) lets you adjust the time window you're seeing. 'last 5 minutes' is the narrowest, through 'today so far' and many longer time periods
 - (11) will refresh the view, and to its right is a "v" that lets you choose an auto-refresh rate (with every 5 seconds selected at the moment)
 - Click the arrow next to the Time label (12) to order all records by oldest or newest at the top
 - Click any of the OTHER column headings to instead sort them alphabetically ascending or descending. (The arrow will move to that column to show the view is being sorted by that element)
