@@ -120,21 +120,24 @@ async def main() -> None:
                         log(f'Exception decoding DPT {DPT} in main at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
                         value = 'error'
-                        unit = ''
-
-                if isinstance(value, str):
-                    telegram['info'] = value
-                elif isinstance(value, float):
-                    telegram['info'] = str(round(value, 2))
-                elif isinstance(value, (int, bool)):
-                    telegram['info'] = str(value)
-                elif isinstance(value, tuple):
-                    # I think I've weeded out the tuples. This is for debug purposes:
-                    log(f'-- TUPLE COMING THROUGH: DPT = {DPT} ')
-                    telegram['info'] = str("-".join(map(str,value)))
-                else:
-                    log(f'Unhandled object type. DPT = {DPT}. Value is {type(value)}')
-                    telegram['info'] = value
+                try:
+                    if isinstance(value, str):
+                        telegram['info'] = value
+                    elif isinstance(value, float):
+                        telegram['info'] = str(round(value, 2))
+                    elif isinstance(value, (int, bool)):
+                        telegram['info'] = str(value)
+                    elif isinstance(value, tuple):
+                        # I think I've weeded out the tuples. This is for debug purposes:
+                        log(f'-- TUPLE COMING THROUGH: DPT = {DPT} ')
+                        telegram['info'] = str("-".join(map(str,value)))
+                    else:
+                        log(f'Unhandled object type. DPT = {DPT}. Value is {type(value)}')
+                        telegram['info'] = value
+                except Exception as e:
+                        log(f'Exception decoding DPT {DPT} of type {type(value)} in main at line {e.__traceback__.tb_lineno}: {e}')
+                        log(f'Destination was {packet.dst}')
+                        value = 'error'
                 if unit:
                     # Only add the 'unit' tag if it's not an empty string
                     telegram['unit'] = unit
