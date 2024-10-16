@@ -24,22 +24,22 @@ You DEFINITELY need a Pi 5, as we're asking a lot of this little SBC.
 
 It doesn't use much memory, so the 2GB version will be fine.
 
-- I sourced mine from [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-model-b-2gb.html) here in Newcastle AU for $AUD82.
-- I can't find the 2GB version on [Amazon.com](https://amzn.to/4e2eQiR) yet, but here's the 4G for $US70.
+- I sourced mine from [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-model-b-2gb.html) here in Newcastle AU for $AUD82
+- I can't find the 2GB version on [Amazon.com](https://amzn.to/4e2eQiR) yet, but here's the 4G for $US70
 
 ### Pi 5 power supply
 
 Don't skimp and re-use an old Pi4 power supply, as you run the risk of the Pi not booting up automatically. Remember it also has to power the SSD.
 
-- [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-power-supply-usb-c-pd-27w-white.html) again. $AUD21.
-- [Amazon.com](https://amzn.to/3AGWUvP) has the US version for $US19.
+- [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-power-supply-usb-c-pd-27w-white.html) again. $AUD21
+- [Amazon.com](https://amzn.to/3AGWUvP) has the US version for $US19
 
 ### Low-profile heatsink for Raspberry Pi 5
 
 The Pi 5 doesn't ship with one, but the chipset gets BURNY hot. You definitely need a heatsink and fan.
 
 - Core has The Pi Hut's 105875 [Low-profile Heatsink for Raspberry Pi 5](https://core-electronics.com.au/low-profile-heatsink-raspberry-pi-5.html) for $AUD6.25
-- An alternative is Waveshare's 26415 [Passive Aluminum Heatsink For Raspberry Pi 5](https://core-electronics.com.au/passive-aluminum-heatsink-for-raspberry-pi-5.html) for $AUD4.80.
+- An alternative is Waveshare's 26415 [Passive Aluminum Heatsink For Raspberry Pi 5](https://core-electronics.com.au/passive-aluminum-heatsink-for-raspberry-pi-5.html) for $AUD4.80
 - [The Pi Hut](https://thepihut.com/products/low-profile-heatsink-for-raspberry-pi-5) - £2.92 excl. VAT
 - [Waveshare](https://www.waveshare.com/pi5-active-cooler-c.htm) - $US3
 - [Amazon.com](https://amzn.to/3Y9cSa9) - $US7.68
@@ -66,7 +66,7 @@ A basic installation - before you start logging - only consumes 4G.
 
 The smallest I can source today is 240G @ $AUD33 ($US22).
 
-[Amazon.com](https://amzn.to/3YYApg4) has a Kingston for $US25.
+[Amazon.com](https://amzn.to/3YYApg4) has a Kingston for $US25
 
 ### 2.5" SATA SSD adapter cable
 
@@ -106,16 +106,18 @@ $USD123 / $AUD180
 
 Both of the above boards sit a little close to the processor of the Pi, and it's going to need some air flow. We used \*TWO\* headers to give enough height.
 
-Core has a [Raspberry Pi Extra-Long Stacking Header (2x20 pins)](https://core-electronics.com.au/stacking-2x20.html) [NB: untested] for $AUD2.40, and the [Pololu-2748 Stackable 0.100″ Female Header: 2x20-pin, Straight](https://core-electronics.com.au/stackable-0-100-female-header-2x20-pin-straight.html) for $4.95. ([Pololu link](https://www.pololu.com/product/2748))
-
+- Core has the [Pololu-2748 Stackable 0.100″ Female Header: 2x20-pin, Straight](https://core-electronics.com.au/stackable-0-100-female-header-2x20-pin-straight.html) for $4.95. ([Pololu link](https://www.pololu.com/product/2748))
+- Core also has a [Raspberry Pi Extra-Long Stacking Header (2x20 pins)](https://core-electronics.com.au/stacking-2x20.html) [NB: untested] for $AUD2.40
+- [Amazon.com GeeekPi 2x20 40 Pin Stacking Female Header Kit for Raspberry Pi](https://amzn.to/3Yn1GIm) $US14 (13 piece kit)
+- [Amazon.com Geekworm 2x20 40 Pin Stacking Female Header Kit for Raspberry Pi](https://amzn.to/48bDHyX) $US10 (10 piece kit)
 
 ### Mounting screws and spacers - Tijl HAT
 
 The Pi HAT from Tindie needs to be screwed to the Pi, and this pair of boards then slot into the custom housing below.
 
-4 x 5-6mm long M3 machine screws. Mounts the SSD to the case
-8 x 5-6mm long M2.5 pan head machine screws. Mounts the Pi to the case and the HAT to the Pi
-4 x 21mm long M2.5 female-female threaded spacers
+- 4 x 5-6mm long M3 machine screws. Mounts the SSD to the case
+- 8 x 5-6mm long M2.5 pan head machine screws. Mounts the Pi to the case and the HAT to the Pi
+- 4 x 21mm long M2.5 female-female threaded spacers
 
 I get my spacers from [Mouser](https://au.mouser.com/c/electromechanical/hardware/standoffs-spacers/?q=m2.5%20spacer&gender=Female%20%2F%20Female&length=21%20mm&material=Aluminum~~Brass%7C~Stainless%20Steel~~Steel&thread%20size=M2.5~~M2.5%20x%200.45&rp=electromechanical%2Fhardware%2Fstandoffs-spacers%7C~Thread%20Size%7C~Gender%7C~Material) or Element14/Farnell - or if you're up for it, you can 3D-print them (see below for a link).
 
@@ -125,14 +127,19 @@ Let's call it $10.
 
 Weinzierl's HAT has no holes for mounting screws, and is instead held in position by lugs in the case and lid.
 
-4 x 5-6mm long M3 machine screws. Mounts the SSD to the case
-4 x 5-6mm long M2.5 pan head machine screws (or 4 x 4G self-tappers). Mounts the Pi to the case
+- 4 x 5-6mm long M3 machine screws. Mounts the SSD to the case
+- 4 x 5-6mm long M2.5 pan head machine screws (or 4 x 4G self-tappers). Mounts the Pi to the case
 
 Let's call it $10 just to keep the maths even.
 
+<hr/>
+
 ### A housing to put it all in
 
-My partner Rocky has designed a case you can print for all this to fit inside. The art is on TODO.
+My partner Ozrocky has designed a case you can print for all this to fit inside. The art is on Printables:
+
+- [Tijl's HAT + SSD](https://www.printables.com/model/1041238-captureknx-ssd-case-for-tijl-knx-hat)
+- Weinzierl HAT + SSD - still to come
 
 <hr/>
 <br>
