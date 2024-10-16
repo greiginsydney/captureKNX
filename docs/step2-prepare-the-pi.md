@@ -44,25 +44,31 @@ The process to copy the operating system onto your Pi will vary slightly dependi
 <img src="https://github.com/user-attachments/assets/a2443a96-bf9a-4673-a62e-5c9ddb08d7b2" width="50%">
 </p>
 
-7. At the "Are you sure?" prompt, **double-check** you've selected the correct drive before clicking YES:
+7. If you've [previously baked your Wi-Fi settings into the Imager](/docs/advanced-applications.md#plug-and-play---bake-the-wi-fi-credentials-into-the-pi), you'll be asked if you want to use them in this instance. Click YES to have them applied when the card is formatted:
+
+<p align="center">
+<img src="https://github.com/user-attachments/assets/d11380c9-1a42-40f2-a0a9-dd8f970727c4" width="50%">
+</p>
+
+8. At the "Are you sure?" prompt, **double-check** you've selected the correct drive before clicking YES:
 
 <p align="center">
 <img src="https://github.com/user-attachments/assets/aa80d04d-dfd8-47fb-8fdb-bc4906f305fa" width="50%">
 </p>
 
-8. The OS will be written and then verified:
+9. The OS will be written and then verified:
 
 <p align="center">
 <img src="https://github.com/user-attachments/assets/36896c36-b51e-4017-8fd1-a829d1ab4227" width="50%">
 </p>
 
-9. Upon successful completion you'll be prompted to remove the drive and plug it in to the Pi:
+10. Upon successful completion you'll be prompted to remove the drive and plug it in to the Pi:
 
 <p align="center">
 <img src="https://github.com/user-attachments/assets/2dddabd4-85a7-4a96-9335-74cd7959549a" width="50%">
 </p>
 
-10. Done! Jump to [step3-setup-the-Pi.md](/docs/step3-setup-the-Pi.md).
+11. Done! Jump to [step3-setup-the-Pi.md](/docs/step3-setup-the-Pi.md).
 
 <br/>
 <hr>
