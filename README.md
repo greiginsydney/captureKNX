@@ -1,14 +1,10 @@
 # captureKNX
 Build a Raspberry Pi that will capture all KNX telegrams to InfluxDB that you can query from a browser any time.
 
-<table>
-<tr>
-<td>TODO A picture of the completed Pi in its box</td>
-<td><p>&#10132;</p></td>
-<td width="60%"><p align="center"><img src="https://github.com/user-attachments/assets/4e9b8f70-2fc2-4b0b-b88b-9a16e99a4797">(Click on the image for a higher-resolution view)</p></td>
-</tr>
-  
-</table>
+<p align="middle">
+   <img src="https://github.com/user-attachments/assets/11fb26ad-9873-4128-9f06-c18ef4ceca79" width="40%">
+   <img src="https://github.com/user-attachments/assets/4e9b8f70-2fc2-4b0b-b88b-9a16e99a4797" width="40%">
+</p>
 
 ## Features
 
