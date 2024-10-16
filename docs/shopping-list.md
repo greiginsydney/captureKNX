@@ -2,7 +2,7 @@
 
 To build the captureKNX as described, you'll need the following parts.
 
-Your outlay will be approximately $USD200 / $AUD260, although this does _not_ include shipping costs or the cost of a 3D-printed enclusure.
+Your outlay will be approximately $USD200 / $AUD260, although this does _not_ include shipping costs or the cost of a 3D-printed enclosure.
 
 ## Variations
 
@@ -20,19 +20,29 @@ There are a number of different variations:
 
 ### Raspberry Pi 5
 
-You DEFINITELY need a Pi 5, as we're asking a lot of this poor little SBC.
+You DEFINITELY need a Pi 5, as we're asking a lot of this little SBC.
 
 It doesn't use much memory, so the 2GB version will be fine.
 
-* I sourced mine from [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-model-b-2gb.html) here in Newcastle AU for $AUD82.
-* I can't find the 2GB version on [Amazon.com](https://amzn.to/4e2eQiR) yet, but here's the 4G for $US70.
+- I sourced mine from [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-model-b-2gb.html) here in Newcastle AU for $AUD82.
+- I can't find the 2GB version on [Amazon.com](https://amzn.to/4e2eQiR) yet, but here's the 4G for $US70.
 
 ### Pi 5 power supply
 
 Don't skimp and re-use an old Pi4 power supply, as you run the risk of the Pi not booting up automatically. Remember it also has to power the SSD.
 
-* [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-power-supply-usb-c-pd-27w-white.html) again. $AUD21.
-* [Amazon.com](https://amzn.to/3AGWUvP) has the US version for $US19.
+- [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-power-supply-usb-c-pd-27w-white.html) again. $AUD21.
+- [Amazon.com](https://amzn.to/3AGWUvP) has the US version for $US19.
+
+### Low-profile heatsink for Raspberry Pi 5
+
+The Pi 5 doesn't ship with one, but the chipset gets BURNY hot. You definitely need a heatsink and fan.
+
+- Core has The Pi Hut's 105875 [Low-profile Heatsink for Raspberry Pi 5](https://core-electronics.com.au/low-profile-heatsink-raspberry-pi-5.html) for $AUD6.25
+- An alternative is Waveshare's 26415 [Passive Aluminum Heatsink For Raspberry Pi 5](https://core-electronics.com.au/passive-aluminum-heatsink-for-raspberry-pi-5.html) for $AUD4.80.
+- [The Pi Hut](https://thepihut.com/products/low-profile-heatsink-for-raspberry-pi-5) - £2.92 excl. VAT
+- [Waveshare](https://www.waveshare.com/pi5-active-cooler-c.htm) - $US3
+- [Amazon.com](https://amzn.to/3Y9cSa9) - $US7.68
 
 ### Pi 5 cooling fan
 
@@ -78,11 +88,6 @@ I used Tijl's KNX Pi HAT from [Tindie](https://www.tindie.com/products/cpu20/knx
 
 $USD67 / $AUD100
 
-### Raspberry Pi "stackable" header (Tijl hat only)
-
-This header extends the lengths of the Pi's GPIO header pins so they'll reach the KNX hat mounted high above.
-Core has a [Raspberry Pi Extra-Long Stacking Header (2x20 pins)](https://core-electronics.com.au/stacking-2x20.html) for $AUD2.40, and the [Pololu-2748 Stackable 0.100″ Female Header: 2x20-pin, Straight](https://core-electronics.com.au/stackable-0-100-female-header-2x20-pin-straight.html) for $4.95. ([Pololu link](https://www.pololu.com/product/2748))
-
 ### KNX Pi HAT - option 2: Weinzierl 838 kBerry
 
 <p align="center">
@@ -97,24 +102,31 @@ $USD123 / $AUD180
 
 <hr/> 
 
-### Mounting screws and spacers (Tijl hat only)
+### Raspberry Pi "stackable" header
+
+Both of the above boards sit a little close to the processor of the Pi, and it's going to need some air flow. We used \*TWO\* headers to give enough height.
+
+Core has a [Raspberry Pi Extra-Long Stacking Header (2x20 pins)](https://core-electronics.com.au/stacking-2x20.html) [NB: untested] for $AUD2.40, and the [Pololu-2748 Stackable 0.100″ Female Header: 2x20-pin, Straight](https://core-electronics.com.au/stackable-0-100-female-header-2x20-pin-straight.html) for $4.95. ([Pololu link](https://www.pololu.com/product/2748))
+
+
+### Mounting screws and spacers - Tijl HAT
 
 The Pi hat from Tindie needs to be screwed to the Pi, and this pair of boards then slot into the custom housing below.
 
-You need 2.5mm machine screws, washers, and 20mm threaded spacers. I get mine from Mouser:
+4 x 5-6mm long M3 machine screws. Mounts the SSD to the case
+8 x 5-6mm long M2.5 pan head machine screws. Mounts the Pi to the case and the HAT to the Pi
+4 x 21mm long M2.5 female-female threaded spacers
 
-8 x 6mm long machine screws & washers
-4 x 20mm long threaded spacers
+I get my spacers from Mouser or Element14/Farnell - or if you're up for it, you can 3D-print them (see below for a link).
 
 Let's call it $10.
 
-### Mounting screws (Weinzierl hat only)
+### Mounting screws - Weinzierl HAT
 
 Weinzierl's hat has no holes for mounting screws, and is instead held in position by lugs in the case and lid.
 
-In this configuration the Pi itself is screwed into the base of the case.
-
-You need 4 x 2.5mm self-tappers or machine screws.
+4 x 5-6mm long M3 machine screws. Mounts the SSD to the case
+4 x 5-6mm long M2.5 pan head machine screws. Mounts the Pi to the case
 
 Let's call it $10 just to keep the maths even.
 
