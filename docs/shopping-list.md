@@ -56,6 +56,19 @@ Here are the only ones we've found so far:
 * Amazon AU - none found
 * Amazon US - none found
 
+### micro-HDMI to HDMI adapter cable (optional?)
+
+If this is your first Pi 4 or 5 project you probably won't already have one of these in your toolbox, but the people who sell the Pi will have these in abundance.
+
+You only need this for the initial build steps, and you can actually skip it altogether if you've pre-stuffed some Wi-Fi credentials into the SSD or are using an Ethernet connection, and are able to query the local DHCP server to find out the Pi's IP address. But it's a nice-to-have.
+
+- Core Electronics [Micro-HDMI to Standard HDMI 1M Cable](https://core-electronics.com.au/raspberry-pi-micro-hdmi-to-standard-hdmi-1m-cable.html) for $AU9
+- Amazon.com has a [6' 4K Micro HDMI to HDMI Male Cable Adapter](https://amzn.to/4f6dFiZ) for $US9
+
+### USB Keyboard (optional?)
+
+Again, if you're new to the Pi you're probably going to need to plug a keyboard into it to perform the setup steps. As above, if you're able to get the Pi on a network and determine its IP address, you can skip this and do all the config from your destktop/laptop.
+
 <hr/>
 
 ### 2.5" Solid State Drive
