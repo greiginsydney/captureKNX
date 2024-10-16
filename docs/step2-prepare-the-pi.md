@@ -8,7 +8,7 @@ The process to copy the operating system onto your Pi will vary slightly dependi
 
 - [USB-connected SSD](#usb-connected-ssd)
 
-- [PCIe NVMe](#pcie-nvme)
+- [PCIe NVMe](/docs/advanced-applications.md#nvme-storage)
 
 
 ## USB-connected SSD
@@ -68,4 +68,4 @@ The process to copy the operating system onto your Pi will vary slightly dependi
 <hr>
 <br/>
 
-## PCIe NVMe
+[Top](#prepare-the-pi)
