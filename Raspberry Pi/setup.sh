@@ -595,7 +595,7 @@ setup3()
 	then
 		sed -i '/EnvironmentFile=-\/etc\/default\/influxdb2/a EnvironmentFile=-/etc/influxdb/captureKNX.env' /lib/systemd/system/influxdb.service
 	fi
-	echo ''
+	# echo ''
 
 	# Create initial InfluxDB config:
 	# Has it already been created?
@@ -603,7 +603,7 @@ setup3()
 	isInfluxConfigured=$(influx config list --hide-headers 2>&1)
 	set -e #Resume the error trap
 	# echo "-----------"
-	echo "OUTPUT >>> $isInfluxConfigured"
+	# echo "OUTPUT >>> $isInfluxConfigured"
 	# echo "-----------"
 	if [[ ! $isInfluxConfigured ]];
 	then
