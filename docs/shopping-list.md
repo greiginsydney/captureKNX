@@ -80,7 +80,7 @@ You'll get similar from [Amazon](https://amzn.to/3AJnPr3) in the US for $US10 (b
 
 ### KNX Pi HAT - option 1: Tijl/Tindie
 
-I used Tijl's KNX Pi HAT from [Tindie](https://www.tindie.com/products/cpu20/knx-raspberry-pi-hat/) for most of my development. This seems to be permanently out of stock until enough people join the waitlist, then they do a production run of new boards.
+I used Tijl's KNX Pi HAT from [Tindie](https://www.tindie.com/products/cpu20/knx-raspberry-pi-HAT/) for most of my development. This seems to be permanently out of stock until enough people join the waitlist, then they do a production run of new boards.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/956aabb9-2975-4a0e-a448-cbec3ba2f691" width="30%">
@@ -111,25 +111,24 @@ Core has a [Raspberry Pi Extra-Long Stacking Header (2x20 pins)](https://core-el
 
 ### Mounting screws and spacers - Tijl HAT
 
-The Pi hat from Tindie needs to be screwed to the Pi, and this pair of boards then slot into the custom housing below.
+The Pi HAT from Tindie needs to be screwed to the Pi, and this pair of boards then slot into the custom housing below.
 
 4 x 5-6mm long M3 machine screws. Mounts the SSD to the case
 8 x 5-6mm long M2.5 pan head machine screws. Mounts the Pi to the case and the HAT to the Pi
 4 x 21mm long M2.5 female-female threaded spacers
 
-I get my spacers from Mouser or Element14/Farnell - or if you're up for it, you can 3D-print them (see below for a link).
+I get my spacers from [Mouser](https://au.mouser.com/c/electromechanical/hardware/standoffs-spacers/?q=m2.5%20spacer&gender=Female%20%2F%20Female&length=21%20mm&material=Aluminum~~Brass%7C~Stainless%20Steel~~Steel&thread%20size=M2.5~~M2.5%20x%200.45&rp=electromechanical%2Fhardware%2Fstandoffs-spacers%7C~Thread%20Size%7C~Gender%7C~Material) or Element14/Farnell - or if you're up for it, you can 3D-print them (see below for a link).
 
 Let's call it $10.
 
 ### Mounting screws - Weinzierl HAT
 
-Weinzierl's hat has no holes for mounting screws, and is instead held in position by lugs in the case and lid.
+Weinzierl's HAT has no holes for mounting screws, and is instead held in position by lugs in the case and lid.
 
 4 x 5-6mm long M3 machine screws. Mounts the SSD to the case
-4 x 5-6mm long M2.5 pan head machine screws. Mounts the Pi to the case
+4 x 5-6mm long M2.5 pan head machine screws (or 4 x 4G self-tappers). Mounts the Pi to the case
 
 Let's call it $10 just to keep the maths even.
-
 
 ### A housing to put it all in
 
