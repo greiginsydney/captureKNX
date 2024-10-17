@@ -181,6 +181,7 @@ mv -fv "staging/captureKNX/Raspberry Pi/setup.sh" ~
 ```txt
 sudo chmod +x setup.sh
 ```
+<br id="setup"/>
 
 35. Now run it! (Be careful here: the switches are critical. "-E" ensures your user path is passed to the script. Without it the software will be moved to the wrong location, or not at all. "-H" passes the Pi user's home directory.)
 ```txt
