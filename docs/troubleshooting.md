@@ -247,7 +247,12 @@ You might alternatively see an error here, indicating authorisation has failed b
 
 This is usually due to a 'token' error.
 
-Resolution: TODO
+Quick things to try:
+   1. Reboot
+   2. Re-run setup. Jump to Step 35 in [step3-setup-the-Pi.md](/docs/step3-setup-the-Pi.md#setup)
+   3. Does the test step at the completion of the script highlight any problems?
+
+In-depth resolution: TODO. If you encounter this in the field, please log an issue.
 
 
 <br>
