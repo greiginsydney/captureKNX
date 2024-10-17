@@ -152,7 +152,7 @@ Let's call it $10 just to keep the maths even.
 My partner Ozrocky has designed a case you can print for all this to fit inside. The art is on Printables:
 
 - [Tijl's HAT + SSD](https://www.printables.com/model/1041238-captureknx-ssd-case-for-tijl-knx-hat)
-- Weinzierl HAT + SSD - still to come
+- [Weinzierl HAT + SSD](https://www.printables.com/model/1042200-captureknx-ssd-case-for-weinzierl-knx-hat)
 
 <hr/>
 <br>
