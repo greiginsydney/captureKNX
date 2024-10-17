@@ -96,7 +96,7 @@ You'll get similar from [Amazon](https://amzn.to/3AJnPr3) in the US for $US10 (b
 I used Tijl's KNX Pi HAT from [Tindie](https://www.tindie.com/products/cpu20/knx-raspberry-pi-HAT/) for most of my development. This seems to be permanently out of stock until enough people join the waitlist, then they do a production run of new boards.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/956aabb9-2975-4a0e-a448-cbec3ba2f691" width="30%">
+  <img src="https://github.com/user-attachments/assets/3e472f3a-320c-436e-bd70-872e512554d7" width="30%">
 </p>
 
 $USD67 / $AUD100
@@ -104,7 +104,7 @@ $USD67 / $AUD100
 ### KNX Pi HAT - option 2: Weinzierl 838 kBerry
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/858f8284-b68a-489c-af83-7137fa928886" width="30%">
+  <img src="https://github.com/user-attachments/assets/b3dcb080-f115-4349-91eb-b26fa0a36e0e" width="30%">
 </p>
 
 The [Weinzierl 838 kBerry](https://weinzierl.de/en/products/knx-baos-modul-838/) is another plugin daughterboard (HAT) for the Pi.
