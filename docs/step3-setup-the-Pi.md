@@ -213,7 +213,7 @@ If the Pi isn't plugged in to the KNX bus at this stage, it's expected that knxd
 
 > You should always try to shut the Pi down before you turn it off: `sudo shutdown now`.
 
-[Jump to step5 Login to InfluxDB](/docs/step4-login-to-influxdb.md)
+Jump to [step4-login-to-influxdb](/docs/step4-login-to-influxdb.md)
 
 <br>
 
