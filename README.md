@@ -37,15 +37,15 @@ The 'HAT' provides the physical interface to the KNX TP Line, and the ensuing co
 
 captureKNX stores all the telegrams in a 'time series' database called InfluxDB, and the reporting all happens in Grafana.
 
-If you're wanting to better understand the architecture and what you're getting yourself in for before you take the plunge and buy a Pi and HAT, have a look at the pages [step5-login-to-grafana.md](step5-login-to-grafana.md) and [step6-more-grafana-tips.md](step6-more-grafana-tips.md).
+If you're wanting to better understand the architecture and what you're getting yourself in for before you take the plunge and buy a Pi and HAT, have a look at the pages [step5-login-to-grafana.md](/docs/step5-login-to-grafana.md) and [step6-more-grafana-tips.md](/docs/step6-more-grafana-tips.md).
 
-I also STRONGLY recommend you watch the YouTube video playlist ["What is Observability - Grafana for Beginners"](https://youtube.com/playlist?list=PLDGkOdUX1Ujo27m6qiTPPCpFHVfyKq9jT&si=q5BIC9lkn3LJmBc6). That playlist builds a great understanding, and by Episode 8 you're creating a dashboard that looks remarkably like the one provided here in [step6-more-grafana-tips.md](step6-more-grafana-tips.md).
+I also STRONGLY recommend you watch the YouTube video playlist ["What is Observability - Grafana for Beginners"](https://youtube.com/playlist?list=PLDGkOdUX1Ujo27m6qiTPPCpFHVfyKq9jT&si=q5BIC9lkn3LJmBc6). That playlist builds a great understanding, and by Episode 8 you're creating a dashboard that looks remarkably like the one provided here in [step6-more-grafana-tips.md](/docs/step6-more-grafana-tips.md).
 
 InfluxDB and Grafana both have active supporter communities should you want to delve deeper into the reporting of your stored Telegrams. (By all means I welcome you sharing your Dashboards with fellow captureKNX users - the project's Wiki page [TODO] would be a great place for those.)
 
 ## Credits
 
-captureKNX relies upon the open-source [knxd](https://github.com/knxd/knxd) and [KNXDclient](https://github.com/mhthies/knxdclient) projects for its communications, and would be lost without them. If you're feeling generous please visit their sites and send some appreciation in your preferred currency.
+captureKNX relies upon the open-source [knxd](https://github.com/knxd/knxd) and [KNXDclient](https://github.com/mhthies/knxdclient) projects for its communications, and would be lost without them. If you're feeling generous please visit their sites and send some appreciation in your preferred currency:
 
 - [knxd](https://github.com/knxd/knxd#compensation--personal-statement)
 - KNXDclient (TODO)
@@ -54,7 +54,7 @@ captureKNX relies upon the open-source [knxd](https://github.com/knxd/knxd) and 
 
 ## Where to next?
 
-Jump to the [documentation pages](https://github.com/greiginsydney/captureKNX/tree/main/docs) for the shopping list and build instructions.
+Jump to the [documentation pages](/docs/README.md) for the shopping list and build instructions.
 
 <br><br>
 \- Greig.
