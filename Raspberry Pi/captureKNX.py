@@ -134,6 +134,11 @@ async def main() -> None:
                     else:
                         log(f'Unhandled object type. DPT = {DPT}. Value is {type(value)}')
                         telegram['info'] = value
+
+                    # EXPERIMENTAL: If the 'info' value is a number, send it separately to Influx to aid Grafana reporting:
+                    if isinstance(packet.payload.value, int):
+                        telegram['isNumeric'] = packet.payload.value
+
                 except Exception as e:
                         log(f'Exception decoding DPT {DPT} of type {type(value)} in main at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
