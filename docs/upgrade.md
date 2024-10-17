@@ -4,7 +4,7 @@ The setup test script will confirm your version of captureKNX, and what the late
 
 If there's a discrepancy (and you like the look of the improvements on offer on the Releases page), please consider upgrading.
 
-The upgrade process is a cut-down version of the setup process in [step3-setup-the-pi](/docs/step3-setup-the-Pi.md).
+The upgrade process is a cut-down version of the setup process in [step3-setup-the-Pi](/docs/step3-setup-the-Pi.md).
 
 1. SSH to the Pi and login.
 2. It's always a good idea to ensure the Pi is up-to-date:
