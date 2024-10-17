@@ -1,6 +1,6 @@
 # Setup the Pi
 
-If you're starting a Pi o/s build from scratch, jump back to [step2-prepare-the-pi.md](/docs/step2-prepare-the-Pi.md).
+If you're starting a Pi o/s build from scratch, jump back to [step2-prepare-the-Pi.md](/docs/step2-prepare-the-Pi.md).
 
 If you're upgrading an existing captureKNX the upgrade process is a lot simpler, and that's on the [upgrade](/docs/upgrade.md) page.
 
