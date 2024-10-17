@@ -25,5 +25,7 @@ The Topology provides us with the details of each sending device, the Group Addr
 
 > Not sure how to copy? I use a great util called "WinSCP".
 
+   TODO: Can I prompt for the password on the Pi to allow the extraction to take place?
 
-TODO: Can I prompt for the password on the Pi to allow the extraction to take place?
+5. Done! Jump to [step2-prepare-the-Pi.md](/docs/step2-prepare-the-Pi.md).
+
