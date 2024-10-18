@@ -321,7 +321,7 @@
             "excludeByName": {
               "boolean": true,
               "float": true,
-              "number": true,
+              "integer": true,
               "source_building": true,
               "source_floor": false
             },
