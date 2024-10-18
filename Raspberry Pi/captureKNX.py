@@ -129,7 +129,7 @@ async def main() -> None:
                         # DPT1 is the only bool, and its original true/false value was written above
                     elif isinstance(value, int):
                         telegram['info'] = str(value)
-                        telegram['number'] = value
+                        telegram['integer'] = value
                     elif isinstance(value, float):
                         telegram['info'] = str(round(value, 2))
                         telegram['float'] = round(value, 2)
