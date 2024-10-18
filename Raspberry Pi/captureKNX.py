@@ -103,15 +103,11 @@ async def main() -> None:
                 telegram['destination_name'] = GA_name if GA_name else "Unknown" # It's invalid to send an empty tag to Influx, hence 'Unknown' if required
                 telegram['dpt']              = float(DPT) # We only send DPT_main to the knxdclient but the full numerical DPT to Influx (as a float)
 
-                # If the 'info' value is a number, log it as a distinct (numeric) field to help Grafana graphing
-                if isinstance(packet.payload.value, int):
-                    telegram['numeric'] = packet.payload.value
-                
                 # TODO: is this where we define EVERY sub-type??
                 unit = ""
                 if DPT_main == 1:
                     try:
-                        telegram['dpt1'] = value    # Logging DPT1 as a distinct (boolean) field helps Grafana graphing
+                        telegram['boolean'] = value    # Logging DPT1 as a distinct (boolean) field helps Grafana graphing
                         value_true, value_false = DPT1[sub_DPT]
                         value = value_true if (value) else value_false
                     except Exception as e:
@@ -128,10 +124,15 @@ async def main() -> None:
                 try:
                     if isinstance(value, str):
                         telegram['info'] = value
+                    elif isinstance(value, bool):
+                        telegram['info'] = str(value)
+                        # DPT1 is the only bool, and its original true/false value was written above
+                    elif isinstance(value, int):
+                        telegram['info'] = str(value)
+                        telegram['number'] = value
                     elif isinstance(value, float):
                         telegram['info'] = str(round(value, 2))
-                    elif isinstance(value, (int, bool)):
-                        telegram['info'] = str(value)
+                        telegram['float'] = round(value, 2)
                     elif isinstance(value, tuple):
                         # I think I've weeded out the tuples. This is for debug purposes:
                         log(f'-- TUPLE COMING THROUGH: DPT = {DPT} ')
@@ -139,14 +140,15 @@ async def main() -> None:
                     else:
                         log(f'Unhandled object type. DPT = {DPT}. Value is {type(value)}')
                         telegram['info'] = value
-
                 except Exception as e:
                         log(f'Exception decoding DPT {DPT} of type {type(value)} in main at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
-                        value = 'error'
+                        telegram['info'] = 'error'
+
                 if unit:
                     # Only add the 'unit' tag if it's not an empty string
                     telegram['unit'] = unit
+
                 message = {"telegram" : telegram}
 
                 # Post it to telegraf:
