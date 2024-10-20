@@ -7,19 +7,19 @@ To provide a small head-start, a "sample fancy dashboard" is included which demo
 
 ## Temperatures graph
 
-I have multiple temperature and light level sensors, so I've overlaid them on each other to compare their differences. The jagged blue line is reporting the temperatures in the air-conditioned computer-room.
+We have multiple temperature and light level sensors, so I've overlaid them on each other for a comparison. The jagged blue line is the temperature in the air-conditioned computer-room.
 
-Note that the Y-axis (vertical) has been set to start at 10°C and only goes to 30. Below the graph is the legend where the three sensors are given a sensible name.
+Note how the Y-axis (vertical) only ranges from 10° to 30°C, demonstrating how the "auto" axis setting helps maximise the presentation of the data. (You can peg it to fixed minimum and/or maximum values if you prefer). Below the graph is the legend where the three sensors are given a sensible name.
 
 ## Light levels graph
 
-Like temperatures, I have two light level sensors showing their readings on top of each other. A key difference here is that both have different Y-axes. That's because one of the sensors reports lux as DPT 7.013 and the other as DPT 9.004, and the values values differ wildly from each other even though they're reporting the same thing.
+Like temperatures, I have two light level sensors showing their readings on top of each other. A key difference here is that both have different Y-axes, which you can see at the left and the right of the graph. That's because one of the sensors reports lux as DPT 7.013 and the other as DPT 9.004. Whilst the values differ by more than an order of magnitude, the graphs confirm they're largely in alignment. (If you're curious, the divergence at sunrise and sunset is due to one being on the shaded southern wall whilst the other is west-facing.)
 
-## Bathroom logic
+## Bathroom logic - "logic analyser view"
 
-This panel is reporting the on/off state of three GA's in the bathroom: the light, the exhaust fan and the ceiling heater. This panel would be a good one to employ when you're debugging the interaction between linked GAs.
+This panel is reporting the on/off state of three Switch GA's in the bathroom: the light, the exhaust fan and the ceiling heater. This panel would be a good one to employ when you're debugging the interaction between linked GAs.
 
-A word of warning however is that very brief changes of state will disappear in the view if you're zoomed out to (say) a 24-hour view. If you're troubleshooting, change the time range to narrowly focus on the time period in question.
+A word of warning however is that very brief changes of state will not show on the graph if you're looking at (say) a 24-hour window, not unlike how you can't see your back-yard from space on Google Street View if you've zoomed all the way out to show the entire city or country. When troubleshooting, change the time range to more narrowly focus on the time period in question.
 
 ## "Breaker trip"
 
@@ -37,5 +37,7 @@ This is a "bar gauge", reporting a value that's represented as a percentage. The
 
 The rainwater tank level is represented as a "gauge", with my own addition of the colour and markers every 500L. In this example the GA would be reporting the value in litres.
 
+
+## Heading - "your turn"
 
 Out of the box the sample is less appealing. Your task is to customise it with your local Group Addresses or their names. Here's how to do that:
