@@ -319,6 +319,9 @@
           "id": "organize",
           "options": {
             "excludeByName": {
+              "boolean": true,
+              "float": true,
+              "integer": true,
               "source_building": true,
               "source_floor": false
             },
