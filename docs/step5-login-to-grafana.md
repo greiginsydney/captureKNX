@@ -57,6 +57,8 @@ There are a few things you can easily do with this view:
 - Click any of the OTHER column headings to instead sort them alphabetically ascending or descending. (The arrow will move to that column to show the view is being sorted by that element)
 - Click the funnel icon (14) next to any of the titles to filter to one or more values. This is INCREDIBLY powerful!! You can filter on multiple columns at the same time, and each will show the funnel in blue so you can see at a glance what's flavouring the current view
 
+You'll find more navigation and management tips on the Grafana page "[Use dashboards](https://grafana.com/docs/grafana/latest/dashboards/use-dashboards/)".
+
 ## Welcome to your captureKNX!
 
 In [step6-grafana-tips.md](/docs/step6-grafana-tips.md) (TODO) you'll find some tips to help you do things like re-size, hide/reveal, re-label, and more.
