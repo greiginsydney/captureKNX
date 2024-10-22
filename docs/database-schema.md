@@ -49,7 +49,7 @@ Name: telegram
 <tr><td>2</td><td>dpt</td><td>float</td></tr>
 <tr><td>3</td><td>float</td><td>float</td></tr>
 <tr><td>4</td><td>info</td><td>string</td></tr>
-<tr><td>5</td><td>number</td><td>float</td></tr>
+<tr><td>5</td><td>integer</td><td>integer</td></tr>
 <tr><td>6</td><td>unit</td><td>string</td></tr>
 </table>
 
