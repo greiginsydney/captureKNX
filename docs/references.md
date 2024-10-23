@@ -39,7 +39,7 @@ Here are some of the links I referred to as I was building captureKNX.
 
 ### Spacers
 
-- [M2.5mm female-female spacers](https://au.mouser.com/c/electromechanical/hardware/standoffs-spacers/?q=m2.5%20spacer&gender=Female%20%2F%20Female&material=Aluminum~~Brass%7C~Stainless%20Steel~~Steel&thread%20size=M2.5~~M2.5%20x%200.45&rp=electromechanical%2Fhardware%2Fstandoffs-spacers%7C~Thread%20Size%7C~Gender%7C~Material)
+- [M2.5mm female-female spacers](https://au.mouser.com/c/electromechanical/hardware/standoffs-spacers/?q=m2.5%20spacer&gender=Female%20%2F%20Female&material=Aluminum~~Brass%7C~Stainless%20Steel~~Steel&thread%20size=M2.5~~M2.5%20x%200.45&rp=electromechanical%2Fhardware%2Fstandoffs-spacers%7C~Thread%20Size%7C~Gender%7C~Material) (Mouser)
 
 <br>
 
