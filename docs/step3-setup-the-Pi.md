@@ -12,7 +12,7 @@ If you have previously formatted your drive and the Pi is ready to go, stay here
 
 The KNX "hat" on the Pi needs some addresses within the KNX topology. It only ever listens, never transmits, but we still need to configure some addresses for it.
 
-The installation will prompt you for them. The default values are four addresses starting from 1.1.250 (hoping they're well out of your active range). Please change these when prompted if they're already in use.
+The installation will prompt you for them. The default values are four addresses starting from 1.1.250 (hoping they're well out of your active range). Please change these when prompted if they're already in use or captureKNX will live on another TP line.
 
 The script installs the reporting component `InfluxDB`, which also requires a user login name and password for its web interface. The terribly unsecure 'captureKNX' is the default for both, and you should please change them when prompted. 
 
