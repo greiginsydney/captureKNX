@@ -162,7 +162,7 @@ setup1()
 			then
 				echo "Skipped: the file /etc/grafana/provisioning/dashboards/group-monitor.json already exists & the new version is unchanged"
 			else
-				[ -f /etc/grafana/provisioning/dashboards/group-monitor.json ];
+				if [ -f /etc/grafana/provisioning/dashboards/group-monitor.json ];
 				then
 					# File already exists. Copy new version over as ".new" (will not be used by Grafana)
 					echo "A newer version of the file 'group-monitor.json' has been copied to /etc/grafana/provisioning/dashboards/ as '.new'"
@@ -182,7 +182,7 @@ setup1()
 			then
 				echo "Skipped: the file /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json' already exists & the new version is unchanged"
 			else
-				[ -f /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json ];
+				if [ -f /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json ];
 				then
 					# File already exists. Copy new version over as ".new" (will not be used by Grafana)
 					echo "A newer version of the file 'sample-graphical-dashboard.json' has been copied to /etc/grafana/provisioning/dashboards/ as '.new'"
