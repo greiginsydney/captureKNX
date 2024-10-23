@@ -2,12 +2,21 @@
 
 If you've researched Grafana or watched any of the YouTube links you'll realise it's a VERY powerful tool, and using it to present a tabular Group Monitor is seriously under-using it.
 
-To provide a small head-start, a "sample fancy dashboard" is included which demonstrates a few of Grafana's graphical features.
+To provide a small head-start, a sample graphical dashboard is included which demonstrates a few of Grafana's graphical features.
 
+If you have similar devices (Group Addresses) that can be used as the raw data, you can have a view looking like this in no time. If not, it's easy to delete the 'panels' you don't have a use for, and re-size the remaining ones to fill in the gaps. More on that later.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/bfdb8d53-f848-4898-ba01-601cbdfef43a" width="100%">
+</p>
+
+## Dashboards vs Panels
+
+What you see in the image above is a "dashboard", made up of nine separate "panels". If you hover your mouse over any panel and type a 'v', that panel will zoom to full screen (press Esc to return). Click and drag the mouse across an interesting time-period on the timeline graphs to zoom into that duration.
 
 ## Temperatures graph
 
-We have multiple temperature and light level sensors, so I've overlaid them on each other for a comparison. The jagged blue line is the temperature in the air-conditioned computer-room.
+We have multiple temperature and light level sensors, so I've overlaid them on each other for a comparison. The jagged blue line is the temperature in the permanently air-conditioned server/IT room.
 
 Note how the Y-axis (vertical) only ranges from 10° to 30°C, demonstrating how the "auto" axis setting helps maximise the presentation of the data. (You can peg it to fixed minimum and/or maximum values if you prefer). Below the graph is the legend where the three sensors are given a sensible name.
 
@@ -17,9 +26,9 @@ Like temperatures, I have two light level sensors showing their readings on top 
 
 ## A "logic analyser" view
 
-This panel is reporting the on/off state of three Switch GA's in the bathroom: the light, the exhaust fan and the ceiling heater. This panel would be a good one to employ when you're debugging the interaction between linked GAs.
+This panel is reporting the on/off state of three Switch GA's in the bathroom: the light, the exhaust fan and the heated towel rail. This panel would be a good one to employ when you're debugging the interaction between linked GAs.
 
-A word of warning however is that very brief changes of state will not show on the graph if you're looking at (say) a 24-hour window, not unlike how you can't see the car parked in your driveway from space on Google Street View if you've zoomed all the way out to show the entire city or country. When troubleshooting, change the time range to more narrowly focus on the time period in question.
+A word of warning however is that very brief changes of state will not show on the graph if you're looking at (say) a 24-hour window, not unlike how you can't see the car parked in your driveway on Google Street View if you've zoomed all the way out to space. When troubleshooting, change the time range to more narrowly focus on the time period in question.
 
 ## "Breaker trip"
 
@@ -57,7 +66,24 @@ This is a "bar gauge", reporting a value that's represented as a percentage. The
 
 The rainwater tank level is represented as a "gauge", with my own addition of the colour and markers every 500L. In this example the GA would be reporting the value in litres.
 
+## Pool pump run count & times
 
-## Heading - "your turn"
+<p align="left">
+  <img src="https://github.com/user-attachments/assets/7a5deaf2-fa14-48f2-bf50-2476e62c6909" width="20%">
+</p>
 
-Out of the box the sample is less appealing. Your task is to customise it with your local Group Addresses or their names. Here's how to do that:
+Here we see two ways of looking at a boolean (switch) value, in this case my fictitious pool pump. The pump has run three times today, and "No data" reveals I can't figure out (yet) how to show the total run time. Whilst in reality it's reporting my Garage light FB GA, it would work nicely on the door to the coolroom, and show how long it's left open in total, or the "mean" value to report the average of each opening. (As with everything KNX, your creativity is called upon here to make it shine.)
+
+
+## Your turn! Out of the box it ain't so pretty
+
+Out of the box the sample is less appealing. That's because I've stripped all my specific GA's, for you to add your own.
+
+
+Your task is to customise it with your local Group Addresses or their names. Here's how to do that:
+
+Basic Steps
+
+The basic steps for every panel are the same:
+1. mouse over the panel and type 'e', or alternatively click the vertical ellipsis in the top RH corner and select Edit from the menu that appears.
+2. Click in the blank space to the right of 
