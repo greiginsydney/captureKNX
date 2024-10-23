@@ -111,7 +111,7 @@ pi@10.0.0.220's password:
 24. Enter the password and press Return.
 25. It's STRONGLY recommended that you change the password. Run `passwd` and follow your nose.
 
-## Here's where all the software modules are installed. This might take a while:
+## Here's where all the software modules are installed
 
 26. First let's make sure the Pi is all up-to-date:
 ```txt
@@ -124,7 +124,7 @@ sudo apt-get update && sudo apt-get upgrade -y
 
 27. `sudo reboot`
 
-Your SSH session will end here. Wait for the Pi to reboot, sign back in again and continue.
+Your SSH session will end here. Wait for the Pi to reboot, reconnect, sign back in again and continue.
 
 28. Confirm your current version of python:
 
