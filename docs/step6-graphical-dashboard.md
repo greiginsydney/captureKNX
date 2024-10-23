@@ -133,6 +133,10 @@ This happens on the "Transformations" tab, and if you've set friendly ALIASES, t
 
 12. Click all three field values and select the names (or aliases) that were set on the Queries tab. The little "switch" icon indicates that we're converting the field type of boolean (switch) to a Number. Here I've shown one complete, with two still unset. Hopefully in completing this step the graph will have correctly resolved itself. If you later change an ALIAS, you'll need to revisit and update the Transformation.
 
+### Changing threshold values & colours
+
+TODO
+
 <br>
 
 [Top](#a-sample-graphical-dashboard)
