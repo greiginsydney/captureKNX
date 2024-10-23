@@ -1,0 +1,1492 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Nine sample panels you can tweak, customise, copy or delete.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 2,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "default": false,
+        "type": "influxdb",
+        "uid": "PF8270FBC3295DC55"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 16,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "sensor1",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [],
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "info"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        },
+        {
+          "alias": "sensor2",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [],
+          "hide": false,
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "info"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        },
+        {
+          "alias": "sensor3",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [],
+          "hide": false,
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "info"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        }
+      ],
+      "title": "Temperatures",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "number",
+                "targetField": "sensor1"
+              },
+              {
+                "destinationType": "number",
+                "targetField": "sensor2"
+              },
+              {
+                "destinationType": "number",
+                "targetField": "sensor3"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "influxdb",
+        "uid": "PF8270FBC3295DC55"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "Alarm": {
+                  "color": "dark-red",
+                  "index": 0,
+                  "text": "BREAKER TRIP"
+                },
+                "No alarm": {
+                  "color": "semi-dark-green",
+                  "index": 1,
+                  "text": "NORMAL"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bool_on_off"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 16,
+        "y": 0
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "background_solid",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Trip$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 40
+        },
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.2+security-01",
+      "targets": [
+        {
+          "alias": "Trip",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [],
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "info"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        }
+      ],
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [],
+            "fields": {}
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "influxdb",
+        "uid": "PF8270FBC3295DC55"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "semi-dark-green",
+                "value": 20
+              },
+              {
+                "color": "semi-dark-yellow",
+                "value": 25
+              },
+              {
+                "color": "semi-dark-orange",
+                "value": 30
+              },
+              {
+                "color": "dark-red",
+                "value": 35
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 16,
+        "y": 3
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.2+security-01",
+      "targets": [
+        {
+          "alias": "Alias",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [],
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "info"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        }
+      ],
+      "title": "Current temperature",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "number",
+                "targetField": "Alias"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "influxdb",
+        "uid": "PF8270FBC3295DC55"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "lux"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 16,
+        "x": 0,
+        "y": 7
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "sensor4",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [],
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "info"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        },
+        {
+          "alias": "sensor5",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [],
+          "hide": false,
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "info"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        }
+      ],
+      "title": "Light levels",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "number",
+                "targetField": "sensor4"
+              },
+              {
+                "destinationType": "number",
+                "targetField": "sensor5"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "influxdb",
+        "uid": "PF8270FBC3295DC55"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "dark-red",
+                "value": 20
+              },
+              {
+                "color": "semi-dark-orange",
+                "value": 40
+              },
+              {
+                "color": "yellow",
+                "value": 60
+              },
+              {
+                "color": "semi-dark-green",
+                "value": 80
+              },
+              {
+                "color": "dark-green",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 5,
+        "x": 16,
+        "y": 8
+      },
+      "id": 6,
+      "options": {
+        "displayMode": "gradient",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.2.2+security-01",
+      "targets": [
+        {
+          "alias": "Alias",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [],
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "info"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "Test 6.10"
+            }
+          ]
+        }
+      ],
+      "title": "PowerWall",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "number",
+                "targetField": "Alias"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "influxdb",
+        "uid": "PF8270FBC3295DC55"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 3000,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "dark-orange",
+                "value": 500
+              },
+              {
+                "color": "yellow",
+                "value": 1000
+              },
+              {
+                "color": "green",
+                "value": 2000
+              },
+              {
+                "color": "dark-green",
+                "value": 2500
+              }
+            ]
+          },
+          "unit": "litre"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 5,
+        "x": 16,
+        "y": 10
+      },
+      "id": 4,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.2.2+security-01",
+      "targets": [
+        {
+          "alias": "Tank level",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [],
+          "hide": false,
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "info"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        }
+      ],
+      "title": "Rainwater tank level",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "number",
+                "targetField": "Tank level"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "influxdb",
+        "uid": "PF8270FBC3295DC55"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 4,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 8,
+                  "text": "Off"
+                },
+                "1": {
+                  "index": 6,
+                  "text": "On"
+                },
+                "2": {
+                  "index": 4,
+                  "text": "-"
+                },
+                "3": {
+                  "index": 2,
+                  "text": "Off"
+                },
+                "4": {
+                  "index": 0,
+                  "text": "On"
+                },
+                "0.5": {
+                  "index": 7,
+                  "text": "-"
+                },
+                "1.5": {
+                  "index": 5,
+                  "text": "Off"
+                },
+                "2.5": {
+                  "index": 3,
+                  "text": "On"
+                },
+                "3.5": {
+                  "index": 1,
+                  "text": "-"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "max": 4,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Fan"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Heat"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Fan  1.5"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Fan"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Heat  3"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Heat"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 16,
+        "x": 0,
+        "y": 14
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.2.2",
+      "targets": [
+        {
+          "alias": "sensor6",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "boolean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        },
+        {
+          "alias": "sensor7",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "boolean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        },
+        {
+          "alias": "sensor8",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "boolean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        }
+      ],
+      "title": "Bathroom as 'logic analyser' view",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "number",
+                "targetField": "sensor6"
+              },
+              {
+                "destinationType": "number",
+                "targetField": "sensor7"
+              },
+              {
+                "destinationType": "number",
+                "targetField": "sensor8"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "",
+            "binary": {
+              "left": "Fan",
+              "right": "1.5"
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": false
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "binary": {
+              "left": "Heat",
+              "right": "3"
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": false
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "influxdb",
+        "uid": "PF8270FBC3295DC55"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 16,
+        "y": 17
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^cumulative sum\\(telegram\\.boolean\\)$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.2+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [],
+          "hide": false,
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "boolean"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        }
+      ],
+      "title": "Pool pump run count",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {}
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "cumulative": {
+              "field": "telegram.boolean",
+              "reducer": "sum"
+            },
+            "mode": "cumulativeFunctions",
+            "reduce": {
+              "include": [
+                "telegram.boolean"
+              ],
+              "reducer": "sum"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "influxdb",
+        "uid": "PF8270FBC3295DC55"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 2,
+        "x": 19,
+        "y": 17
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.2+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF8270FBC3295DC55"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "telegram",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT INTEGRAL(\"boolean\") FROM \"telegram\" WHERE (\"destination_name\"::tag = 'TODO') AND $timefilter  GROUP BY time(1h) fill(null)\n",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "boolean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "integral"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "destination_name::tag",
+              "operator": "=",
+              "value": "TODO"
+            }
+          ]
+        }
+      ],
+      "title": "Pool pump run count",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {}
+        }
+      ],
+      "type": "stat"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Sample graphical dashboard",
+  "uid": "fe0wyv69k6ps0c",
+  "version": 3,
+  "weekStart": ""
+}
