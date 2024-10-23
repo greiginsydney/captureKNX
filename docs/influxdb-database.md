@@ -4,13 +4,13 @@ captureKNX formats and sends all the (valid) telegrams it receives to an InfluxD
 
 > "InfluxDB uses line protocol to write data points. It is a text-based format that provides the measurement, tag set, field set, and timestamp of a data point."
 
-InfluxDB views each "measurement" (KNX Telegrams) as consisting of one or more "tags" and "fields". Tags are effectively the meta-data, whilst the fields are the payload.
+InfluxDB views each "measurement" (a KNX telegram) as consisting of one or more "tags" and "fields". Tags are effectively the meta-data, whilst the fields are the payload.
 
 captureKNX sends all the source and destination values as fields, with only the datapoint type (DPT), the decoded value, and the unit (where applicable) as tags. You'll see those listed in the [Database Schema](#database-schema) section below as [field keys](#show-field-keys) and [tag keys](#show-tag-keys).
 
 ### Extra fields for Grafana graphing
 
-As an aid to Grafana's graphing of the captured data, captureKNX will also send each telegram's payload in its 'natural' format, particularly if it's a `boolean` (i.e. DPT1.xxx), `integer` or `float`. The presence of these extra values in the underlying database allows Grafana to more easily manipulate the data when graphing it. (See the FANCY-DASHBOARD-LINK TODO).
+As an aid to Grafana's graphing of the captured data, captureKNX will also send each telegram's payload in its 'natural' format, particularly if it's a `boolean` (i.e. DPT1.xxx), `integer` or `float`. The presence of these extra values in the underlying database allows Grafana to more easily manipulate the data when graphing it. (See [step6-graphical-dashboard.md](/docs/step6-graphical-dashboard.md).)
 
 You won't see the fields `boolean`, `integer` and `float` on the included "Group Monitor" dashboard, although they're present, just hidden in that view. (You can make them visible if you wish.) You will however see them presented as an option if you're creating SQL queries for graphing, although that's for the more adventurous or data nerds.
 
