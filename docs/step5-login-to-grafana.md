@@ -65,7 +65,7 @@ You'll find more navigation and management tips on the Grafana page "[Use dashbo
 
 The Group Monitor dashboard works out of the box, capturing and displaying in near real time (delayed by ~5 seconds) all telegrams sent to the bux.
 
-In [step6-graphical-dashboard](docs/step6-graphical-dashboard.md) you'll find an example of a graphical dashboard that shows your telegrams in a much more visually appealing manner, although you're going to have to customise it with the relevant Group Addresses on YOUR network.
+In [step6-graphical-dashboard](/docs/step6-graphical-dashboard.md) you'll find an example of a graphical dashboard that shows your telegrams in a much more visually appealing manner, although you're going to have to customise it with the relevant Group Addresses on YOUR network.
 
 <br>
 
