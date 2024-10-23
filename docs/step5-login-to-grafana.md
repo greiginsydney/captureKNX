@@ -59,11 +59,13 @@ There are a few things you can easily do with this view:
 
 You'll find more navigation and management tips on the Grafana page "[Use dashboards](https://grafana.com/docs/grafana/latest/dashboards/use-dashboards/)".
 
-## Welcome to your captureKNX!
+**Welcome to your captureKNX!**
 
-In [step6-grafana-tips.md](/docs/step6-grafana-tips.md) (TODO) you'll find some tips to help you do things like re-size, hide/reveal, re-label, and more.
+## A Graphical Dashboard 
 
-You might also find some answers on the [FAQ page](/docs/FAQ.md).
+The Group Monitor dashboard works out of the box, capturing and displaying in near real time (delayed by ~5 seconds) all telegrams sent to the bux.
+
+In [step6-graphical-dashboard](docs/step6-graphical-dashboard.md) you'll find an example of a graphical dashboard that shows your telegrams in a much more visually appealing manner, although you're going to have to customise it with the relevant Group Addresses on YOUR network.
 
 <br>
 
