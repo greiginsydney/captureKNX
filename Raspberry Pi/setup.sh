@@ -147,7 +147,7 @@ setup1()
 		then
 			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml;
 			then
-				echo "Skipped: the file /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml' already exists & the new version is unchanged"
+				echo "Skipped: the file /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml already exists & the new version is unchanged"
 			else
 				[ -f /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml ] && mv -fv /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml.old
 				mkdir -p /etc/grafana/provisioning/dashboards/
@@ -160,11 +160,38 @@ setup1()
 		then
 			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json;
 			then
-				echo "Skipped: the file /etc/grafana/provisioning/dashboards/group-monitor.json' already exists & the new version is unchanged"
+				echo "Skipped: the file /etc/grafana/provisioning/dashboards/group-monitor.json already exists & the new version is unchanged"
 			else
-				[ -f /etc/grafana/provisioning/dashboards/group-monitor.json ] && mv -fv /etc/grafana/provisioning/dashboards/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json.old
-				mkdir -p /etc/grafana/provisioning/dashboards/
-				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json
+				[ -f /etc/grafana/provisioning/dashboards/group-monitor.json ];
+				then
+					# File already exists. Copy new version over as ".new" (will not be used by Grafana)
+					echo "A newer version of the file 'group-monitor.json' has been copied to /etc/grafana/provisioning/dashboards/ as '.new'"
+					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json.new
+				else
+					# Does not exist. Create directory and copy the file
+					mkdir -p /etc/grafana/provisioning/dashboards/
+					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json
+				fi
+			fi
+		fi
+
+		# sample-graphical-dashboard.json:
+		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json ];
+		then
+			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json;
+			then
+				echo "Skipped: the file /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json' already exists & the new version is unchanged"
+			else
+				[ -f /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json ];
+				then
+					# File already exists. Copy new version over as ".new" (will not be used by Grafana)
+					echo "A newer version of the file 'sample-graphical-dashboard.json' has been copied to /etc/grafana/provisioning/dashboards/ as '.new'"
+					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json.new
+				else
+					# Does not exist. Create directory and copy the file
+					mkdir -p /etc/grafana/provisioning/dashboards/
+					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json
+				fi
 			fi
 		fi
 
