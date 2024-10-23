@@ -104,6 +104,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "alias": "sensor1",
@@ -121,7 +122,7 @@
             [
               {
                 "params": [
-                  "info"
+                  "float"
                 ],
                 "type": "field"
               }
@@ -152,7 +153,7 @@
             [
               {
                 "params": [
-                  "info"
+                  "float"
                 ],
                 "type": "field"
               }
@@ -183,7 +184,7 @@
             [
               {
                 "params": [
-                  "info"
+                  "float"
                 ],
                 "type": "field"
               }
@@ -199,28 +200,6 @@
         }
       ],
       "title": "Temperatures",
-      "transformations": [
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "sensor1"
-              },
-              {
-                "destinationType": "number",
-                "targetField": "sensor2"
-              },
-              {
-                "destinationType": "number",
-                "targetField": "sensor3"
-              }
-            ],
-            "fields": {}
-          }
-        }
-      ],
       "type": "timeseries"
     },
     {
@@ -292,7 +271,7 @@
         "textMode": "value",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.2+security-01",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "alias": "Trip",
@@ -325,6 +304,7 @@
           ]
         }
       ],
+      "title": "",
       "transformations": [
         {
           "id": "convertFieldType",
@@ -403,10 +383,9 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.2+security-01",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "alias": "Alias",
           "datasource": {
             "type": "influxdb",
             "uid": "PF8270FBC3295DC55"
@@ -421,7 +400,7 @@
             [
               {
                 "params": [
-                  "info"
+                  "float"
                 ],
                 "type": "field"
               }
@@ -437,20 +416,6 @@
         }
       ],
       "title": "Current temperature",
-      "transformations": [
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "Alias"
-              }
-            ],
-            "fields": {}
-          }
-        }
-      ],
       "type": "stat"
     },
     {
@@ -548,6 +513,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "alias": "sensor4",
@@ -565,7 +531,7 @@
             [
               {
                 "params": [
-                  "info"
+                  "integer"
                 ],
                 "type": "field"
               }
@@ -596,7 +562,7 @@
             [
               {
                 "params": [
-                  "info"
+                  "float"
                 ],
                 "type": "field"
               }
@@ -612,24 +578,6 @@
         }
       ],
       "title": "Light levels",
-      "transformations": [
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "sensor4"
-              },
-              {
-                "destinationType": "number",
-                "targetField": "sensor5"
-              }
-            ],
-            "fields": {}
-          }
-        }
-      ],
       "type": "timeseries"
     },
     {
@@ -689,6 +637,12 @@
       "id": 6,
       "options": {
         "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
         "maxVizHeight": 300,
         "minVizHeight": 16,
         "minVizWidth": 8,
@@ -705,10 +659,9 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.2.2+security-01",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "alias": "Alias",
           "datasource": {
             "type": "influxdb",
             "uid": "PF8270FBC3295DC55"
@@ -723,7 +676,7 @@
             [
               {
                 "params": [
-                  "info"
+                  "integer"
                 ],
                 "type": "field"
               }
@@ -733,26 +686,12 @@
             {
               "key": "destination_name::tag",
               "operator": "=",
-              "value": "Test 6.10"
+              "value": "TODO"
             }
           ]
         }
       ],
       "title": "PowerWall",
-      "transformations": [
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "Alias"
-              }
-            ],
-            "fields": {}
-          }
-        }
-      ],
       "type": "bargauge"
     },
     {
@@ -821,10 +760,9 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "11.2.2+security-01",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "alias": "Tank level",
           "datasource": {
             "type": "influxdb",
             "uid": "PF8270FBC3295DC55"
@@ -840,7 +778,7 @@
             [
               {
                 "params": [
-                  "info"
+                  "integer"
                 ],
                 "type": "field"
               }
@@ -856,20 +794,6 @@
         }
       ],
       "title": "Rainwater tank level",
-      "transformations": [
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "number",
-                "targetField": "Tank level"
-              }
-            ],
-            "fields": {}
-          }
-        }
-      ],
       "type": "gauge"
     },
     {
@@ -1050,7 +974,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "alias": "sensor6",
@@ -1223,8 +1147,15 @@
           "options": {
             "alias": "",
             "binary": {
-              "left": "Fan",
-              "right": "1.5"
+              "left": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Fan"
+                }
+              },
+              "right": {
+                "fixed": "1.5"
+              }
             },
             "mode": "binary",
             "reduce": {
@@ -1237,8 +1168,15 @@
           "id": "calculateField",
           "options": {
             "binary": {
-              "left": "Heat",
-              "right": "3"
+              "left": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Heat"
+                }
+              },
+              "right": {
+                "fixed": "3"
+              }
             },
             "mode": "binary",
             "reduce": {
@@ -1302,7 +1240,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.2+security-01",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -1337,10 +1275,6 @@
       ],
       "title": "Pool pump run count",
       "transformations": [
-        {
-          "id": "convertFieldType",
-          "options": {}
-        },
         {
           "id": "calculateField",
           "options": {
@@ -1412,7 +1346,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.2+security-01",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -1428,7 +1362,7 @@
             },
             {
               "params": [
-                "previous"
+                "null"
               ],
               "type": "fill"
             }
@@ -1467,14 +1401,20 @@
       "transformations": [
         {
           "id": "convertFieldType",
-          "options": {}
+          "options": {
+            "conversions": [
+              {}
+            ],
+            "fields": {}
+          }
         }
       ],
       "type": "stat"
     }
   ],
+  "preload": false,
   "refresh": "5s",
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": []
@@ -1487,6 +1427,6 @@
   "timezone": "browser",
   "title": "Sample graphical dashboard",
   "uid": "fe0wyv69k6ps0c",
-  "version": 3,
+  "version": 13,
   "weekStart": ""
 }
