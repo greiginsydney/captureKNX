@@ -13,19 +13,19 @@ Here are some of the links I referred to as I was building captureKNX.
 - [knxd Google Groups forum](https://groups.google.com/g/knxd)
 - [KNXDclient - Github](https://github.com/mhthies/knxdclient)
 
-## TIG
+### TIG
 
 - [Install Telegraf](https://docs.influxdata.com/telegraf/v1/install/)
 - [Install InfluxDB](https://docs.influxdata.com/influxdb/v2/install/)
 - [Download Grafana](https://grafana.com/grafana/download)
 - [Configure Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/)
 
-## Raspberry Pi
+## Hardware
+
+### Raspberry Pi
 
 - [GPIO/UART references](https://forums.raspberrypi.com/viewtopic.php?t=359132)
 - [Raspberry Pi Serial Ports](https://docs.bitscope.com/pi-serial/)
-
-## Hardware
 
 ### Tijl's Pi HAT
 
