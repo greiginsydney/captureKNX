@@ -14,7 +14,8 @@ The [shopping list](/docs/shopping-list.md) itemises everything you'll need, and
 
 3. [Setup the Pi](/docs/step3-setup-the-Pi.md) walks you through the process to install all the software on the Pi. (The setup script does all the hard work!)
 4. [Login to InfluxDB](/docs/step4-login-to-influxdb.md) shows you how to login to InfluxDB, although this will be seldom required.
-5. [Login to Grafana](/docs/step5-login-to-grafana.md) is where all the fun happens. This page introduces you to the provided "dashboard" that shows your Telegrams.
+5. [Login to Grafana](/docs/step5-login-to-grafana.md) is where all the fun happens. This page introduces you to the provided "Group Monitor dashboard" that shows your telegrams.
+6. A [Graphical Dashboard](/docs/step6-graphical-dashboard.md) is included with the installation, however you'll need to invest a little effort customising it to the GA's on YOUR network - but that's explained here.
 
 ## Debugging / troubleshooting
 
