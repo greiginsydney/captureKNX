@@ -4,7 +4,7 @@ If you've researched Grafana or watched any of the YouTube links you'll realise 
 
 To provide a small head-start, a sample graphical dashboard is included which demonstrates a few of Grafana's graphical features.
 
-If you have similar devices (Group Addresses) that can be used as the raw data, you can have a view looking like this in no time. If not, it's easy to delete the 'panels' you don't have a use for, and re-size the remaining ones to fill in the gaps. More on that later.
+If you have similar devices (Group Addresses) that can be used as the raw data, you can have a view looking like this in no time. If not, it's easy to delete the 'panels' you don't have a use for, and re-size or duplicate the remaining ones to fill in the gaps. More on that later.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/bfdb8d53-f848-4898-ba01-601cbdfef43a" width="100%">
@@ -72,7 +72,7 @@ The rainwater tank level is represented as a "gauge", with my own addition of th
   <img src="https://github.com/user-attachments/assets/7a5deaf2-fa14-48f2-bf50-2476e62c6909" width="20%">
 </p>
 
-Here we see two ways of looking at a boolean (switch) value, in this case my fictitious pool pump. The pump has run three times today, and "No data" reveals I can't figure out (yet) how to show the total run time. Whilst in reality it's reporting my Garage light FB GA, it would work nicely on the door to the coolroom, and show how long it's left open in total, or the "mean" value to report the average of each opening. (As with everything KNX, your creativity is called upon here to make it shine.)
+Here are two ways of looking at a boolean (switch) value, in this case my fictitious pool pump. The pump has run three times today, and "No data" reveals I can't figure out (yet) how to show the total run time. Whilst in reality it's reporting my Garage light FB GA, it would work nicely on the door to the coolroom, and show how long it's left open in total today/this shift. Changing the formula to calculate the "mean" value would report the average duration of each opening. (As with so much in KNX, your creativity is called upon here to make it shine.)
 
 <br>
 
@@ -116,7 +116,7 @@ The basic steps for every panel are the same:
 
 ## Extra steps
 
-Some of the panels require a little more tweaking.
+Some of the panels may require a little more tweaking.
 
 ### Bathroom "logic analyser"
 
@@ -132,6 +132,14 @@ This happens on the "Transformations" tab, and if you've set friendly ALIASES, t
 </p>
 
 12. Click all three field values and select the names (or aliases) that were set on the Queries tab. The little "switch" icon indicates that we're converting the field type of boolean (switch) to a Number. Here I've shown one complete, with two still unset. Hopefully in completing this step the graph will have correctly resolved itself. If you later change an ALIAS, you'll need to revisit and update the Transformation.
+
+13. Finally, the calculated 'offset alias' names are showing on the legend under the table. To correct them, scroll towards the bottom of the right hand column until you reach the `Overrides`. Open each of the named ones in turn and customise them to your environment. Change the 'not found' fields with the current ones, then update the Display Name. As soon as you tab off that field the panel should update.
+
+<p align="centre">
+  <img src="https://github.com/user-attachments/assets/5936ea67-cf27-4ab8-80ce-e4a164e500cd" width="40%">
+</p>
+
+14. Save the dashboard.
 
 ### Changing threshold values & colours
 
