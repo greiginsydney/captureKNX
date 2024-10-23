@@ -1,4 +1,4 @@
-# A Sample Fancy Dashboard
+# A Sample Graphical Dashboard
 
 If you've researched Grafana or watched any of the YouTube links you'll realise it's a VERY powerful tool, and using it to present a tabular Group Monitor is seriously under-using it.
 
