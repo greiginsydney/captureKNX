@@ -779,7 +779,7 @@ read_TTY()
 test_install()
 {
 	echo ''
-	latestcaptureKNXRls=$(curl --silent "https://api.github.com/repos/greiginsydney/intervalometerator/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+	latestcaptureKNXRls=$(curl --silent "https://api.github.com/repos/greiginsydney/captureKNX/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
 	echo "Latest release of captureKNX is    v$latestcaptureKNXRls"
 	if [ -f /home/${SUDO_USER}/captureKNX/version ];
 	then
