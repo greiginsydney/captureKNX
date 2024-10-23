@@ -62,7 +62,7 @@
             "steps": [
               {
                 "color": "transparent",
-                "value": null		
+                "value": null
               }
             ]
           }
@@ -282,7 +282,7 @@
         "showHeader": true,
         "sortBy": [
           {
-            "desc": false,
+            "desc": true,
             "displayName": "Time"
           }
         ]
