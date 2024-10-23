@@ -1,4 +1,4 @@
-# A Sample Graphical Dashboard
+# A sample graphical dashboard
 
 If you've researched Grafana or watched any of the YouTube links you'll realise it's a VERY powerful tool, and using it to present a tabular Group Monitor is seriously under-using it.
 
@@ -42,7 +42,7 @@ A word of warning however is that very brief changes of state will not show on t
 
 This panel is a "single stat" panel reporting the state of a single GA of DPT 1.xxx. The On/Off state reported by the telegram has been customised with attention-grabbing labels and colours.
 
-## Current Temperature
+## Current temperature
 
 <p align="left">
   <img src="https://github.com/user-attachments/assets/6f4f865b-3acd-4556-99f1-188c1d7b60f4" width="20%">
@@ -90,7 +90,7 @@ Out of the box the sample is less appealing. That's because I've stripped all my
 
 Your task is to customise it with your local Group Addresses or their names. Here's how to do that.
 
-## Basic Steps
+## Basic steps
 
 The basic steps for every panel are the same:
 1. Mouse over the panel and type `e`, or alternatively click the vertical ellipsis in the top RH corner and select `Edit` from the menu that appears.
