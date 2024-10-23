@@ -97,21 +97,22 @@ The basic steps for every panel are the same:
 2. In the "queries" section, click on my dummy name "TODO":
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/156f3889-ff39-492d-8517-244d5d7b94ab" width="100%">
+  <img src="https://github.com/user-attachments/assets/bb88b09e-b7fe-4fc5-b819-13dc1816424f" width="100%">
 </p>
 
 3. A popup will appear with all of the possible GA names from which you can choose. Type in the "Choose" box to filter, or scroll then click on your selection.
 
 > Only after a GA has been logged by captureKNX will it appear in that list. If an expected group name isn't appearing, trigger a telegram to it and retry.
 
-4. If the GA you chose is a compatible DPT type for the type of panel, the top half of the graph should change from No Data to show something. If not, continue and hopefully it'll come good.
+4. If the GA you chose is a compatible DPT type for the type of panel, the top half of the graph should change from No Data to show something. If not, click "float" (highlighted here in yellow) and change it to "integer" (assuming this is a numeric value you're working with).
 
 > I've built all these panels referencing the GA names, technically referred to here as "destination_name::tag". If you prefer, you can re-base them to filter on the GA value itself. Just click on "destination_name::tag" (highlighted here in blue) and another popup will present other options to filter by. "destination::tag" is the GA itself (e.g. 1/0/7).
 
-5. In the top LH corner of the above image it shows "Queries (3)". That's telling you this panel is making three separate queries to the database, so scroll further and select valid GA's for the other two.
-6. For most panels that should be all you need to do to recover them. Click `Save dashboard` in the top RH corner, then `Save` on the Save Dashboard flyout.
-7. Back in the top right, click `Back to dashboard` to be returned to the main dashboard view to select another panel.
-
+5. By default the full GA name is shown in the legend under the graph. If you want something more succinct, add that in the `ALIAS` field, shown here with the dummy value "sensor4".
+6. In the top LH corner of the above image it shows "Queries (2)". That's telling you this panel is making two separate queries to the database, so scroll further (query "B" is shown) and select a valid GA for it.
+7. For most panels that should be all you need to do to recover them. Click `Save dashboard` in the top RH corner, then `Save` on the Save Dashboard flyout.
+8. Back in the top right, click `Back to dashboard` to be returned to the main dashboard view to select another panel.
+9. Repeat the above steps until you've allocated the GA for all the panels you want to retain.
 
 <br>
 
