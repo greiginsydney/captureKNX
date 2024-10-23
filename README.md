@@ -1,16 +1,22 @@
 # captureKNX
 Build a Raspberry Pi that will capture all KNX telegrams to InfluxDB that you can query from a browser any time.
 
-## A Pi in a box
+## Build it
 
 <p align="middle">
    <img src="https://github.com/user-attachments/assets/601a0ffd-1d30-4b11-9865-6705eee95161" width="60%">
 </p>
 
-## Group Monitor dashboard
+## Log it
 
 <p align="middle">
 <img src="https://github.com/user-attachments/assets/4e9b8f70-2fc2-4b0b-b88b-9a16e99a4797" width="60%">
+</p>
+
+## Visualise it
+
+<p align="middle">
+<img src="https://github.com/user-attachments/assets/8af1a54e-a5ae-4098-8ebd-75bc780ff318" width="60%">
 </p>
 
 ## Features
@@ -21,15 +27,16 @@ Build a Raspberry Pi that will capture all KNX telegrams to InfluxDB that you ca
 - Plugs directly into the KNX bus. This means KNX telegrams aren't permanently spamming the IP network, and means you can capture tiny KNX installations that don't have a full-time router or programming interface.
 - Easy setup. A bash script installs all the software components. You only need to copy the topology/project file across after exporting it from ETS.
 - A fully on-premises solution. Once you've bought the hardware, that's your total outlay. (Late 2024 estimate circa $AUD250 / $US170 / €150.)
-- With Grafana you can easily visualise data like daily temperatures or light levels, and overlay heating/lighting control signals.
 - A dedicated dashboard replicates ETS' Diagnostics / Group Monitor feature. Debug your logic and other occurrences by filtering the captured view by time/date, Group Address, sending device or the value sent. (Preview the power of this [here](/docs/step5-login-to-grafana.md#demo)).
+- With Grafana you can easily visualise data like daily temperatures or light levels, and overlay heating/lighting control signals.
 - Hunting down bugs? [Grafana can send you an alert](/docs/advanced-applications.md#setup-grafana-alerting) when a specific telegram is seen!
 
 ## Limitations / Restrictions
 
 - The direct-connection to the KNX bus means it can only capture the telegrams seen on that network Line. This will prevent it from seeing all traffic in a multi-area or multi-line network (without extra configuration).
 - It's not an off-the-shelf product. You buy the components and build it yourself - but there's heaps of documentation here to help you.
-- Every telegram to a known Group Address is captured, however it only currently decodes the most commonly-used DPT types. (This is expected to evolve over time).
+- Every telegram to a known Group Address is captured, however some esoteric DPT types might be misinterpreted or mis-represented. (Log an issue and we'll work to resolve this.)
+- If your installation is a works in progress, each time you create Group Addresses you'll need to close/export/import the updated project file so captureKNX knows how to decode the incoming data. (Telegrams to unknown GA's will be discarded.)
 - (Currently) English-only, and hasn't been tested in any other languages. Contributions welcome!
 - Untested with KNX Secure.
 
@@ -47,7 +54,9 @@ captureKNX stores all the telegrams in a 'time series' database called InfluxDB,
 
 If you're wanting to better understand the architecture and what you're getting yourself in for before you take the plunge and buy a Pi and HAT, have a look at the pages [step5-login-to-grafana.md](/docs/step5-login-to-grafana.md) and [step6-graphical-dashboard.md](/docs/step6-graphical-dashboard.md).
 
-I also STRONGLY recommend you watch the YouTube video playlist ["What is Observability - Grafana for Beginners"](https://youtube.com/playlist?list=PLDGkOdUX1Ujo27m6qiTPPCpFHVfyKq9jT&si=q5BIC9lkn3LJmBc6). That playlist builds a great understanding, and by Episode 8 you're creating a dashboard that looks remarkably like the one provided here in [step6-graphical-dashboard.md](/docs/step6-graphical-dashboard.md).
+If you're interested in graphical dashboards and the power of Grafana, I STRONGLY recommend you watch the YouTube video playlist ["What is Observability - Grafana for Beginners"](https://youtube.com/playlist?list=PLDGkOdUX1Ujo27m6qiTPPCpFHVfyKq9jT&si=q5BIC9lkn3LJmBc6). That playlist builds a great understanding, and by Episode 8 you're creating a dashboard that looks remarkably like the one provided here in [step6-graphical-dashboard.md](/docs/step6-graphical-dashboard.md).
+
+Having said that, if you just want to capture and analyse telegrams everything's provided here for you, so don't let the apparent complexity of Grafana and SQL database queries put you off.
 
 InfluxDB and Grafana both have active supporter communities should you want to delve deeper into the reporting of your stored telegrams. (By all means I welcome you sharing your Dashboards with fellow captureKNX users - the project's Wiki page [TODO] would be a great place for those.)
 
