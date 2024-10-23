@@ -143,7 +143,19 @@ This happens on the "Transformations" tab, and if you've set friendly ALIASES, t
 
 ### Changing threshold values & colours
 
-TODO
+When you're editing a panel, the right-hand column provides all the controls for changing the display type (at the very top), whether the Y axis is fixed or follows the data, the thresholds and their colours. This is where you would change the capacity of the rainwater tank and the colours, the colour of the temperature, and the graduations in the Powerwall bar.
+
+<p align="centre">
+  <img src="https://github.com/user-attachments/assets/96eaca0d-8180-4676-8fc7-b3fabc4bb076" width="40%">
+</p>
+
+### Value mappings
+
+Value mappings is also another powerful way of reformatting the data. This is how the "Breaker Trip" panel turns 'alarm/no alarm' into 'breaker trip/normal', and how the bathroom's logic analyser turns what are in reality numerical values into 'on/off' labels.
+
+<p align="centre">
+  <img src="https://github.com/user-attachments/assets/a7833103-23d6-46d4-9a2b-08c66af34209" width="40%">
+</p>
 
 <br>
 
