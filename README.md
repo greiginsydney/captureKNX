@@ -27,7 +27,7 @@ Build a Raspberry Pi that will capture all KNX telegrams to InfluxDB that you ca
 
 ## Limitations / Restrictions
 
-- The direct-connection to the KNX bus means it can only capture the Telegrams seen on that network Line. This will prevent it from seeing all traffic in a multi-area or multi-line network (without extra configuration).
+- The direct-connection to the KNX bus means it can only capture the telegrams seen on that network Line. This will prevent it from seeing all traffic in a multi-area or multi-line network (without extra configuration).
 - It's not an off-the-shelf product. You buy the components and build it yourself - but there's heaps of documentation here to help you.
 - Every telegram to a known Group Address is captured, however it only currently decodes the most commonly-used DPT types. (This is expected to evolve over time).
 - (Currently) English-only, and hasn't been tested in any other languages. Contributions welcome!
@@ -49,7 +49,7 @@ If you're wanting to better understand the architecture and what you're getting 
 
 I also STRONGLY recommend you watch the YouTube video playlist ["What is Observability - Grafana for Beginners"](https://youtube.com/playlist?list=PLDGkOdUX1Ujo27m6qiTPPCpFHVfyKq9jT&si=q5BIC9lkn3LJmBc6). That playlist builds a great understanding, and by Episode 8 you're creating a dashboard that looks remarkably like the one provided here in [step6-more-grafana-tips.md](/docs/step6-more-grafana-tips.md).
 
-InfluxDB and Grafana both have active supporter communities should you want to delve deeper into the reporting of your stored Telegrams. (By all means I welcome you sharing your Dashboards with fellow captureKNX users - the project's Wiki page [TODO] would be a great place for those.)
+InfluxDB and Grafana both have active supporter communities should you want to delve deeper into the reporting of your stored telegrams. (By all means I welcome you sharing your Dashboards with fellow captureKNX users - the project's Wiki page [TODO] would be a great place for those.)
 
 ## Credits
 
