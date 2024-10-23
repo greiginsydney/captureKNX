@@ -157,6 +157,18 @@ Value mappings is also another powerful way of reformatting the data. This is ho
   <img src="https://github.com/user-attachments/assets/a7833103-23d6-46d4-9a2b-08c66af34209" width="40%">
 </p>
 
+### Delete, move, re-size & duplicate
+
+Of course all the panels are easily rearranged within the dashboard, or copied to a new dashboard altogether.
+
+To move any panel, simply click and drag it by its title bar. To resize it, click and drag the icon in the bottom RH corner.
+
+The commands to delete (remove), and duplicate are on the menu under the vertical ellipsis in the top RH corner, with duplicate under the `More...` option
+
+<p align="centre">
+  <img src="https://github.com/user-attachments/assets/660e5828-6883-447c-9747-6cdd2a4c47fd" width="40%">
+</p>
+
 <br>
 
 [Top](#a-sample-graphical-dashboard)
