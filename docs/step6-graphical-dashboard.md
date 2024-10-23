@@ -114,6 +114,25 @@ The basic steps for every panel are the same:
 8. Back in the top right, click `Back to dashboard` to be returned to the main dashboard view to select another panel.
 9. Repeat the above steps until you've allocated the GA for all the panels you want to retain.
 
+## Extra steps
+
+Some of the panels require a little more tweaking.
+
+### Bathroom "logic analyser"
+
+The "logic analyser" panel turns boolean (on/off) values into the numbers 1 and 0, then literally adds an offset to the vales of Fan and Heat to place them above the Light on the graph.
+
+This happens on the "Transformations" tab, and if you've set friendly ALIASES, these will need to be updated.
+
+10. Edit the bathroom panel.
+11. Click "Transformations":
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c6721f9c-6fc7-4402-9065-017eeef677b8" width="100%">
+</p>
+
+12. Click all three field values and select the names (or aliases) that were set on the Queries tab. The little "switch" icon indicates that we're converting the field type of boolean (switch) to a Number. Here I've shown one complete, with two still unset. Hopefully in completing this step the graph will have correctly resolved itself. If you later change an ALIAS, you'll need to revisit and update the Transformation.
+
 <br>
 
 [Top](#a-sample-graphical-dashboard)
