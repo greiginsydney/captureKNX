@@ -1,14 +1,21 @@
 # captureKNX
 Build a Raspberry Pi that will capture all KNX telegrams to InfluxDB that you can query from a browser any time.
 
+## A Pi in a box
+
 <p align="middle">
-   <img src="https://github.com/user-attachments/assets/11fb26ad-9873-4128-9f06-c18ef4ceca79" width="40%">
-   <img src="https://github.com/user-attachments/assets/4e9b8f70-2fc2-4b0b-b88b-9a16e99a4797" width="40%">
+   <img src="https://github.com/user-attachments/assets/601a0ffd-1d30-4b11-9865-6705eee95161" width="60%">
+</p>
+
+## Group Monitor dashboard
+
+<p align="middle">
+<img src="https://github.com/user-attachments/assets/4e9b8f70-2fc2-4b0b-b88b-9a16e99a4797" width="60%">
 </p>
 
 ## Features
 
-- Capture all KNX network traffic for a year (or longer!) without needing to leave behind a laptop running ETS. (ETS6 will only capture 1,000 telegrams before over-writing them.)
+- Capture KNX telegrams for a year (or longer!) without needing to leave behind a laptop running ETS. (ETS6 will only capture 1,000 telegrams before over-writing them.)
 - No fancy hardware. Buy a Raspberry Pi 5, plug a KNX shield on top, add a solid-state drive, stick it in a box (artwork provided here to print your own) and apply power!
 - No valuable ETS dongle left unguarded on site.
 - Plugs directly into the KNX bus. This means KNX telegrams aren't permanently spamming the IP network, and means you can capture tiny KNX installations that don't have a full-time router or programming interface.
@@ -20,10 +27,11 @@ Build a Raspberry Pi that will capture all KNX telegrams to InfluxDB that you ca
 
 ## Limitations / Restrictions
 
-- The direct-connection to the KNX bus means it can only capture the Telegrams seen on that network Line. This will prevent it from seeing all traffic in a multi-area or multi-line network.
+- The direct-connection to the KNX bus means it can only capture the Telegrams seen on that network Line. This will prevent it from seeing all traffic in a multi-area or multi-line network (without extra configuration).
 - It's not an off-the-shelf product. You buy the components and build it yourself - but there's heaps of documentation here to help you.
 - Every telegram to a known Group Address is captured, however it only currently decodes the most commonly-used DPT types. (This is expected to evolve over time).
 - (Currently) English-only, and hasn't been tested in any other languages. Contributions welcome!
+- Untested with KNX Secure.
 
 ## Software architecture
 
