@@ -192,7 +192,7 @@ sudo -E -H ./setup.sh
 
 ![image](https://github.com/user-attachments/assets/f9723c88-8f30-4699-b85e-9b024a3c1fe0)
 
-37. Reconnect to the Pi after it reboots and return to Step 37. (Pressing up-arrow should offer you the `sudo -E -H ./setup.sh` command to save you re-typing it.)
+37. Reconnect to the Pi after it reboots and return to Step 35. (Pressing up-arrow should offer you the `sudo -E -H ./setup.sh` command to save you re-typing it.)
 
 38. It will seem to instantly prompt for another reboot. Consent to that and again up-arrow to re-run setup when you re-connect:
 
@@ -212,7 +212,7 @@ If the Pi isn't plugged in to the KNX bus at this stage, it's expected that knxd
 
 42. Your next step is to to plug the Pi into the bus and continue with testing.
 
-> You should always try to shut the Pi down before you turn it off: `sudo shutdown now`.
+> You should always try to shut the Pi down before you turn it off: `sudo shutdown now` - or press the button on the rear of the box next to the power LED, and wait a few seconds until the LED turns red.
 
 Jump to [step4-login-to-influxdb](/docs/step4-login-to-influxdb.md)
 
