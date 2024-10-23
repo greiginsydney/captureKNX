@@ -40,7 +40,7 @@ A word of warning however is that very brief changes of state will not show on t
   <img src="https://github.com/user-attachments/assets/04da1cb5-b2a0-452c-80f0-b4596ba1d8f1" width="20%">
 </p>
 
-This panel is a "single stat" panel reporting the state of a single Switch GA (DPT 1.). The On/Off state reported by the telegram has been customised with attention-grabbing labels and colours.
+This panel is a "single stat" panel reporting the state of a single GA of DPT 1.xxx. The On/Off state reported by the telegram has been customised with attention-grabbing labels and colours.
 
 ## Current Temperature
 
