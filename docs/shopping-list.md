@@ -117,7 +117,7 @@ $USD123 / $AUD180
 
 ### Raspberry Pi "stackable" header
 
-Both of the above boards sit a little close to the processor of the Pi, and it's going to need some air flow. We used \*TWO\* headers to give enough height.
+Both of the above boards sit a little close to the processor of the Pi, and it's going to need some air flow. We used \*TWO\* headers to give enough height. (Tijl's board ships with one, so you'll still need a second).
 
 - Core has the [Pololu-2748 Stackable 0.100″ Female Header: 2x20-pin, Straight](https://core-electronics.com.au/stackable-0-100-female-header-2x20-pin-straight.html) for $4.95. ([Pololu link](https://www.pololu.com/product/2748))
 - Core also has a [Raspberry Pi Extra-Long Stacking Header (2x20 pins)](https://core-electronics.com.au/stacking-2x20.html) [NB: untested] for $AUD2.40
