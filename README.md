@@ -58,7 +58,7 @@ If you're interested in graphical dashboards and the power of Grafana, I STRONGL
 
 Having said that, if you just want to capture and analyse telegrams everything's provided here for you, so don't let the apparent complexity of Grafana and SQL database queries put you off.
 
-InfluxDB and Grafana both have active supporter communities should you want to delve deeper into the reporting of your stored telegrams. (By all means I welcome you sharing your Dashboards with fellow captureKNX users - the project's Wiki page [TODO] would be a great place for those.)
+InfluxDB and Grafana both have active supporter communities should you want to delve deeper into the reporting of your stored telegrams. (By all means I welcome you sharing your Dashboards with fellow captureKNX users - the [project's Wiki page](https://github.com/greiginsydney/captureKNX/wiki) would be a great place for those.)
 
 ## Credits
 
