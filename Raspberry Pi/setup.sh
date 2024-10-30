@@ -753,6 +753,24 @@ setup3()
 	# Add a shortcut for the logs folder:
 	ln -sfnv /var/log/ /home/${SUDO_USER}/log
 
+	# Wi-Fi Power Save
+	# Disable Wi-Fi power save mode:
+	if iw wlan0 get power_save | grep -q 'on';
+	then
+		iw wlan0 set power_save off
+		echo -e ""$GREEN"Disabled Wi-Fi power save mode"$RESET""
+	else
+		echo -e "Wi-Fi power save mode is already off"
+	fi
+	# Permanently disable Wi-Fi power save mode:
+	if grep -q '/sbin/iw dev wlan0 set power_save off' /etc/rc.local;
+	then
+		echo -e 'Wi-Fi power save mode is already disabled in /etc/rc.local'
+	else
+		sed -i '/^exit 0/i \/sbin\/iw dev wlan0 set power_save off\n' /etc/rc.local
+		echo -e ""$GREEN"Wi-Fi power save mode disabled in /etc/rc.local"$RESET""
+	fi
+ 
 	echo ''
 	echo -e "\n"$GREEN"Done!"$RESET""
 	echo ''
