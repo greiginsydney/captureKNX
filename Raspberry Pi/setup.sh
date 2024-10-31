@@ -918,7 +918,13 @@ test_install()
 	systemctl is-active --quiet hciuart.service    && printf ""$YELLOW"FAIL:"$RESET" %-15s service is RUNNING. (That's bad)\n" hciuart.service    || printf ""$GREEN"PASS:"$RESET" %-15s service is dead - which is good\n" hciuart.service
 
 	echo '-------------------------------------'
-	test_config=0
+	if iw wlan0 get power_save | grep -q 'on';
+	then
+		echo -e ""$YELLOW"FAIL:"$RESET" Wi-Fi power save is ON"
+	else
+		echo -e ""$GREEN"PASS:"$RESET" Wi-Fi power save is OFF"
+	fi	
+ 	test_config=0
 	if grep -q '# Added by setup.sh for captureKNX' /boot/firmware/config.txt; then
 		((test_config=test_config+1)); fi
 	if grep -q '^enable_uart=1' /boot/firmware/config.txt; then
