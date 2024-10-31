@@ -770,7 +770,7 @@ setup3()
 		sed -i '/^exit 0/i \/sbin\/iw dev wlan0 set power_save off\n' /etc/rc.local
 		echo -e ""$GREEN"Wi-Fi power save mode disabled in /etc/rc.local"$RESET""
 	fi
- 
+
 	echo ''
 	echo -e "\n"$GREEN"Done!"$RESET""
 	echo ''
@@ -923,8 +923,8 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" Wi-Fi power save is ON"
 	else
 		echo -e ""$GREEN"PASS:"$RESET" Wi-Fi power save is OFF"
-	fi	
- 	test_config=0
+	fi
+	test_config=0
 	if grep -q '# Added by setup.sh for captureKNX' /boot/firmware/config.txt; then
 		((test_config=test_config+1)); fi
 	if grep -q '^enable_uart=1' /boot/firmware/config.txt; then
@@ -1133,7 +1133,7 @@ END
 	then
 		nmcli con mod hotspot autoconnect yes ssid "$wifiSsid"
 	else
-		nmcli con del "$wlan0Name"		
+		nmcli con del "$wlan0Name"
 		sleep 5
 		nmcli con add type wifi ifname wlan0 con-name hotspot autoconnect yes ssid "$wifiSsid"
 	fi
