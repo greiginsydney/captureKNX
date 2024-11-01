@@ -1068,7 +1068,7 @@ END
 	#local oldWifiCountry=$(LANG=C iw reg get | cut -s -d : -f 1 | head -1 | cut -s -d ' ' -f 2)
 	#Populate defaults otherwise:
 	if [ -z "$oldWifiSsid" ];    then local oldWifiSsid='captureKNX'; fi
-	if [ -z "$oldWifiChannel" ]; then local oldWifiChannel='5'; fi
+	if [ -z "$oldWifiChannel" ]; then local oldWifiChannel='1'; fi
 	if [ -z "$oldWifiPwd" ];     then local oldWifiPwd='myPiNetw0rkAccess!'; fi
 	#if [[ ! $oldWifiCountry =~ [a-zA-Z]{2} ]]; then oldWifiCountry=''; fi # Null the value if it's not just two letters
 	# ================== END Wi-Fi ==================
