@@ -987,6 +987,64 @@ test_install()
 }
 
 
+# I'm not sure if this will stay. It's a diagnostic tool at the moment, not (yet?) mentioned in the documentation
+test_token()
+{
+	echo -e "\n"$GREEN"Test tokens"$RESET""
+	echo ''
+	TELEGRAF_TOKEN=$(sed -n -E 's/^token = \"(.*)\"$/\1/p' /etc/telegraf/telegraf.conf)
+	INFLUX_TOKEN=$(sed -n -E 's/^\s*INFLUXDB_INIT_ADMIN_TOKEN=(.*)$/\1/p' /etc/influxdb/captureKNX.env)
+	GRAFANA_TOKEN=$(sed -n -E "s/^\s*httpHeaderValue1: 'Token (.*)'$/\1/p" /etc/grafana/provisioning/datasources/grafana-source.yaml)
+
+	if [[ "$TELEGRAF_TOKEN" == "xxxxxxxxx" ]];
+	then
+		echo -e ""$YELLOW"FAIL:"$RESET" The telegraf token is default. Re-run setup"
+		ABORT="True"
+	fi
+
+	if [[ "$INFLUX_TOKEN" == "changeme" ]];
+	then
+		echo -e ""$YELLOW"FAIL:"$RESET" The influxDB token is default. Re-run setup"
+		ABORT="True"
+	fi
+
+	if [[ "$GRAFANA_TOKEN" == "changeme" ]];
+	then
+		echo -e ""$YELLOW"FAIL:"$RESET" The grafana token is default. Re-run setup"
+		ABORT="True"
+	fi
+
+	if [[ $ABORT ]];
+	then
+		echo ''
+		exit 1
+	fi
+
+	if [[ "$INFLUX_TOKEN" == "$TELEGRAF_TOKEN" ]];
+	then
+		if [[ "$INFLUX_TOKEN" == "$GRAFANA_TOKEN" ]];
+		then
+			echo -e ""$GREEN"PASS:"$RESET" All three tokens are the same"
+		else
+			echo -e ""$YELLOW"FAIL:"$RESET" Tokens are NOT the same. Check /etc/grafana/provisioning/datasources/grafana-source.yaml"
+		fi
+	else
+		if [[ "$INFLUX_TOKEN" == "$GRAFANA_TOKEN" ]];
+		then
+			echo -e ""$YELLOW"FAIL:"$RESET" Tokens are NOT the same. Check /etc/telegraf/telegraf.conf"
+		else
+			if [[ "$TELEGRAF_TOKEN" == "$GRAFANA_TOKEN" ]];
+			then
+				echo -e ""$YELLOW"FAIL:"$RESET" Tokens are not the same. Check /etc/influxdb/captureKNX.env"
+			else
+				echo -e ""$YELLOW"FAIL:"$RESET" None of the tokens are the same. Re-run setup"
+			fi
+		fi
+	fi
+	echo ''
+}
+
+
 prompt_for_reboot()
 {
 	echo ''
@@ -1014,8 +1072,9 @@ test_64bit()
 	fi
 }
 
+
 # -----------------------------------
-# START FUNCTIONS
+# END FUNCTIONS
 # -----------------------------------
 
 # -----------------------------------
@@ -1035,7 +1094,18 @@ case "$1" in
 
 	('test')
 		activate_venv
-		test_install
+		case "$2" in
+			('token')
+				test_token
+				;;
+			('')
+				test_install
+				;;
+			(*)
+				echo -e "\nThe test '$2' is invalid. Try again.\n"
+				exit 1
+				;;
+		esac
 		;;
 	('')
 		activate_venv
