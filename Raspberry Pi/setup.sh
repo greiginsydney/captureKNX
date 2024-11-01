@@ -1144,8 +1144,11 @@ END
 	then
 		nmcli con mod hotspot autoconnect yes ssid "$wifiSsid"
 	else
-		nmcli con del "$wlan0Name"
-		sleep 5
+		if [[ "$wlan0Name" != "" ]];
+		then
+			nmcli con del "$wlan0Name"
+			sleep 5
+		fi
 		nmcli con add type wifi ifname wlan0 con-name hotspot autoconnect yes ssid "$wifiSsid"
 	fi
 	nmcli con modify hotspot 802-11-wireless.mode ap 802-11-wireless.band bg 802-11-wireless.channel $wifiChannel #ipv4.method shared
