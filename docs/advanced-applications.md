@@ -89,11 +89,9 @@ If you're looking for the most compact physical build and ultimate performance, 
 
 Using an NVMe drive is a more complicated setup process because out of the box the Pi won't natively boot to a drive connected to its PCIe port.
 
-We used the [Pimoroni NVMe Base for Raspberry Pi 5](https://shop.pimoroni.com/products/nvme-base?variant=41219587178579), which we sourced from [Core Electronics](https://core-electronics.com.au/nvme-base-for-raspberry-pi-5-nvme-base.html) here in Newcastle for $AUD31.
+We used the [Pimoroni NVMe Base for Raspberry Pi 5](https://shop.pimoroni.com/products/nvme-base?variant=41219587178579), which we sourced from [Core Electronics](https://core-electronics.com.au/nvme-base-for-raspberry-pi-5-nvme-base.html) here in Newcastle for $AUD31. Pimoroni has a [VERY detailed page](https://learn.pimoroni.com/article/getting-started-with-nvme-base) that takes you through the setup steps.
 
 [Amazon.com](https://amzn.to/47WDNKM) has a Chinese equivalent for $USD16.
-
-Thankfully Pimoroni has a [VERY detailed page](https://learn.pimoroni.com/article/getting-started-with-nvme-base) that takes you though the setup steps.
 
 The image shown here is of the Weinzierl HAT with the Pimoroni NVMe Base. Download the case files from [printables](https://www.printables.com/model/1059175-captureknx-case-for-weinzierl-knx-hat-pimoroni-nvm).
 
