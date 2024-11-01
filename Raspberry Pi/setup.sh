@@ -780,13 +780,21 @@ test_install()
 {
 	echo ''
 	latestcaptureKNXRls=$(curl --silent "https://api.github.com/repos/greiginsydney/captureKNX/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
-	echo "Latest release of captureKNX is    v$latestcaptureKNXRls"
+	if [[ "$latestcaptureKNXRls" == "" ]];
+	then
+		echo -e ""$YELLOW"Latest release of captureKNX is    unknown""$RESET"
+	else
+		echo "Latest release of captureKNX is    v$latestcaptureKNXRls"
+	fi
 	if [ -f /home/${SUDO_USER}/captureKNX/version ];
 	then
 		VERSION=$(cat /home/${SUDO_USER}/captureKNX/version)
 		if [[ $VERSION == $latestcaptureKNXRls ]];
 		then
 			echo -e ""$GREEN"Installed version of captureKNX is v$VERSION""$RESET"
+		elif [[ "$latestcaptureKNXRls" == "" ]];
+		then
+			echo "Installed version of captureKNX is v$VERSION"
 		else
 			echo -e ""$YELLOW"Installed version of captureKNX is v$VERSION""$RESET"
 		fi
