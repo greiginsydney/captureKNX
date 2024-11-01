@@ -83,7 +83,11 @@ I've previously used it on the intvlm8r project (which also uses the Raspberry P
 
 If you're looking for the most compact physical build and ultimate performance, replace the USB-connected SSD drive with a PCIe NVMe drive.
 
-Using an NVMe drive is a more complicated setup process because out of the box the Pi won't natively boot to a drive connected to the PCIe port.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/903e71ea-904d-4c49-8aec-246f632b0470" width="50%">
+</p>
+
+Using an NVMe drive is a more complicated setup process because out of the box the Pi won't natively boot to a drive connected to its PCIe port.
 
 We used the [Pimoroni NVMe Base for Raspberry Pi 5](https://shop.pimoroni.com/products/nvme-base?variant=41219587178579), which we sourced from [Core Electronics](https://core-electronics.com.au/nvme-base-for-raspberry-pi-5-nvme-base.html) here in Newcastle for $AUD31.
 
@@ -91,6 +95,7 @@ We used the [Pimoroni NVMe Base for Raspberry Pi 5](https://shop.pimoroni.com/pr
 
 Thankfully Pimoroni has a [VERY detailed page](https://learn.pimoroni.com/article/getting-started-with-nvme-base) that takes you though the setup steps.
 
+(The image shown here is of the Weinzierl HAT with the Pimoroni NVMe Base).
 
 [Top](#advanced-applications)
 
