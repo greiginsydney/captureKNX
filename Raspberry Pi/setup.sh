@@ -256,9 +256,9 @@ setup1()
 
 	if systemctl --all --type service | grep -q 'dnsmasq';
 	then
-		echo -e ""$GREEN"dnsmasq is already installed"$RESET""
+		echo -e "\n"$GREEN"dnsmasq is already installed"$RESET""
 	else
-		echo -e ""$GREEN"Installing dnsmasq"$RESET""
+		echo -e "\n"$GREEN"Installing dnsmasq"$RESET""
 		apt-get install dnsmasq -y
 		echo -e ""$GREEN"Disabling dnsmasq"$RESET""
 		systemctl stop dnsmasq
