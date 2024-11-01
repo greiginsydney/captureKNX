@@ -36,6 +36,13 @@ OK, here's where all the fun happens.
 
 > If it says "0 measurements found" that's bad. The most likely cause is you've not yet copied the KNX Project file to the Pi, or forgot to restart the captureKNX service after doing so.
 
+> If you get "Unauthorized error reading influxDB", re-run the setup script and that should resolve it:
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/21536db7-ddde-4150-9f67-86c865cd14de" width="40%">
+</p>
+
+
 6. Click Dashboards in the navigation tree, then select the Group Monitor:
 
 <p align="center">
