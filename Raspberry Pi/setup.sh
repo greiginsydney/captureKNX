@@ -1252,8 +1252,48 @@ unmake_ap_nmcli ()
 }
 
 
+# https://stackoverflow.com/questions/50413579/bash-convert-netmask-in-cidr-notation/50414560
+IPprefix_by_netmask ()
+{
+	c=0 x=0$( printf '%o' ${1//./ } )
+	while [ $x -gt 0 ]; do
+		let c+=$((x%2)) 'x>>=1'
+	done
+	echo $c ;
+}
 
 
+# https://stackoverflow.com/questions/20762575/explanation-of-convertor-of-cidr-to-netmask-in-linux-shell-netmask2cdir-and-cdir
+CIDRtoNetmask ()
+{
+	# Number of args to shift, 255..255, first non-255 byte, zeroes
+	set -- $(( 5 - ($1 / 8) )) 255 255 255 255 $(( (255 << (8 - ($1 % 8))) & 255 )) 0 0 0
+	[ $1 -gt 1 ] && shift $1 || shift
+	echo ${1-0}.${2-0}.${3-0}.${4-0}
+}
+
+
+isUserLocal ()
+{
+	whoAmI=$(who am i)
+	matchRegex='[0-9]+(\.[0-9]+){3}'
+	if [[ $whoAmI =~ $matchRegex ]] ;
+	then
+		# OK, the user has an IP address. Are they on a wired (OK) or wireless (bad) NIC?
+		clientIpAddress=${BASH_REMATCH}
+		#echo $clientIpAddress
+		wlanClients=$(arp -n | grep 'wlan[[:digit:]]')
+		#echo $wlanClients
+		if [[ $wlanClients == *"$clientIpAddress"* ]]
+		then
+			echo "false" # This user is on WiFi. No go
+		else
+			echo "true"  # This user is connected via an Ethernet NIC
+		fi
+	else
+		echo "true" # This user is directly connected to the Pi. (There is no IP address for this user)
+	fi
+}
 
 
 prompt_for_reboot()
