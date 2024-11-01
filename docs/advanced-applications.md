@@ -95,7 +95,7 @@ We used the [Pimoroni NVMe Base for Raspberry Pi 5](https://shop.pimoroni.com/pr
 
 Thankfully Pimoroni has a [VERY detailed page](https://learn.pimoroni.com/article/getting-started-with-nvme-base) that takes you though the setup steps.
 
-(The image shown here is of the Weinzierl HAT with the Pimoroni NVMe Base).
+The image shown here is of the Weinzierl HAT with the Pimoroni NVMe Base. Download the case files from [printables](https://www.printables.com/model/1059175-captureknx-case-for-weinzierl-knx-hat-pimoroni-nvm).
 
 [Top](#advanced-applications)
 
