@@ -254,6 +254,17 @@ setup1()
 	echo -e "\n"$GREEN"Installing requests"$RESET""
 	apt-get install python3-requests
 
+	if systemctl --all --type service | grep -q 'dnsmasq';
+	then
+		echo -e ""$GREEN"dnsmasq is already installed"$RESET""
+	else
+		echo -e ""$GREEN"Installing dnsmasq"$RESET""
+		apt-get install dnsmasq -y
+		echo -e ""$GREEN"Disabling dnsmasq"$RESET""
+		systemctl stop dnsmasq
+		systemctl disable dnsmasq
+		systemctl mask dnsmasq
+	fi
 
 	set +e #Suspend the error trap
 	isKnxd=$(command -v knxd)
