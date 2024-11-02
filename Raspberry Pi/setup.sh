@@ -980,14 +980,13 @@ test_install()
 		echo -e "      Copy one across to the /home/${SUDO_USER}/ folder and 'sudo systemctl restart captureKNX'"
 	fi
 
-	lastTelegram=$(sed -n -E 's/^(.*) ([[:digit:]]+)$/\2/p' /home/pi/log/telegraf/debug_output.log | tail -1)
-	lastTelegramDate="Unknown"
-	lastTelegram=$lastTelegram/1000
-	#lastTelegramDate=$(date -d "$(($lastTelegram/1000))" +"%Y %b %d %H:%M:%S %Z")
-	#lastTelegramDate=$(date -d $@($lastTelegram) +"%Y %b %d %H:%M:%S %Z")
-	lastTelegramDate=$(date -d $@($lastTelegram) )
-	echo -e "Last successful telegram: $lastTelegramDate"
 	echo '-------------------------------------'
+	lastTelegram=$(sed -n -E 's/^(.*) ([[:digit:]]+)$/\2/p' /home/pi/log/telegraf/debug_output.log | tail -1)
+	((lastTelegram=lastTelegram/1000000000))
+	lastTelegramDate="Unknown"
+	lastTelegramDate=$(date -d @"$lastTelegram" +"%Y %b %d %H:%M:%S %Z")
+	echo -e "Last successful telegram: $lastTelegramDate"
+	
 	echo ''
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
 	echo ''
