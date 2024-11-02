@@ -1079,6 +1079,14 @@ test_64bit()
 }
 
 
+# A place for me to test code within the structure of the script.
+# Ideally this function will never be released with code present. Let's see how I go.
+dev()
+{
+	echo 'dev'
+}
+
+
 # -----------------------------------
 # END FUNCTIONS
 # -----------------------------------
@@ -1098,6 +1106,9 @@ fi
 
 case "$1" in
 
+	('dev')
+		dev
+		;;
 	('test')
 		activate_venv
 		case "$2" in
@@ -1130,7 +1141,7 @@ case "$1" in
 		test_install
 		;;
 	(*)
-		echo -e "\nThe switch '$1' is invalid. Try again.\n"
+		echo -e "\nThe switch '$1' is invalid. Try again. Valid options are 'test'\n"
 		exit 1
 		;;
 esac
