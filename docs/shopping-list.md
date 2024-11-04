@@ -149,10 +149,11 @@ Let's call it $10 just to keep the maths even.
 
 ### A housing to put it all in
 
-My partner Ozrocky has designed a case you can print for all this to fit inside. The art is on Printables:
+My partner Ozrocky has designed 3D-printed cases for the various configurations. The art is on Printables:
 
 - [Tijl's HAT + SSD](https://www.printables.com/model/1041238-captureknx-ssd-case-for-tijl-knx-hat)
 - [Weinzierl HAT + SSD](https://www.printables.com/model/1042200-captureknx-ssd-case-for-weinzierl-knx-hat)
+- [Weinzierl HAT + NVMe](https://www.printables.com/model/1059175-captureknx-case-for-weinzierl-knx-hat-pimoroni-nvm) - pictured and described on the [advanced-applications](/docs/advanced-applications.md) page
 
 <hr/>
 <br>

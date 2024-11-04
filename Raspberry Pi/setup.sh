@@ -809,13 +809,21 @@ test_install()
 {
 	echo ''
 	latestcaptureKNXRls=$(curl --silent "https://api.github.com/repos/greiginsydney/captureKNX/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
-	echo "Latest release of captureKNX is    v$latestcaptureKNXRls"
+	if [[ "$latestcaptureKNXRls" == "" ]];
+	then
+		echo -e ""$YELLOW"Latest release of captureKNX is    unknown""$RESET"
+	else
+		echo "Latest release of captureKNX is    v$latestcaptureKNXRls"
+	fi
 	if [ -f /home/${SUDO_USER}/captureKNX/version ];
 	then
 		VERSION=$(cat /home/${SUDO_USER}/captureKNX/version)
 		if [[ $VERSION == $latestcaptureKNXRls ]];
 		then
 			echo -e ""$GREEN"Installed version of captureKNX is v$VERSION""$RESET"
+		elif [[ "$latestcaptureKNXRls" == "" ]];
+		then
+			echo "Installed version of captureKNX is v$VERSION"
 		else
 			echo -e ""$YELLOW"Installed version of captureKNX is v$VERSION""$RESET"
 		fi
@@ -1008,6 +1016,12 @@ test_install()
 	fi
 
 	echo '-------------------------------------'
+	lastTelegram=$(sed -n -E 's/^(.*) ([[:digit:]]+)$/\2/p' /home/pi/log/telegraf/debug_output.log | tail -1)
+	((lastTelegram=lastTelegram/1000000000))
+	lastTelegramDate="Unknown"
+	lastTelegramDate=$(date -d @"$lastTelegram" +"%Y %b %d %H:%M:%S %Z")
+	echo -e "Last successful telegram: $lastTelegramDate"
+	
 	echo ''
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
 	echo ''
@@ -1296,6 +1310,63 @@ isUserLocal ()
 	else
 		echo "true" # This user is directly connected to the Pi. (There is no IP address for this user)
 	fi
+
+
+# I'm not sure if this will stay. It's a diagnostic tool at the moment, not (yet?) mentioned in the documentation
+test_token()
+{
+	echo -e "\n"$GREEN"Test tokens"$RESET""
+	echo ''
+	TELEGRAF_TOKEN=$(sed -n -E 's/^token = \"(.*)\"$/\1/p' /etc/telegraf/telegraf.conf)
+	INFLUX_TOKEN=$(sed -n -E 's/^\s*INFLUXDB_INIT_ADMIN_TOKEN=(.*)$/\1/p' /etc/influxdb/captureKNX.env)
+	GRAFANA_TOKEN=$(sed -n -E "s/^\s*httpHeaderValue1: 'Token (.*)'$/\1/p" /etc/grafana/provisioning/datasources/grafana-source.yaml)
+
+	if [[ "$TELEGRAF_TOKEN" == "xxxxxxxxx" ]];
+	then
+		echo -e ""$YELLOW"FAIL:"$RESET" The telegraf token is default. Re-run setup"
+		ABORT="True"
+	fi
+
+	if [[ "$INFLUX_TOKEN" == "changeme" ]];
+	then
+		echo -e ""$YELLOW"FAIL:"$RESET" The influxDB token is default. Re-run setup"
+		ABORT="True"
+	fi
+
+	if [[ "$GRAFANA_TOKEN" == "changeme" ]];
+	then
+		echo -e ""$YELLOW"FAIL:"$RESET" The grafana token is default. Re-run setup"
+		ABORT="True"
+	fi
+
+	if [[ $ABORT ]];
+	then
+		echo ''
+		exit 1
+	fi
+
+	if [[ "$INFLUX_TOKEN" == "$TELEGRAF_TOKEN" ]];
+	then
+		if [[ "$INFLUX_TOKEN" == "$GRAFANA_TOKEN" ]];
+		then
+			echo -e ""$GREEN"PASS:"$RESET" All three tokens are the same"
+		else
+			echo -e ""$YELLOW"FAIL:"$RESET" Tokens are NOT the same. Check /etc/grafana/provisioning/datasources/grafana-source.yaml"
+		fi
+	else
+		if [[ "$INFLUX_TOKEN" == "$GRAFANA_TOKEN" ]];
+		then
+			echo -e ""$YELLOW"FAIL:"$RESET" Tokens are NOT the same. Check /etc/telegraf/telegraf.conf"
+		else
+			if [[ "$TELEGRAF_TOKEN" == "$GRAFANA_TOKEN" ]];
+			then
+				echo -e ""$YELLOW"FAIL:"$RESET" Tokens are not the same. Check /etc/influxdb/captureKNX.env"
+			else
+				echo -e ""$YELLOW"FAIL:"$RESET" None of the tokens are the same. Re-run setup"
+			fi
+		fi
+	fi
+	echo ''
 }
 
 
@@ -1326,8 +1397,17 @@ test_64bit()
 	fi
 }
 
+
+# A place for me to test code within the structure of the script.
+# Ideally this function will never be released with code present. Let's see how I go.
+dev()
+{
+	echo 'dev'
+}
+
+
 # -----------------------------------
-# START FUNCTIONS
+# END FUNCTIONS
 # -----------------------------------
 
 # -----------------------------------
@@ -1352,10 +1432,23 @@ case "$1" in
 	('noap')
 		unmake_ap_nmcli
 		prompt_for_reboot
+	('dev')
+		dev
 		;;
 	('test')
 		activate_venv
-		test_install
+		case "$2" in
+			('token')
+				test_token
+				;;
+			('')
+				test_install
+				;;
+			(*)
+				echo -e "\nThe test '$2' is invalid. Try again.\n"
+				exit 1
+				;;
+		esac
 		;;
 	('')
 		activate_venv
@@ -1374,7 +1467,7 @@ case "$1" in
 		test_install
 		;;
 	(*)
-		echo -e "\nThe switch '$1' is invalid. Try again.\n"
+		echo -e "\nThe switch '$1' is invalid. Try again. Valid options are 'test'\n"
 		exit 1
 		;;
 esac
