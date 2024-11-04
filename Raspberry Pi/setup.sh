@@ -254,6 +254,17 @@ setup1()
 	echo -e "\n"$GREEN"Installing requests"$RESET""
 	apt-get install python3-requests
 
+	if systemctl --all --type service | grep -q 'dnsmasq';
+	then
+		echo -e "\n"$GREEN"dnsmasq is already installed"$RESET""
+	else
+		echo -e "\n"$GREEN"Installing dnsmasq"$RESET""
+		apt-get install dnsmasq -y
+		echo -e ""$GREEN"Disabling dnsmasq"$RESET""
+		systemctl stop dnsmasq
+		systemctl disable dnsmasq
+		systemctl mask dnsmasq
+	fi
 
 	set +e #Suspend the error trap
 	isKnxd=$(command -v knxd)
@@ -753,6 +764,24 @@ setup3()
 	# Add a shortcut for the logs folder:
 	ln -sfnv /var/log/ /home/${SUDO_USER}/log
 
+	# Wi-Fi Power Save
+	# Disable Wi-Fi power save mode:
+	if iw wlan0 get power_save | grep -q 'on';
+	then
+		iw wlan0 set power_save off
+		echo -e ""$GREEN"Disabled Wi-Fi power save mode"$RESET""
+	else
+		echo -e "Wi-Fi power save mode is already off"
+	fi
+	# Permanently disable Wi-Fi power save mode:
+	if grep -q '/sbin/iw dev wlan0 set power_save off' /etc/rc.local;
+	then
+		echo -e 'Wi-Fi power save mode is already disabled in /etc/rc.local'
+	else
+		sed -i '/^exit 0/i \/sbin\/iw dev wlan0 set power_save off\n' /etc/rc.local
+		echo -e ""$GREEN"Wi-Fi power save mode disabled in /etc/rc.local"$RESET""
+	fi
+
 	echo ''
 	echo -e "\n"$GREEN"Done!"$RESET""
 	echo ''
@@ -908,6 +937,12 @@ test_install()
 	systemctl is-active --quiet hciuart.service    && printf ""$YELLOW"FAIL:"$RESET" %-15s service is RUNNING. (That's bad)\n" hciuart.service    || printf ""$GREEN"PASS:"$RESET" %-15s service is dead - which is good\n" hciuart.service
 
 	echo '-------------------------------------'
+	if iw wlan0 get power_save | grep -q 'on';
+	then
+		echo -e ""$YELLOW"FAIL:"$RESET" Wi-Fi power save is ON"
+	else
+		echo -e ""$GREEN"PASS:"$RESET" Wi-Fi power save is OFF"
+	fi
 	test_config=0
 	if grep -q '# Added by setup.sh for captureKNX' /boot/firmware/config.txt; then
 		((test_config=test_config+1)); fi
@@ -991,6 +1026,290 @@ test_install()
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
 	echo ''
 }
+
+
+make_ap_nmcli ()
+{
+	echo -e ""$GREEN"make_ap_nmcli"$RESET""
+	echo ''
+
+	if [[ $(isUserLocal) == "false" ]];
+	then
+		echo ''
+		echo -e ""$YELLOW"This command is not available from a wireless network connection."$RESET""
+		echo -e ""$YELLOW"You need to be on a wired network or directly connected to the Pi"$RESET""
+		echo ''
+		exit
+	fi
+
+	# ================== START DHCP ==================
+	if  grep -q 'interface=wlan0' /etc/dnsmasq.conf;
+	then
+		#Read the current values:
+		wlanLine=$(sed -n '/interface=wlan0/=' /etc/dnsmasq.conf) #This is the line number that the wlan config starts at
+		oldDhcpStartIp=$(sed -n -E "$wlanLine,$ s|^\s*dhcp-range=(.*)$|\1|p" /etc/dnsmasq.conf ) # Delimiter is '|'
+		matchRegex="\s*(([0-9]{1,3}\.){3}[0-9]{1,3}),(([0-9]{1,3}\.){3}[0-9]{1,3}),(([0-9]{1,3}\.){3}[0-9]{1,3})," # Bash doesn't do digits as "\d"
+		if [[ $oldDhcpStartIp =~ $matchRegex ]] ;
+			then
+				oldDhcpStartIp=${BASH_REMATCH[1]}
+				oldDhcpEndIp=${BASH_REMATCH[3]}
+				oldDhcpSubnetMask=${BASH_REMATCH[5]}
+			fi
+	else
+		echo 'No IPs in /etc/dnsmasq.conf. Adding some defaults'
+		#Create default values:
+		cat <<END >> /etc/dnsmasq.conf
+interface=wlan0      # Use the required wireless interface - usually wlan0
+	dhcp-range=10.10.10.10,10.10.10.100,255.255.255.0,24h
+END
+	fi
+	#Populate defaults if required:
+	if [ -z "$oldPiIpV4" ];         then oldPiIpV4='10.10.10.1'; fi
+	if [ -z "$oldDhcpStartIp" ];    then oldDhcpStartIp='10.10.10.10'; fi
+	if [ -z "$oldDhcpEndIp" ];      then oldDhcpEndIp='10.10.10.100'; fi
+	if [ -z "$oldDhcpSubnetMask" ]; then oldDhcpSubnetMask='255.255.255.0'; fi
+	# ================== END DHCP ==================
+
+	# ================= START Wi-Fi =================
+	local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show wlan0 | cut -d: -f2-)
+	connectionFile="/etc/NetworkManager/system-connections/"$wlan0Name".nmconnection"
+	if [ -f $connectionFile ];
+	then
+		#local oldWifiSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
+		local oldWifiChannel=$(grep -r '^channel=' $connectionFile | cut -s -d = -f 2)
+		local oldWifiPwd=$(grep -r '^psk=' $connectionFile | cut -s -d = -f 2)
+	fi
+	#local oldWifiCountry=$(LANG=C iw reg get | cut -s -d : -f 1 | head -1 | cut -s -d ' ' -f 2)
+	#Populate defaults otherwise:
+	if [ -z "$oldWifiSsid" ];    then local oldWifiSsid='captureKNX'; fi
+	if [ -z "$oldWifiChannel" ]; then local oldWifiChannel='1'; fi
+	if [ -z "$oldWifiPwd" ];     then local oldWifiPwd='myPiNetw0rkAccess!'; fi
+	#if [[ ! $oldWifiCountry =~ [a-zA-Z]{2} ]]; then oldWifiCountry=''; fi # Null the value if it's not just two letters
+	# ================== END Wi-Fi ==================
+
+	echo ''
+	echo 'Set your Pi as a Wi-Fi Access Point. (Ctrl-C to abort)'
+	echo 'If unsure, go with the defaults until you get to the SSID and password'
+	echo ''
+	read -e -i "$oldPiIpV4" -p         'Choose an IP address for the Pi         : ' piIpV4
+	read -e -i "$oldDhcpStartIp" -p    'Choose the starting IP address for DCHP : ' dhcpStartIp
+	read -e -i "$oldDhcpEndIp" -p      'Choose  the  ending IP address for DCHP : ' dhcpEndIp
+	read -e -i "$oldDhcpSubnetMask" -p 'Set the appropriate subnet mask         : ' dhcpSubnetMask
+
+	while true; do
+		read -e -i "$oldWifiSsid" -p       'Pick a nice SSID                        : ' wifiSsid
+		if [ -z "$wifiSsid" ];
+		then
+			echo -e ""$YELLOW"ERROR:"$RESET" SSID name cannot be empty."
+			echo ''
+			continue
+		fi
+		break
+	done
+
+	while true; do
+		read -e -i "$oldWifiPwd" -p        'Choose a better password than this      : ' wifiPwd
+		if [ -z "$wifiPwd" ];
+		then
+			echo -e ""$YELLOW"ERROR:"$RESET" Psk value cannot be empty."
+			echo ''
+			continue
+		elif [ ${#wifiPwd} -lt 8 ];
+		then
+			echo -e ""$YELLOW"ERROR:"$RESET" Psk must be at least 8 characters."
+			echo ''
+			continue
+		fi
+		break
+	done
+
+	while true; do
+		read -e -i "$oldWifiChannel" -p    'Choose an appropriate Wi-Fi channel     : ' wifiChannel
+		if [ -z "$wifiChannel" ];
+		then
+			echo -e ""$YELLOW"ERROR:"$RESET" Wi-Fi channel cannot be empty."
+			echo ''
+			continue
+		fi
+		break
+	done
+
+	#read -e -i "$oldWifiCountry" -p    'Set your 2-digit Wi-Fi country           : ' wifiCountry
+
+	#TODO: Validate the IP addresses
+
+	local cidr_mask=$(IPprefix_by_netmask $dhcpSubnetMask)
+
+	echo ''
+	echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, this connection will end, and the Pi will come up as its own Wi-Fi network (access point)"
+	echo -e ""$YELLOW"WARNING:"$RESET" You will find it advertised as SSID '$wifiSsid'"
+	read -p "Press any key to continue or ^C to abort " discard
+	echo ''
+	#Paste in the new settings
+	sed -i -E "s/^(\s*dhcp-range=)(.*)$/\1$dhcpStartIp,$dhcpEndIp,$dhcpSubnetMask,24h/" /etc/dnsmasq.conf
+
+	echo 'Enabling dnsmasq'
+	systemctl unmask dnsmasq
+	systemctl enable dnsmasq
+	systemctl start dnsmasq
+
+	# Modify existing hotspot, otherwise delete and start afresh
+	if [[ $wlan0Name == "hotspot" ]];
+	then
+		nmcli con mod hotspot autoconnect yes ssid "$wifiSsid"
+	else
+		if [[ "$wlan0Name" != "" ]];
+		then
+			nmcli con del "$wlan0Name"
+			sleep 5
+		fi
+		nmcli con add type wifi ifname wlan0 con-name hotspot autoconnect yes ssid "$wifiSsid"
+	fi
+	nmcli con modify hotspot 802-11-wireless.mode ap 802-11-wireless.band bg 802-11-wireless.channel $wifiChannel #ipv4.method shared
+	nmcli con modify hotspot wifi-sec.key-mgmt wpa-psk
+	nmcli con modify hotspot wifi-sec.psk "$wifiPwd"
+	nmcli con mod hotspot ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
+	echo -e ""$GREEN"Byeee!"$RESET""
+	nmcli con up hotspot
+}
+
+
+unmake_ap_nmcli ()
+{
+	echo -e ""$GREEN"unmake_ap_nmcli"$RESET""
+	echo ''
+
+	if [[ $(isUserLocal) == "false" ]];
+	then
+		echo ''
+		echo -e ""$YELLOW"This command is not available from a wireless network connection."$RESET""
+		echo -e ""$YELLOW"You need to be on a wired network or directly connected to the Pi"$RESET""
+		echo ''
+		exit
+	fi
+
+	local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show wlan0 | cut -d: -f2-)
+	if [[ $wlan0Name == 'hotspot' ]]; then wlan0Name=''; fi # Suppress auto-populate below if name is 'hotspot'
+	while true; do
+		read -e -i "$wlan0Name" -p "Set the network's SSID                : " newSsid
+		if [ -z "$newSsid" ];
+		then
+			echo -e 'Error: SSID name cannot be empty.'
+			echo ''
+			continue
+		fi
+		break
+	done
+
+	while true; do
+		read -p "Set the network's Psk (password)      : " newPsk
+		if [ -z "$newPsk" ];
+		then
+			echo -e "Error: Psk value cannot be empty."
+			echo ''
+			continue
+		fi
+		break
+	done
+
+	read -p 'Do you want to assign the Pi a static IP address? [Y/n]: ' staticResponse
+	case $staticResponse in
+		(y|Y|"")
+			local oldPiIpV4=$(LANG=C nmcli -t -f IP4.ADDRESS device show wlan0 | cut -d: -f2- | cut -d/ -f1)
+			local oldDhcpSubnetCIDR=$(LANG=C nmcli -t -f IP4.ADDRESS device show wlan0 | cut -d/ -f2-)
+			local oldRouter=$(LANG=C nmcli -t -f IP4.GATEWAY device show wlan0 | cut -d: -f2-)
+			local oldDnsServers=$(LANG=C nmcli -t -f IP4.DNS device show wlan0 | cut -d: -f2-)
+
+			if [ "$oldDhcpSubnetCIDR" ]; then local oldDhcpSubnetMask=$(CIDRtoNetmask $oldDhcpSubnetCIDR); fi
+
+			read -e -i "$oldPiIpV4" -p         'Choose an IP address for the Pi         : ' piIpV4
+			read -e -i "$oldDhcpSubnetMask" -p 'Set the appropriate subnet mask         : ' dhcpSubnetMask
+			read -e -i "$oldRouter" -p         'Set the router/gateway IP               : ' router
+			read -e -i "$oldDnsServers" -p     'Set the DNS Server(s) (space-delimited) : ' DnsServers
+
+			local cidr_mask=$(IPprefix_by_netmask $dhcpSubnetMask)
+			;;
+		(*)
+			echo -n # Do nothing.
+			;;
+	esac
+
+	echo ''
+	echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, this connection will end, and the Pi will come up as a Wi-Fi *client*"
+	echo -e ""$YELLOW"WARNING:"$RESET" It will attempt to connect to the '$newSsid' network"
+	read -p "Press any key to continue or ^C to abort " discard
+	echo ''
+
+	if systemctl --all --type service | grep -q 'dnsmasq';
+	then
+		echo -e ""$GREEN"Disabling dnsmasq"$RESET""
+		systemctl stop dnsmasq    # Stop it now
+		systemctl disable dnsmasq # Prevents it launching on bootup
+		systemctl mask dnsmasq
+		echo ''
+	fi
+
+	set +e # Suspend the error trap. The below would otherwise throw a terminating error if 'hotspot' doesn't exist.
+	nmcli con del hotspot 2> /dev/null # Suppress any error display.
+	set -e # Resume the error trap
+	sleep 5
+	nmcli d wifi connect "$newSsid" password "$newPsk" ifname wlan0
+	# Paste in the new settings
+	case $staticResponse in
+		(y|Y|"")
+			nmcli con mod "$newSsid" ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
+			nmcli con mod "$newSsid" ipv4.gateway $router
+			nmcli con mod "$newSsid" ipv4.dns "$DnsServers"
+		;;
+		(*)
+			nmcli con mod "$newSsid" ipv4.method auto
+		;;
+	esac
+	nmcli con up "$newSsid"
+}
+
+
+# https://stackoverflow.com/questions/50413579/bash-convert-netmask-in-cidr-notation/50414560
+IPprefix_by_netmask ()
+{
+	c=0 x=0$( printf '%o' ${1//./ } )
+	while [ $x -gt 0 ]; do
+		let c+=$((x%2)) 'x>>=1'
+	done
+	echo $c ;
+}
+
+
+# https://stackoverflow.com/questions/20762575/explanation-of-convertor-of-cidr-to-netmask-in-linux-shell-netmask2cdir-and-cdir
+CIDRtoNetmask ()
+{
+	# Number of args to shift, 255..255, first non-255 byte, zeroes
+	set -- $(( 5 - ($1 / 8) )) 255 255 255 255 $(( (255 << (8 - ($1 % 8))) & 255 )) 0 0 0
+	[ $1 -gt 1 ] && shift $1 || shift
+	echo ${1-0}.${2-0}.${3-0}.${4-0}
+}
+
+
+isUserLocal ()
+{
+	whoAmI=$(who am i)
+	matchRegex='[0-9]+(\.[0-9]+){3}'
+	if [[ $whoAmI =~ $matchRegex ]] ;
+	then
+		# OK, the user has an IP address. Are they on a wired (OK) or wireless (bad) NIC?
+		clientIpAddress=${BASH_REMATCH}
+		#echo $clientIpAddress
+		wlanClients=$(arp -n | grep 'wlan[[:digit:]]')
+		#echo $wlanClients
+		if [[ $wlanClients == *"$clientIpAddress"* ]]
+		then
+			echo "false" # This user is on WiFi. No go
+		else
+			echo "true"  # This user is connected via an Ethernet NIC
+		fi
+	else
+		echo "true" # This user is directly connected to the Pi. (There is no IP address for this user)
+	fi
 
 
 # I'm not sure if this will stay. It's a diagnostic tool at the moment, not (yet?) mentioned in the documentation
@@ -1106,6 +1425,13 @@ fi
 
 case "$1" in
 
+	('ap')
+		make_ap_nmcli
+		prompt_for_reboot
+		;;
+	('noap')
+		unmake_ap_nmcli
+		prompt_for_reboot
 	('dev')
 		dev
 		;;
