@@ -1310,6 +1310,7 @@ isUserLocal ()
 	else
 		echo "true" # This user is directly connected to the Pi. (There is no IP address for this user)
 	fi
+}
 
 
 # I'm not sure if this will stay. It's a diagnostic tool at the moment, not (yet?) mentioned in the documentation
