@@ -851,7 +851,114 @@ test_install()
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" 32-bit OS"
 	fi
+
+	# ================== START Wi-Fi TESTS ==================
+	ap_test=0
+	systemctl is-active --quiet dnsmasq && ap_test=$((ap_test+1)) # If dnsmasq is running, add 1
+	local activeConnections=$(nmcli -t c s -a | awk '/wlan0/' | cut -d: -f 1  )
+	if [ ! -z "$activeConnections" ];
+	then
+		((ap_test=ap_test+2)) # If we have an active network connection, add 2
+		# Loop through them:
+		IFS=$'\n'
+		for thisConnection in $activeConnections;
+		do
+			local connectionFile="/etc/NetworkManager/system-connections/"$thisConnection".nmconnection"
+			if [ -f $connectionFile ];
+			then
+				local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
+				local connectedChannel=$(grep -r '^channel=' $connectionFile | cut -s -d = -f 2)
+				local connectedMode=$(grep -r '^mode=' $connectionFile | cut -s -d = -f 2)
+				local apCount=0   # Just in case we somehow end up with multiple connections. Each success only increments ap_test once
+				local noapCount=0 # "
+				if [[ $connectedMode == "ap" ]];
+				then
+					if [[ ($apCount == 0) ]];
+					then
+						((ap_test=ap_test+4)) # we're an Access Point. Add 4
+						apCount=apCount+1
+						if [ ! -z "$connectedChannel" ]; then ((ap_test=ap_test+16)); fi
+					fi
+				elif [[ $connectedMode =~ infra.* ]];
+				then
+					if [[ ($noapCount == 0) ]];
+					then
+						((ap_test=ap_test+8)) # we're a client, connected to a Wi-Fi network. Add 8
+						noapCount=noapCount+1
+					fi
+				fi
+			fi
+		done
+		unset IFS
+	fi
+
+	case $ap_test in
+		(0)
+			echo -e ""$YELLOW"FAIL:"$RESET" No network connection was detected (0)"
+			;;
+		(1)
+			# dnsmasq is running. That's the sign we SHOULD be an AP
+			echo -e ""$YELLOW"FAIL:"$RESET" dnsmasq is running, however no network connection was detected (1)"
+			;;
+		(2)
+			# we have an active network connection
+			echo -e ""$YELLOW"FAIL:"$RESET" A network connection was detected, but no Wi-Fi data was found (2)"
+			;;
+		(3)
+			# active network + dnsmasq
+			echo -e ""$YELLOW"FAIL:"$RESET" A network connection was detected, but no Wi-Fi data was found (3)"
+			;;
+		(6)
+			# We're an AP & have an active network connection, but no CHANNEL.
+			echo -e ""$YELLOW"FAIL:"$RESET" The Pi is its own Wi-Fi network (an Access Point) however no channel has been configured (6)"
+			;;
+		(7)
+			# We're an AP, dmsmasq is running and we have an active network connection.
+			echo -e ""$YELLOW"FAIL:"$RESET" The Pi is its own Wi-Fi network (an Access Point) however no channel has been configured (7)"
+			;;
+		(8)
+			# We're a Wi-Fi client
+			echo -e ""$YELLOW"PASS:"$RESET" The Pi is a Wi-Fi client, however there is no active network connection (8)"
+			;;
+		(9)
+			# We're a Wi-Fi client HOWEVER dmsmasq is running. (Bad/unexpected)
+			echo -e ""$YELLOW"PASS:"$RESET" The Pi is a Wi-Fi client, however there is no active network connection (9)"
+			;;
+		(10)
+			# Good. Wi-Fi client.
+			echo -e ""$GREEN"PASS:"$RESET" The Pi is a Wi-Fi client, not an Access Point"
+			echo -e ""$GREEN"PASS:"$RESET" It has an active connection to this/these SSIDs: $connectedSsid"
+			;;
+		(22)
+			# Good-ish. Wi-Fi AP.
+			echo -e ""$GREEN"PASS:"$RESET" The Pi is its own Wi-Fi network (Access Point)"
+			echo -e ""$GREEN"PASS:"$RESET" Its SSID (network name) is '$connectedSsid' and is using channel $connectedChannel"
+			echo -e ""$YELLOW"PASS:"$RESET" dnsmasq is not running (22)"
+			;;
+		(23)
+			# Good. Wi-Fi AP.
+			echo -e ""$GREEN"PASS:"$RESET" The Pi is its own Wi-Fi network (Access Point)"
+			echo -e ""$GREEN"PASS:"$RESET" Its SSID (network name) is '$connectedSsid' and is using channel $connectedChannel"
+			;;
+		(*)
+			echo -e ""$YELLOW"FAIL:"$RESET" Test returned unexpected value $ap_test:"
+			echo " 1 = dnsmasq is running"
+			echo " 2 = we have an active network connection"
+			echo " 4 = we're our own Wi-Fi network (an Access Point)"
+			echo " 8 = we're a Wi-Fi client"
+			echo "16 = we're our own Wi-Fi network (an Access Point) and have a Wi-Fi channel correctly configured"
+			echo ''
+			;;
+	esac
+	if iw wlan0 get power_save | grep -q 'on';
+	then
+		echo -e ""$YELLOW"FAIL:"$RESET" Wi-Fi power save is ON"
+	else
+		echo -e ""$GREEN"PASS:"$RESET" Wi-Fi power save is OFF"
+	fi
 	echo '-------------------------------------'
+	# ================== END Wi-Fi TESTS ==================
+
 	set +e #Suspend the error trap
 	isKnxd=$(command -v knxd)
 	set -e #Resume the error trap
@@ -937,12 +1044,7 @@ test_install()
 	systemctl is-active --quiet hciuart.service    && printf ""$YELLOW"FAIL:"$RESET" %-15s service is RUNNING. (That's bad)\n" hciuart.service    || printf ""$GREEN"PASS:"$RESET" %-15s service is dead - which is good\n" hciuart.service
 
 	echo '-------------------------------------'
-	if iw wlan0 get power_save | grep -q 'on';
-	then
-		echo -e ""$YELLOW"FAIL:"$RESET" Wi-Fi power save is ON"
-	else
-		echo -e ""$GREEN"PASS:"$RESET" Wi-Fi power save is OFF"
-	fi
+
 	test_config=0
 	if grep -q '# Added by setup.sh for captureKNX' /boot/firmware/config.txt; then
 		((test_config=test_config+1)); fi
@@ -1021,7 +1123,7 @@ test_install()
 	lastTelegramDate="Unknown"
 	lastTelegramDate=$(date -d @"$lastTelegram" +"%Y %b %d %H:%M:%S %Z")
 	echo -e "Last successful telegram: $lastTelegramDate"
-	
+
 	echo ''
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
 	echo ''
