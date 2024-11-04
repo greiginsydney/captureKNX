@@ -1535,6 +1535,7 @@ case "$1" in
 	('noap')
 		unmake_ap_nmcli
 		prompt_for_reboot
+  		;;
 	('dev')
 		dev
 		;;
