@@ -24,7 +24,7 @@ Not a problem, just turn its host Pi *into* the network! The Raspberry Pi's in-b
 
 Note that the Raspberry Pi's on-board hardware only supports 2.4GHz wireless, not 5GHz. (If you have a need for the 5GHz band, you can plug in a USB W-Fi dongle.)
 
-TODO: I plan to add the config options for this to the setup script in the near future (before end CY 2024). 
+The process is documented in [setup-the-Pi-as-an-access-point.md](/docs/setup-the-Pi-as-an-access-point.md)
 
 [Top](#advanced-applications)
 
