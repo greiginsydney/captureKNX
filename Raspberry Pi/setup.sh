@@ -873,7 +873,7 @@ test_install()
 					local connectionFile="/run/NetworkManager/system-connections/"$thisConnection".nmconnection"
 				fi
 			fi
-   
+
 			if [ -f $connectionFile ];
 			then
 				local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
@@ -911,7 +911,7 @@ test_install()
 		done
 		unset IFS
 	fi
-	
+
 	if [[ $isEthernet && $isWiFi ]];
 	then
 		echo -e ""$YELLOW"WARN:"$RESET" Ethernet AND Wi-Fi connections are active. This can cause connection/performance issues"
@@ -919,74 +919,80 @@ test_install()
 		if [[ $isEthernet ]];
 		then
 			echo -e ""$GREEN"PASS:"$RESET" Network connection is ETHERNET"
+		elif [[ $isWiFi ]];
+		then
+			echo -e ""$GREEN"PASS:"$RESET" Network connection is Wi-Fi"
 		else
-			echo -e ""$GREEN"PASS:"$RESET" Network connection is ETHERNET"
+			echo -e ""$YELLOW"FAIL:"$RESET" No network connection detected"
 		fi
 	fi
 
-	case $ap_test in
-		(0)
-			echo -e ""$YELLOW"FAIL:"$RESET" No network connection was detected (0)"
-			;;
-		(1)
-			# dnsmasq is running. That's the sign we SHOULD be an AP
-			echo -e ""$YELLOW"FAIL:"$RESET" dnsmasq is running, however no network connection was detected (1)"
-			;;
-		(2)
-			# we have an active network connection
-			echo -e ""$YELLOW"FAIL:"$RESET" A network connection was detected, but no Wi-Fi data was found (2)"
-			;;
-		(3)
-			# active network + dnsmasq
-			echo -e ""$YELLOW"FAIL:"$RESET" A network connection was detected, but no Wi-Fi data was found (3)"
-			;;
-		(6)
-			# We're an AP & have an active network connection, but no CHANNEL.
-			echo -e ""$YELLOW"FAIL:"$RESET" The Pi is its own Wi-Fi network (an Access Point) however no channel has been configured (6)"
-			;;
-		(7)
-			# We're an AP, dmsmasq is running and we have an active network connection.
-			echo -e ""$YELLOW"FAIL:"$RESET" The Pi is its own Wi-Fi network (an Access Point) however no channel has been configured (7)"
-			;;
-		(8)
-			# We're a Wi-Fi client
-			echo -e ""$YELLOW"PASS:"$RESET" The Pi is a Wi-Fi client, however there is no active network connection (8)"
-			;;
-		(9)
-			# We're a Wi-Fi client HOWEVER dmsmasq is running. (Bad/unexpected)
-			echo -e ""$YELLOW"PASS:"$RESET" The Pi is a Wi-Fi client, however there is no active network connection (9)"
-			;;
-		(10)
-			# Good. Wi-Fi client.
-			echo -e ""$GREEN"PASS:"$RESET" The Pi is a Wi-Fi client, not an Access Point"
-			echo -e ""$GREEN"PASS:"$RESET" It has an active connection to this/these SSIDs: $connectedSsid"
-			;;
-		(22)
-			# Good-ish. Wi-Fi AP.
-			echo -e ""$GREEN"PASS:"$RESET" The Pi is its own Wi-Fi network (Access Point)"
-			echo -e ""$GREEN"PASS:"$RESET" Its SSID (network name) is '$connectedSsid' and is using channel $connectedChannel"
-			echo -e ""$YELLOW"PASS:"$RESET" dnsmasq is not running (22)"
-			;;
-		(23)
-			# Good. Wi-Fi AP.
-			echo -e ""$GREEN"PASS:"$RESET" The Pi is its own Wi-Fi network (Access Point)"
-			echo -e ""$GREEN"PASS:"$RESET" Its SSID (network name) is '$connectedSsid' and is using channel $connectedChannel"
-			;;
-		(*)
-			echo -e ""$YELLOW"FAIL:"$RESET" Test returned unexpected value $ap_test:"
-			echo " 1 = dnsmasq is running"
-			echo " 2 = we have an active network connection"
-			echo " 4 = we're our own Wi-Fi network (an Access Point)"
-			echo " 8 = we're a Wi-Fi client"
-			echo "16 = we're our own Wi-Fi network (an Access Point) and have a Wi-Fi channel correctly configured"
-			echo ''
-			;;
-	esac
-	if iw wlan0 get power_save | grep -q 'on';
+	if [[ $isWiFi ]];
 	then
-		echo -e ""$YELLOW"FAIL:"$RESET" Wi-Fi power save is ON"
-	else
-		echo -e ""$GREEN"PASS:"$RESET" Wi-Fi power save is OFF"
+		case $ap_test in
+			(0)
+				echo -e ""$YELLOW"FAIL:"$RESET" No network connection was detected (0)"
+				;;
+			(1)
+				# dnsmasq is running. That's the sign we SHOULD be an AP
+				echo -e ""$YELLOW"FAIL:"$RESET" dnsmasq is running, however no network connection was detected (1)"
+				;;
+			(2)
+				# we have an active network connection
+				echo -e ""$YELLOW"FAIL:"$RESET" A network connection was detected, but no Wi-Fi data was found (2)"
+				;;
+			(3)
+				# active network + dnsmasq
+				echo -e ""$YELLOW"FAIL:"$RESET" A network connection was detected, but no Wi-Fi data was found (3)"
+				;;
+			(6)
+				# We're an AP & have an active network connection, but no CHANNEL.
+				echo -e ""$YELLOW"FAIL:"$RESET" The Pi is its own Wi-Fi network (an Access Point) however no channel has been configured (6)"
+				;;
+			(7)
+				# We're an AP, dmsmasq is running and we have an active network connection.
+				echo -e ""$YELLOW"FAIL:"$RESET" The Pi is its own Wi-Fi network (an Access Point) however no channel has been configured (7)"
+				;;
+			(8)
+				# We're a Wi-Fi client
+				echo -e ""$YELLOW"PASS:"$RESET" The Pi is a Wi-Fi client, however there is no active network connection (8)"
+				;;
+			(9)
+				# We're a Wi-Fi client HOWEVER dmsmasq is running. (Bad/unexpected)
+				echo -e ""$YELLOW"PASS:"$RESET" The Pi is a Wi-Fi client, however there is no active network connection (9)"
+				;;
+			(10)
+				# Good. Wi-Fi client.
+				echo -e ""$GREEN"PASS:"$RESET" The Pi is a Wi-Fi client, not an Access Point"
+				echo -e ""$GREEN"PASS:"$RESET" It has an active connection to this/these SSIDs: $connectedSsid"
+				;;
+			(22)
+				# Good-ish. Wi-Fi AP.
+				echo -e ""$GREEN"PASS:"$RESET" The Pi is its own Wi-Fi network (Access Point)"
+				echo -e ""$GREEN"PASS:"$RESET" Its SSID (network name) is '$connectedSsid' and is using channel $connectedChannel"
+				echo -e ""$YELLOW"PASS:"$RESET" dnsmasq is not running (22)"
+				;;
+			(23)
+				# Good. Wi-Fi AP.
+				echo -e ""$GREEN"PASS:"$RESET" The Pi is its own Wi-Fi network (Access Point)"
+				echo -e ""$GREEN"PASS:"$RESET" Its SSID (network name) is '$connectedSsid' and is using channel $connectedChannel"
+				;;
+			(*)
+				echo -e ""$YELLOW"FAIL:"$RESET" Test returned unexpected value $ap_test:"
+				echo " 1 = dnsmasq is running"
+				echo " 2 = we have an active network connection"
+				echo " 4 = we're our own Wi-Fi network (an Access Point)"
+				echo " 8 = we're a Wi-Fi client"
+				echo "16 = we're our own Wi-Fi network (an Access Point) and have a Wi-Fi channel correctly configured"
+				echo ''
+				;;
+		esac
+		if iw wlan0 get power_save | grep -q 'on';
+		then
+			echo -e ""$YELLOW"FAIL:"$RESET" Wi-Fi power save is ON"
+		else
+			echo -e ""$GREEN"PASS:"$RESET" Wi-Fi power save is OFF"
+		fi
 	fi
 	echo '-------------------------------------'
 	# ================== END Wi-Fi TESTS ==================
@@ -1150,6 +1156,7 @@ test_install()
 	fi
 
 	echo '-------------------------------------'
+	set +e #Suspend the error trap
 	lastTelegram=$(sed -n -E 's/^(.*) ([[:digit:]]+)$/\2/p' /home/pi/log/telegraf/debug_output.log | tail -1)
 	if [[ $lastTelegram ]];
 	then
@@ -1169,6 +1176,9 @@ test_install()
 make_ap_nmcli ()
 {
 	echo -e ""$GREEN"make_ap_nmcli"$RESET""
+	echo ''
+	echo 'This process will setup the Pi as a Wi-Fi access point (its own Wi-Fi network)'
+	echo '(Control-C to abort at any time)'
 	echo ''
 
 	if [[ $(isUserLocal) == "false" ]];
@@ -1301,13 +1311,13 @@ END
 			nmcli con del "$wlan0Name"
 			sleep 5
 		fi
+		echo 'Creating new Wi-Fi connection to "$wifiSsid"'
 		nmcli con add type wifi ifname wlan0 con-name hotspot autoconnect yes ssid "$wifiSsid"
 	fi
 	nmcli con modify hotspot 802-11-wireless.mode ap 802-11-wireless.band bg 802-11-wireless.channel $wifiChannel #ipv4.method shared
 	nmcli con modify hotspot wifi-sec.key-mgmt wpa-psk
 	nmcli con modify hotspot wifi-sec.psk "$wifiPwd"
 	nmcli con mod hotspot ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
-	echo -e ""$GREEN"Byeee!"$RESET""
 	nmcli con up hotspot
 }
 
@@ -1315,6 +1325,9 @@ END
 unmake_ap_nmcli ()
 {
 	echo -e ""$GREEN"unmake_ap_nmcli"$RESET""
+	echo ''
+	echo 'This process will stop the Pi from being a Wi-Fi access point & instead connect to a wired or wireless network'
+	echo '(Control-C to abort at any time)'
 	echo ''
 
 	if [[ $(isUserLocal) == "false" ]];
@@ -1326,31 +1339,51 @@ unmake_ap_nmcli ()
 		exit
 	fi
 
-	local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show wlan0 | cut -d: -f2-)
-	if [[ $wlan0Name == 'hotspot' ]]; then wlan0Name=''; fi # Suppress auto-populate below if name is 'hotspot'
 	while true; do
-		read -e -i "$wlan0Name" -p "Set the network's SSID                : " newSsid
-		if [ -z "$newSsid" ];
-		then
-			echo -e 'Error: SSID name cannot be empty.'
-			echo ''
-			continue
-		fi
-		break
+		read -p "Setup a new wireless network? (Select N for wired) [y/n]: " wiredOrWireless
+		case $wiredOrWireless in
+			(y|Y)
+				echo 'Wireless'
+				break
+				;;
+			(n|N)
+				echo 'Wired Ethernet'
+				break
+				;;
+			(*)
+				continue # Loop until the user provides a Y/N response
+				;;
+		esac
 	done
 
-	while true; do
-		read -p "Set the network's Psk (password)      : " newPsk
-		if [ -z "$newPsk" ];
-		then
-			echo -e "Error: Psk value cannot be empty."
-			echo ''
-			continue
-		fi
-		break
-	done
+	if [[ "$wiredOrWireless" =~ [Yy] ]];
+	then
+		local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show wlan0 | cut -d: -f2-)
+		if [[ $wlan0Name == 'hotspot' ]]; then wlan0Name=''; fi # Suppress auto-populate below if name is 'hotspot'
+		while true; do
+			read -e -i "$wlan0Name" -p "Set the network's SSID                                  : " newSsid
+			if [ -z "$newSsid" ];
+			then
+				echo -e 'Error: SSID name cannot be empty.'
+				echo ''
+				continue
+			fi
+			break
+		done
 
-	read -p 'Do you want to assign the Pi a static IP address? [Y/n]: ' staticResponse
+		while true; do
+			read -p "Set the network's Psk (password)                        : " newPsk
+			if [ -z "$newPsk" ];
+			then
+				echo -e "Error: Psk value cannot be empty."
+				echo ''
+				continue
+			fi
+			break
+		done
+	fi
+
+	read -p 'Do you want to assign the Pi a static IP address?  [Y/n]: ' staticResponse
 	case $staticResponse in
 		(y|Y|"")
 			local oldPiIpV4=$(LANG=C nmcli -t -f IP4.ADDRESS device show wlan0 | cut -d: -f2- | cut -d/ -f1)
@@ -1360,10 +1393,10 @@ unmake_ap_nmcli ()
 
 			if [ "$oldDhcpSubnetCIDR" ]; then local oldDhcpSubnetMask=$(CIDRtoNetmask $oldDhcpSubnetCIDR); fi
 
-			read -e -i "$oldPiIpV4" -p         'Choose an IP address for the Pi         : ' piIpV4
-			read -e -i "$oldDhcpSubnetMask" -p 'Set the appropriate subnet mask         : ' dhcpSubnetMask
-			read -e -i "$oldRouter" -p         'Set the router/gateway IP               : ' router
-			read -e -i "$oldDnsServers" -p     'Set the DNS Server(s) (space-delimited) : ' DnsServers
+			read -e -i "$oldPiIpV4" -p         'Choose an IP address for the Pi                         : ' piIpV4
+			read -e -i "$oldDhcpSubnetMask" -p 'Set the appropriate subnet mask                         : ' dhcpSubnetMask
+			read -e -i "$oldRouter" -p         'Set the router/gateway IP                               : ' router
+			read -e -i "$oldDnsServers" -p     'Set the DNS Server(s) (space-delimited)                 : ' DnsServers
 
 			local cidr_mask=$(IPprefix_by_netmask $dhcpSubnetMask)
 			;;
@@ -1373,8 +1406,13 @@ unmake_ap_nmcli ()
 	esac
 
 	echo ''
-	echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, this connection will end, and the Pi will come up as a Wi-Fi *client*"
-	echo -e ""$YELLOW"WARNING:"$RESET" It will attempt to connect to the '$newSsid' network"
+	if [[ "$wiredOrWireless" =~ [Yy] ]];
+	then
+		echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, this connection will end, and the Pi will come up as a Wi-Fi *client*"
+		echo -e ""$YELLOW"WARNING:"$RESET" It will attempt to connect to the '$newSsid' network"
+	else
+		echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, this connection will end, and the Pi will use the lan0 port for its connectivity"
+	fi
 	read -p "Press any key to continue or ^C to abort " discard
 	echo ''
 
@@ -1390,20 +1428,47 @@ unmake_ap_nmcli ()
 	set +e # Suspend the error trap. The below would otherwise throw a terminating error if 'hotspot' doesn't exist.
 	nmcli con del hotspot 2> /dev/null # Suppress any error display.
 	set -e # Resume the error trap
-	sleep 5
-	nmcli d wifi connect "$newSsid" password "$newPsk" ifname wlan0
-	# Paste in the new settings
-	case $staticResponse in
-		(y|Y|"")
-			nmcli con mod "$newSsid" ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
-			nmcli con mod "$newSsid" ipv4.gateway $router
-			nmcli con mod "$newSsid" ipv4.dns "$DnsServers"
-		;;
-		(*)
-			nmcli con mod "$newSsid" ipv4.method auto
-		;;
-	esac
-	nmcli con up "$newSsid"
+
+	if [[ "$wiredOrWireless" =~ [Yy] ]];
+	then
+		# Wireless:
+		sleep 5 # Sleep briefly having just deleted the hotspot, before creating the new wireless network connection
+		nmcli d wifi connect "$newSsid" password "$newPsk" ifname wlan0
+		# Paste in the new settings
+		case $staticResponse in
+			(y|Y|"")
+				nmcli con mod "$newSsid" ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
+				nmcli con mod "$newSsid" ipv4.gateway $router
+				nmcli con mod "$newSsid" ipv4.dns "$DnsServers"
+			;;
+			(*)
+				nmcli con mod "$newSsid" ipv4.method auto
+			;;
+		esac
+		nmcli con up "$newSsid"
+	else
+		# Ethernet:
+		local eth0Name=$(LANG=C nmcli -t c s | awk '/ethernet/' | cut -d: -f1)
+		if [[ ! $eth0Name ]];
+		then
+			# Bad. No ethernet device found
+			echo -e ""$YELLOW"ERROR:"$RESET" No ethernet port found - and WiFi AP has already been deleted"
+		else
+			# Paste in the new settings
+			case $staticResponse in
+				(y|Y|"")
+					nmcli con mod "$eth0Name" ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
+					nmcli con mod "$eth0Name" ipv4.gateway $router
+					nmcli con mod "$eth0Name" ipv4.dns "$DnsServers"
+				;;
+				(*)
+					nmcli con mod "$eth0Name" ipv4.method auto
+				;;
+			esac
+			nmcli con mod "$eth0Name" connection.autoconnect true # Don't honestly know if this is required, but can't hurt?
+			nmcli con up "$eth0Name"
+		fi
+	fi
 }
 
 
@@ -1571,7 +1636,7 @@ case "$1" in
 	('noap')
 		unmake_ap_nmcli
 		prompt_for_reboot
-  		;;
+		;;
 	('dev')
 		dev
 		;;
