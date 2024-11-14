@@ -1455,6 +1455,7 @@ unmake_ap_nmcli ()
 			echo -e ""$YELLOW"ERROR:"$RESET" No ethernet port found - and WiFi AP has already been deleted"
 		else
 			# Paste in the new settings
+   			echo 'Modifying Ethernet connection to "$eth0Name"'
 			case $staticResponse in
 				(y|Y|"")
 					nmcli con mod "$eth0Name" ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
