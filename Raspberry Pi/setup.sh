@@ -863,12 +863,23 @@ test_install()
 		IFS=$'\n'
 		for thisConnection in $activeConnections;
 		do
+			# Look in all 3 possible locations for the matching connectionFile:
 			local connectionFile="/etc/NetworkManager/system-connections/"$thisConnection".nmconnection"
+			if [ ! -f $connectionFile ];
+			then
+				local connectionFile="/usr/lib/NetworkManager/system-connections/"$thisConnection".nmconnection"
+				if [ ! -f $connectionFile ];
+				then
+					local connectionFile="/run/NetworkManager/system-connections/"$thisConnection".nmconnection"
+				fi
+			fi
+   
 			if [ -f $connectionFile ];
 			then
 				local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
 				local connectedChannel=$(grep -r '^channel=' $connectionFile | cut -s -d = -f 2)
 				local connectedMode=$(grep -r '^mode=' $connectionFile | cut -s -d = -f 2)
+				local connectedType=$(grep -r '^type=' $connectionFile | cut -s -d = -f 2)
 				local apCount=0   # Just in case we somehow end up with multiple connections. Each success only increments ap_test once
 				local noapCount=0 # "
 				if [[ $connectedMode == "ap" ]];
@@ -887,9 +898,30 @@ test_install()
 						noapCount=noapCount+1
 					fi
 				fi
+				if [[ $connectedType == "ethernet" ]];
+				then
+					isEthernet="true"
+				elif [[ $connectedType == "wifi" ]];
+				then
+					isWiFi="true"
+				fi
+			else
+				echo "Script error: connectionFile '$connectionFile' not found"
 			fi
 		done
 		unset IFS
+	fi
+	
+	if [[ $isEthernet && $isWiFi ]];
+	then
+		echo -e ""$YELLOW"WARN:"$RESET" Ethernet AND Wi-Fi connections are active. This can cause connection/performance issues"
+	else
+		if [[ $isEthernet ]];
+		then
+			echo -e ""$GREEN"PASS:"$RESET" Network connection is ETHERNET"
+		else
+			echo -e ""$GREEN"PASS:"$RESET" Network connection is ETHERNET"
+		fi
 	fi
 
 	case $ap_test in
