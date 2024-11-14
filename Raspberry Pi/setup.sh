@@ -1119,11 +1119,15 @@ test_install()
 
 	echo '-------------------------------------'
 	lastTelegram=$(sed -n -E 's/^(.*) ([[:digit:]]+)$/\2/p' /home/pi/log/telegraf/debug_output.log | tail -1)
-	((lastTelegram=lastTelegram/1000000000))
-	lastTelegramDate="Unknown"
-	lastTelegramDate=$(date -d @"$lastTelegram" +"%Y %b %d %H:%M:%S %Z")
-	echo -e "Last successful telegram: $lastTelegramDate"
-
+	if [[ $lastTelegram ]];
+	then
+		((lastTelegram=lastTelegram/1000000000))
+		lastTelegramDate="Unknown"
+		lastTelegramDate=$(date -d @"$lastTelegram" +"%Y %b %d %H:%M:%S %Z")
+		echo -e "Last successful telegram: $lastTelegramDate"
+	else
+		echo -e "Last successful telegram unknown. /home/pi/log/telegraf/debug_output.log returned no result. Try again"
+	fi
 	echo ''
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
 	echo ''
