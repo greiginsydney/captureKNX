@@ -3,7 +3,7 @@
 The captureKNX described here is a stand-alone on-site device, however if you're a little more adventurous, here are a few more things you can do with it:
 
 - [Setup the Pi as a Wi-Fi Access Point](#setup-the-pi-as-a-wi-fi-access-point)
-- ['Plug and play' - bake the Wi-Fi credentials into the Pi](#plug-and-play---bake-the-wi-fi-credentials-into-the-pi)
+- [Bake the Wi-Fi credentials into the Pi when you format the drive](#bake-the-Wi--Fi-credentials-into-the-Pi-when-you-format-the-drive)
 - [InfluxDB Cloud](#influxdb-cloud)
 - [Add remote.it for remote access](#add-remoteit-for-remote-access)
 - [NVMe Storage](#nvme-storage)
@@ -30,9 +30,9 @@ The process is documented in [setup-the-Pi-as-an-access-point.md](/docs/setup-th
 
 <hr>
 
-## 'Plug and play' - bake the Wi-Fi credentials into the Pi
+## Bake the Wi-Fi credentials into the Pi when you format the drive
 
-The captureKNX becomes an even more useful tool if you pre-configure it for 'plug and play' operation. You can automatically add the Wi-Fi credentials when you format the memory card, which can be a real time-saver.
+If your captureKNX will be using Wi-Fi for its network connectivity, you can automatically add the Wi-Fi credentials when you format the storage device, which is a great time-saver.
 
 This somewhat hidden menu in the Raspberry Pi Imager software is accessed with control-shift-x:
 
