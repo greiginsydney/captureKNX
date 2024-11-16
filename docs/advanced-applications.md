@@ -22,7 +22,7 @@ Let's say you're in the process of configuring and debugging a new KNX installat
 
 Not a problem, just turn its host Pi *into* the network! The Raspberry Pi's in-built Wi-Fi radio is able to behave as a Wi-Fi network of its own. You can leave the captureKNX on-site, and each day connect your PC to it and review the logs from overnight and the day before. When the customer's network is provisioned, just flip the captureKNX back to being a client (whether that be wired or wireless).
 
-Note that the Raspberry Pi's on-board hardware only supports 2.4GHz wireless, not 5GHz. (If you have a need for the 5GHz band, you can plug in a USB W-Fi dongle.)
+Note that the Raspberry Pi's on-board hardware only supports 2.4GHz wireless, not 5GHz. (If you have a need for the 5GHz band, you can plug in a USB Wi-Fi dongle.)
 
 The process is documented in [setup-the-Pi-as-an-access-point.md](/docs/setup-the-Pi-as-an-access-point.md)
 
