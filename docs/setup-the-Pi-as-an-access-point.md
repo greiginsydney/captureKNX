@@ -94,7 +94,6 @@ Reboot now? [Y/n]:
 
 ### Other problems
 - check the dnsmasq service is running OK: `sudo service dnsmasq status`
-- check the dhcpcd service is running OK: `sudo service dhcpcd status`
 - is the Pi's local IP showing correctly in the wlan0 section of `ifconfig`?
 
 <br>
