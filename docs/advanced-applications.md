@@ -3,7 +3,7 @@
 The captureKNX described here is a stand-alone on-site device, however if you're a little more adventurous, here are a few more things you can do with it:
 
 - [Setup the Pi as a Wi-Fi Access Point](#setup-the-pi-as-a-wi-fi-access-point)
-- [Bake the Wi-Fi credentials into the Pi when you format the drive](#bake-the-Wi--Fi-credentials-into-the-Pi-when-you-format-the-drive)
+- [Bake the Wi-Fi credentials into the Pi when you format the drive](#bake-the-Wi-Fi-credentials-into-the-Pi-when-you-format-the-drive)
 - [InfluxDB Cloud](#influxdb-cloud)
 - [Add remote.it for remote access](#add-remoteit-for-remote-access)
 - [NVMe Storage](#nvme-storage)
