@@ -82,17 +82,8 @@ Reboot now? [Y/n]:
 ## Debugging
 
 ### Can't find the Pi's Wi-Fi network?
-- check you've chosen appropriate localisation settings in `hostapd.conf`. Don't forget the Pi is limited to 802.11g, the 2.4GHz frequencies \[[3](#3-list-of-wlan-channels)\]
-- check the hostapd service is running OK: `sudo service hostapd status`
-- run this debug command and look through the output for any clues:
-`sudo hostapd -d /etc/hostapd/hostapd.conf`
-- maybe change `hostapd.conf` to a different channel, just in case there's local congestion on the channel you've chosen?
-
+- TODO
 ### Can see but can't connect to the Pi's Wi-Fi network?
-- check you didn't wrap the password in `hostapd.conf` inside quotes
-- change `hostapd.conf` to a different channel, just in case there's local congestion on the channel you've chosen? \[3 days of painful learning experience speaking].
-
-### Other problems
 - check the dnsmasq service is running OK: `sudo service dnsmasq status`
 - is the Pi's local IP showing correctly in the wlan0 section of `ifconfig`?
 
