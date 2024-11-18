@@ -1457,10 +1457,10 @@ unmake_ap_nmcli ()
 		if [[ ! $eth0Name ]];
 		then
 			# Bad. No ethernet device found
-			echo -e ""$YELLOW"ERROR:"$RESET" No ethernet port found - and WiFi AP has already been deleted"
+			echo -e ""$YELLOW"ERROR:"$RESET" No ethernet port found - and Wi-Fi AP has already been deleted"
 		else
 			# Paste in the new settings
-   			echo 'Modifying Ethernet connection to "$eth0Name"'
+			echo "Modifying Ethernet connection to '$eth0Name'"
 			case $staticResponse in
 				(y|Y|"")
 					nmcli con mod "$eth0Name" ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
@@ -1472,7 +1472,9 @@ unmake_ap_nmcli ()
 				;;
 			esac
 			nmcli con mod "$eth0Name" connection.autoconnect true # Don't honestly know if this is required, but can't hurt?
+			echo 'About to con up'
 			nmcli con up "$eth0Name"
+			echo 'Back from con up'
 		fi
 	fi
 }
