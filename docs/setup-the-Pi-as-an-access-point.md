@@ -1,7 +1,7 @@
 ## Setup the Pi as an Access Point
 You should only perform the steps here once you've completed the config steps and tested the Pi.
 
-This process will drop it off the current Wi-Fi network and turn it into its own network and Access Point, at which time it will lose Internet access and be unable to load new software components.
+This process will drop it off any active Wi-Fi network and turn it into its own network and Access Point, at which time it will lose Internet access and be unable to load new software components.
 
 Skip this document entirely if you're NOT wanting the Pi to be a Wi-Fi Access Point and accept client connections directly.\[[1](#1-configuring-the-pi-as-a-Wi-Fi-ap)\] \[[2](#2-setting-up-a-raspberry-pi-as-an-access-point-in-a-standalone-network-nat)\]
 
