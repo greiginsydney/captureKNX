@@ -1177,7 +1177,7 @@ make_ap_nmcli ()
 {
 	echo -e ""$GREEN"make_ap_nmcli"$RESET""
 	echo ''
-	echo 'This process will setup the Pi as a Wi-Fi access point (its own Wi-Fi network)'
+	echo 'This process will setup the Pi as a Wi-Fi access point - its own Wi-Fi network'
 	echo '(Control-C to abort at any time)'
 	echo ''
 
@@ -1235,9 +1235,7 @@ END
 	#if [[ ! $oldWifiCountry =~ [a-zA-Z]{2} ]]; then oldWifiCountry=''; fi # Null the value if it's not just two letters
 	# ================== END Wi-Fi ==================
 
-	echo ''
-	echo 'Set your Pi as a Wi-Fi Access Point. (Ctrl-C to abort)'
-	echo 'If unsure, go with the defaults until you get to the SSID and password'
+	echo 'If unsure of any question, accept the defaults until you get to the SSID and password'
 	echo ''
 	read -e -i "$oldPiIpV4" -p         'Choose an IP address for the Pi         : ' piIpV4
 	read -e -i "$oldDhcpStartIp" -p    'Choose the starting IP address for DCHP : ' dhcpStartIp
