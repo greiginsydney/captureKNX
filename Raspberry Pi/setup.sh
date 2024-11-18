@@ -254,6 +254,17 @@ setup1()
 	echo -e "\n"$GREEN"Installing requests"$RESET""
 	apt-get install python3-requests
 
+	if systemctl --all --type service | grep -q 'dnsmasq';
+	then
+		echo -e "\n"$GREEN"dnsmasq is already installed"$RESET""
+	else
+		echo -e "\n"$GREEN"Installing dnsmasq"$RESET""
+		apt-get install dnsmasq -y
+		echo -e ""$GREEN"Disabling dnsmasq"$RESET""
+		systemctl stop dnsmasq
+		systemctl disable dnsmasq
+		systemctl mask dnsmasq
+	fi
 
 	set +e #Suspend the error trap
 	isKnxd=$(command -v knxd)
@@ -753,6 +764,24 @@ setup3()
 	# Add a shortcut for the logs folder:
 	ln -sfnv /var/log/ /home/${SUDO_USER}/log
 
+	# Wi-Fi Power Save
+	# Disable Wi-Fi power save mode:
+	if iw wlan0 get power_save | grep -q 'on';
+	then
+		iw wlan0 set power_save off
+		echo -e ""$GREEN"Disabled Wi-Fi power save mode"$RESET""
+	else
+		echo -e "Wi-Fi power save mode is already off"
+	fi
+	# Permanently disable Wi-Fi power save mode:
+	if grep -q '/sbin/iw dev wlan0 set power_save off' /etc/rc.local;
+	then
+		echo -e 'Wi-Fi power save mode is already disabled in /etc/rc.local'
+	else
+		sed -i '/^exit 0/i \/sbin\/iw dev wlan0 set power_save off\n' /etc/rc.local
+		echo -e ""$GREEN"Wi-Fi power save mode disabled in /etc/rc.local"$RESET""
+	fi
+
 	echo ''
 	echo -e "\n"$GREEN"Done!"$RESET""
 	echo ''
@@ -780,13 +809,21 @@ test_install()
 {
 	echo ''
 	latestcaptureKNXRls=$(curl --silent "https://api.github.com/repos/greiginsydney/captureKNX/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
-	echo "Latest release of captureKNX is    v$latestcaptureKNXRls"
+	if [[ "$latestcaptureKNXRls" == "" ]];
+	then
+		echo -e ""$YELLOW"Latest release of captureKNX is    unknown""$RESET"
+	else
+		echo "Latest release of captureKNX is    v$latestcaptureKNXRls"
+	fi
 	if [ -f /home/${SUDO_USER}/captureKNX/version ];
 	then
 		VERSION=$(cat /home/${SUDO_USER}/captureKNX/version)
 		if [[ $VERSION == $latestcaptureKNXRls ]];
 		then
 			echo -e ""$GREEN"Installed version of captureKNX is v$VERSION""$RESET"
+		elif [[ "$latestcaptureKNXRls" == "" ]];
+		then
+			echo "Installed version of captureKNX is v$VERSION"
 		else
 			echo -e ""$YELLOW"Installed version of captureKNX is v$VERSION""$RESET"
 		fi
@@ -814,7 +851,152 @@ test_install()
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" 32-bit OS"
 	fi
+
+	# ================== START Wi-Fi TESTS ==================
+	ap_test=0
+	systemctl is-active --quiet dnsmasq && ap_test=$((ap_test+1)) # If dnsmasq is running, add 1
+	local activeConnections=$(nmcli -t c s -a | awk '!/loopback/' | cut -d: -f 1  )
+	if [ ! -z "$activeConnections" ];
+	then
+		((ap_test=ap_test+2)) # If we have an active network connection, add 2
+		# Loop through them:
+		IFS=$'\n'
+		for thisConnection in $activeConnections;
+		do
+			# Look in all 3 possible locations for the matching connectionFile:
+			local connectionFile="/etc/NetworkManager/system-connections/"$thisConnection".nmconnection"
+			if [ ! -f $connectionFile ];
+			then
+				local connectionFile="/usr/lib/NetworkManager/system-connections/"$thisConnection".nmconnection"
+				if [ ! -f $connectionFile ];
+				then
+					local connectionFile="/run/NetworkManager/system-connections/"$thisConnection".nmconnection"
+				fi
+			fi
+
+			if [ -f $connectionFile ];
+			then
+				local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
+				local connectedChannel=$(grep -r '^channel=' $connectionFile | cut -s -d = -f 2)
+				local connectedMode=$(grep -r '^mode=' $connectionFile | cut -s -d = -f 2)
+				local connectedType=$(grep -r '^type=' $connectionFile | cut -s -d = -f 2)
+				local apCount=0   # Just in case we somehow end up with multiple connections. Each success only increments ap_test once
+				local noapCount=0 # "
+				if [[ $connectedMode == "ap" ]];
+				then
+					if [[ ($apCount == 0) ]];
+					then
+						((ap_test=ap_test+4)) # we're an Access Point. Add 4
+						apCount=apCount+1
+						if [ ! -z "$connectedChannel" ]; then ((ap_test=ap_test+16)); fi
+					fi
+				elif [[ $connectedMode =~ infra.* ]];
+				then
+					if [[ ($noapCount == 0) ]];
+					then
+						((ap_test=ap_test+8)) # we're a client, connected to a Wi-Fi network. Add 8
+						noapCount=noapCount+1
+					fi
+				fi
+				if [[ $connectedType == "ethernet" ]];
+				then
+					isEthernet="true"
+				elif [[ $connectedType == "wifi" ]];
+				then
+					isWiFi="true"
+				fi
+			else
+				echo "Script error: connectionFile '$connectionFile' not found"
+			fi
+		done
+		unset IFS
+	fi
+
+	if [[ $isEthernet && $isWiFi ]];
+	then
+		echo -e ""$YELLOW"WARN:"$RESET" Ethernet AND Wi-Fi connections are active. This can cause connection/performance issues"
+	else
+		if [[ $isEthernet ]];
+		then
+			echo -e ""$GREEN"PASS:"$RESET" Network connection is ETHERNET"
+		elif [[ $isWiFi ]];
+		then
+			echo -e ""$GREEN"PASS:"$RESET" Network connection is Wi-Fi"
+		else
+			echo -e ""$YELLOW"FAIL:"$RESET" No network connection detected"
+		fi
+	fi
+
+	if [[ $isWiFi ]];
+	then
+		case $ap_test in
+			(0)
+				echo -e ""$YELLOW"FAIL:"$RESET" No network connection was detected (0)"
+				;;
+			(1)
+				# dnsmasq is running. That's the sign we SHOULD be an AP
+				echo -e ""$YELLOW"FAIL:"$RESET" dnsmasq is running, however no network connection was detected (1)"
+				;;
+			(2)
+				# we have an active network connection
+				echo -e ""$YELLOW"FAIL:"$RESET" A network connection was detected, but no Wi-Fi data was found (2)"
+				;;
+			(3)
+				# active network + dnsmasq
+				echo -e ""$YELLOW"FAIL:"$RESET" A network connection was detected, but no Wi-Fi data was found (3)"
+				;;
+			(6)
+				# We're an AP & have an active network connection, but no CHANNEL.
+				echo -e ""$YELLOW"FAIL:"$RESET" The Pi is its own Wi-Fi network (an Access Point) however no channel has been configured (6)"
+				;;
+			(7)
+				# We're an AP, dmsmasq is running and we have an active network connection.
+				echo -e ""$YELLOW"FAIL:"$RESET" The Pi is its own Wi-Fi network (an Access Point) however no channel has been configured (7)"
+				;;
+			(8)
+				# We're a Wi-Fi client
+				echo -e ""$YELLOW"PASS:"$RESET" The Pi is a Wi-Fi client, however there is no active network connection (8)"
+				;;
+			(9)
+				# We're a Wi-Fi client HOWEVER dmsmasq is running. (Bad/unexpected)
+				echo -e ""$YELLOW"PASS:"$RESET" The Pi is a Wi-Fi client, however there is no active network connection (9)"
+				;;
+			(10)
+				# Good. Wi-Fi client.
+				echo -e ""$GREEN"PASS:"$RESET" The Pi is a Wi-Fi client, not an Access Point"
+				echo -e ""$GREEN"PASS:"$RESET" It has an active connection to this/these SSIDs: $connectedSsid"
+				;;
+			(22)
+				# Good-ish. Wi-Fi AP.
+				echo -e ""$GREEN"PASS:"$RESET" The Pi is its own Wi-Fi network (Access Point)"
+				echo -e ""$GREEN"PASS:"$RESET" Its SSID (network name) is '$connectedSsid' and is using channel $connectedChannel"
+				echo -e ""$YELLOW"PASS:"$RESET" dnsmasq is not running (22)"
+				;;
+			(23)
+				# Good. Wi-Fi AP.
+				echo -e ""$GREEN"PASS:"$RESET" The Pi is its own Wi-Fi network (Access Point)"
+				echo -e ""$GREEN"PASS:"$RESET" Its SSID (network name) is '$connectedSsid' and is using channel $connectedChannel"
+				;;
+			(*)
+				echo -e ""$YELLOW"FAIL:"$RESET" Test returned unexpected value $ap_test:"
+				echo " 1 = dnsmasq is running"
+				echo " 2 = we have an active network connection"
+				echo " 4 = we're our own Wi-Fi network (an Access Point)"
+				echo " 8 = we're a Wi-Fi client"
+				echo "16 = we're our own Wi-Fi network (an Access Point) and have a Wi-Fi channel correctly configured"
+				echo ''
+				;;
+		esac
+		if iw wlan0 get power_save | grep -q 'on';
+		then
+			echo -e ""$YELLOW"FAIL:"$RESET" Wi-Fi power save is ON"
+		else
+			echo -e ""$GREEN"PASS:"$RESET" Wi-Fi power save is OFF"
+		fi
+	fi
 	echo '-------------------------------------'
+	# ================== END Wi-Fi TESTS ==================
+
 	set +e #Suspend the error trap
 	isKnxd=$(command -v knxd)
 	set -e #Resume the error trap
@@ -900,6 +1082,7 @@ test_install()
 	systemctl is-active --quiet hciuart.service    && printf ""$YELLOW"FAIL:"$RESET" %-15s service is RUNNING. (That's bad)\n" hciuart.service    || printf ""$GREEN"PASS:"$RESET" %-15s service is dead - which is good\n" hciuart.service
 
 	echo '-------------------------------------'
+
 	test_config=0
 	if grep -q '# Added by setup.sh for captureKNX' /boot/firmware/config.txt; then
 		((test_config=test_config+1)); fi
@@ -973,8 +1156,428 @@ test_install()
 	fi
 
 	echo '-------------------------------------'
+	set +e #Suspend the error trap
+	lastTelegram=$(sed -n -E 's/^(.*) ([[:digit:]]+)$/\2/p' /home/pi/log/telegraf/debug_output.log | tail -1)
+	if [[ $lastTelegram ]];
+	then
+		((lastTelegram=lastTelegram/1000000000))
+		lastTelegramDate="Unknown"
+		lastTelegramDate=$(date -d @"$lastTelegram" +"%Y %b %d %H:%M:%S %Z")
+		echo -e "Last successful telegram: $lastTelegramDate"
+	else
+		echo -e "Last successful telegram unknown. /home/pi/log/telegraf/debug_output.log returned no result. Try again"
+	fi
 	echo ''
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
+	echo ''
+}
+
+
+make_ap_nmcli ()
+{
+	echo -e ""$GREEN"make_ap_nmcli"$RESET""
+	echo ''
+	echo 'This process will setup the Pi as a Wi-Fi access point - its own Wi-Fi network'
+	echo '(Control-C to abort at any time)'
+	echo ''
+
+	if [[ $(isUserLocal) == "false" ]];
+	then
+		echo ''
+		echo -e ""$YELLOW"This command is not available from a wireless network connection."$RESET""
+		echo -e ""$YELLOW"You need to be on a wired network or directly connected to the Pi"$RESET""
+		echo ''
+		exit
+	fi
+
+	# ================== START DHCP ==================
+	if  grep -q 'interface=wlan0' /etc/dnsmasq.conf;
+	then
+		#Read the current values:
+		wlanLine=$(sed -n '/interface=wlan0/=' /etc/dnsmasq.conf) #This is the line number that the wlan config starts at
+		oldDhcpStartIp=$(sed -n -E "$wlanLine,$ s|^\s*dhcp-range=(.*)$|\1|p" /etc/dnsmasq.conf ) # Delimiter is '|'
+		matchRegex="\s*(([0-9]{1,3}\.){3}[0-9]{1,3}),(([0-9]{1,3}\.){3}[0-9]{1,3}),(([0-9]{1,3}\.){3}[0-9]{1,3})," # Bash doesn't do digits as "\d"
+		if [[ $oldDhcpStartIp =~ $matchRegex ]] ;
+			then
+				oldDhcpStartIp=${BASH_REMATCH[1]}
+				oldDhcpEndIp=${BASH_REMATCH[3]}
+				oldDhcpSubnetMask=${BASH_REMATCH[5]}
+			fi
+	else
+		echo 'No IPs in /etc/dnsmasq.conf. Adding some defaults'
+		#Create default values:
+		cat <<END >> /etc/dnsmasq.conf
+interface=wlan0      # Use the required wireless interface - usually wlan0
+	dhcp-range=10.10.10.10,10.10.10.100,255.255.255.0,24h
+END
+	fi
+	#Populate defaults if required:
+	if [ -z "$oldPiIpV4" ];         then oldPiIpV4='10.10.10.1'; fi
+	if [ -z "$oldDhcpStartIp" ];    then oldDhcpStartIp='10.10.10.10'; fi
+	if [ -z "$oldDhcpEndIp" ];      then oldDhcpEndIp='10.10.10.100'; fi
+	if [ -z "$oldDhcpSubnetMask" ]; then oldDhcpSubnetMask='255.255.255.0'; fi
+	# ================== END DHCP ==================
+
+	# ================= START Wi-Fi =================
+	local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show wlan0 | cut -d: -f2-)
+	connectionFile="/etc/NetworkManager/system-connections/"$wlan0Name".nmconnection"
+	if [ -f $connectionFile ];
+	then
+		#local oldWifiSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
+		local oldWifiChannel=$(grep -r '^channel=' $connectionFile | cut -s -d = -f 2)
+		local oldWifiPwd=$(grep -r '^psk=' $connectionFile | cut -s -d = -f 2)
+	fi
+	#local oldWifiCountry=$(LANG=C iw reg get | cut -s -d : -f 1 | head -1 | cut -s -d ' ' -f 2)
+	#Populate defaults otherwise:
+	if [ -z "$oldWifiSsid" ];    then local oldWifiSsid='captureKNX'; fi
+	if [ -z "$oldWifiChannel" ]; then local oldWifiChannel='1'; fi
+	if [ -z "$oldWifiPwd" ];     then local oldWifiPwd='myPiNetw0rkAccess!'; fi
+	#if [[ ! $oldWifiCountry =~ [a-zA-Z]{2} ]]; then oldWifiCountry=''; fi # Null the value if it's not just two letters
+	# ================== END Wi-Fi ==================
+
+	echo 'If unsure of any question, accept the defaults until you get to the SSID and password'
+	echo ''
+	read -e -i "$oldPiIpV4" -p         'Choose an IP address for the Pi         : ' piIpV4
+	read -e -i "$oldDhcpStartIp" -p    'Choose the starting IP address for DCHP : ' dhcpStartIp
+	read -e -i "$oldDhcpEndIp" -p      'Choose  the  ending IP address for DCHP : ' dhcpEndIp
+	read -e -i "$oldDhcpSubnetMask" -p 'Set the appropriate subnet mask         : ' dhcpSubnetMask
+
+	while true; do
+		read -e -i "$oldWifiSsid" -p       'Pick a nice SSID                        : ' wifiSsid
+		if [ -z "$wifiSsid" ];
+		then
+			echo -e ""$YELLOW"ERROR:"$RESET" SSID name cannot be empty."
+			echo ''
+			continue
+		fi
+		break
+	done
+
+	while true; do
+		read -e -i "$oldWifiPwd" -p        'Wi-Fi password                          : ' wifiPwd
+		if [ -z "$wifiPwd" ];
+		then
+			echo -e ""$YELLOW"ERROR:"$RESET" Psk value cannot be empty."
+			echo ''
+			continue
+		elif [ ${#wifiPwd} -lt 8 ];
+		then
+			echo -e ""$YELLOW"ERROR:"$RESET" Psk must be at least 8 characters."
+			echo ''
+			continue
+		fi
+		break
+	done
+
+	while true; do
+		read -e -i "$oldWifiChannel" -p    'Choose an appropriate Wi-Fi channel     : ' wifiChannel
+		if [ -z "$wifiChannel" ];
+		then
+			echo -e ""$YELLOW"ERROR:"$RESET" Wi-Fi channel cannot be empty."
+			echo ''
+			continue
+		fi
+		break
+	done
+
+	#read -e -i "$oldWifiCountry" -p    'Set your 2-digit Wi-Fi country           : ' wifiCountry
+
+	#TODO: Validate the IP addresses
+
+	local cidr_mask=$(IPprefix_by_netmask $dhcpSubnetMask)
+
+	echo ''
+	echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, any existing wireless connection will end and the Pi will become its own Wi-Fi network (access point)"
+	echo -e ""$YELLOW"WARNING:"$RESET" You will find it advertised as SSID '$wifiSsid'"
+	echo ''
+	read -p "Press any key to continue or ^C to abort " discard
+	echo ''
+	#Paste in the new settings
+	sed -i -E "s/^(\s*dhcp-range=)(.*)$/\1$dhcpStartIp,$dhcpEndIp,$dhcpSubnetMask,24h/" /etc/dnsmasq.conf
+
+	echo 'Enabling dnsmasq'
+	systemctl unmask dnsmasq
+	systemctl enable dnsmasq
+	systemctl start dnsmasq
+
+	# Modify existing hotspot, otherwise delete and start afresh
+	if [[ $wlan0Name == "hotspot" ]];
+	then
+		nmcli con mod hotspot autoconnect yes ssid "$wifiSsid"
+	else
+		if [[ "$wlan0Name" != "" ]];
+		then
+			nmcli con del "$wlan0Name"
+			sleep 5
+		fi
+		echo "Creating new Wi-Fi connection to '$wifiSsid'"
+		nmcli con add type wifi ifname wlan0 con-name hotspot autoconnect yes ssid "$wifiSsid"
+	fi
+	nmcli con modify hotspot 802-11-wireless.mode ap 802-11-wireless.band bg 802-11-wireless.channel $wifiChannel #ipv4.method shared
+	nmcli con modify hotspot wifi-sec.key-mgmt wpa-psk
+	nmcli con modify hotspot wifi-sec.psk "$wifiPwd"
+	nmcli con mod hotspot ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
+	nmcli con up hotspot
+}
+
+
+unmake_ap_nmcli ()
+{
+	echo -e ""$GREEN"unmake_ap_nmcli"$RESET""
+	echo ''
+	echo 'This process will stop the Pi from being a Wi-Fi access point & instead connect to a wired or wireless network'
+	echo '(Control-C to abort at any time)'
+	echo ''
+
+	if [[ $(isUserLocal) == "false" ]];
+	then
+		echo ''
+		echo -e ""$YELLOW"This command is not available from a wireless network connection."$RESET""
+		echo -e ""$YELLOW"You need to be on a wired network or directly connected to the Pi"$RESET""
+		echo ''
+		exit
+	fi
+
+	while true; do
+		read -p "Setup a new wireless network? (Select N for wired) [y/n]: " wiredOrWireless
+		case $wiredOrWireless in
+			(y|Y)
+				echo 'Wireless'
+				break
+				;;
+			(n|N)
+				echo 'Wired Ethernet'
+				break
+				;;
+			(*)
+				continue # Loop until the user provides a Y/N response
+				;;
+		esac
+	done
+
+	if [[ "$wiredOrWireless" =~ [Yy] ]];
+	then
+		local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show wlan0 | cut -d: -f2-)
+		if [[ $wlan0Name == 'hotspot' ]]; then wlan0Name=''; fi # Suppress auto-populate below if name is 'hotspot'
+		while true; do
+			read -e -i "$wlan0Name" -p "Set the network's SSID                                  : " newSsid
+			if [ -z "$newSsid" ];
+			then
+				echo -e 'Error: SSID name cannot be empty.'
+				echo ''
+				continue
+			fi
+			break
+		done
+
+		while true; do
+			read -p "Set the network's Psk (password)                        : " newPsk
+			if [ -z "$newPsk" ];
+			then
+				echo -e "Error: Psk value cannot be empty."
+				echo ''
+				continue
+			fi
+			break
+		done
+	fi
+
+	read -p 'Do you want to assign the Pi a static IP address?  [Y/n]: ' staticResponse
+	case $staticResponse in
+		(y|Y|"")
+			local oldPiIpV4=$(LANG=C nmcli -t -f IP4.ADDRESS device show wlan0 | cut -d: -f2- | cut -d/ -f1)
+			local oldDhcpSubnetCIDR=$(LANG=C nmcli -t -f IP4.ADDRESS device show wlan0 | cut -d/ -f2-)
+			local oldRouter=$(LANG=C nmcli -t -f IP4.GATEWAY device show wlan0 | cut -d: -f2-)
+			local oldDnsServers=$(LANG=C nmcli -t -f IP4.DNS device show wlan0 | cut -d: -f2-)
+
+			if [ "$oldDhcpSubnetCIDR" ]; then local oldDhcpSubnetMask=$(CIDRtoNetmask $oldDhcpSubnetCIDR); fi
+
+			read -e -i "$oldPiIpV4" -p         'Choose an IP address for the Pi                         : ' piIpV4
+			read -e -i "$oldDhcpSubnetMask" -p 'Set the appropriate subnet mask                         : ' dhcpSubnetMask
+			read -e -i "$oldRouter" -p         'Set the router/gateway IP                               : ' router
+			read -e -i "$oldDnsServers" -p     'Set the DNS Server(s) (space-delimited)                 : ' DnsServers
+
+			local cidr_mask=$(IPprefix_by_netmask $dhcpSubnetMask)
+			;;
+		(*)
+			echo -n # Do nothing.
+			;;
+	esac
+
+	echo ''
+	if [[ "$wiredOrWireless" =~ [Yy] ]];
+	then
+		echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, the Pi will become a Wi-Fi *client*"
+		echo -e ""$YELLOW"WARNING:"$RESET" It will attempt to connect to the '$newSsid' network"
+	else
+		echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, the Pi will use the lan0 port for its connectivity"
+	fi
+	read -p "Press any key to continue or ^C to abort " discard
+	echo ''
+
+	if systemctl --all --type service | grep -q 'dnsmasq';
+	then
+		echo -e ""$GREEN"Disabling dnsmasq"$RESET""
+		systemctl stop dnsmasq    # Stop it now
+		systemctl disable dnsmasq # Prevents it launching on bootup
+		systemctl mask dnsmasq
+		echo ''
+	fi
+
+	echo 'About to delete the hotspot'
+	set +e # Suspend the error trap. The below would otherwise throw a terminating error if 'hotspot' doesn't exist.
+	nmcli con del hotspot 2> /dev/null # Suppress any error display.
+	set -e # Resume the error trap
+	echo 'Back from deleting the hotspot'
+
+	if [[ "$wiredOrWireless" =~ [Yy] ]];
+	then
+		# Wireless:
+		sleep 5 # Sleep briefly having just deleted the hotspot, before creating the new wireless network connection
+		echo 'About to connect to Wi-Fi'
+		nmcli dev wifi connect "$newSsid" password "$newPsk" ifname wlan0
+		echo 'Back from connecting to Wi-Fi'
+		# Paste in the new settings
+		case $staticResponse in
+			(y|Y|"")
+				nmcli con mod "$newSsid" ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
+				nmcli con mod "$newSsid" ipv4.gateway $router
+				nmcli con mod "$newSsid" ipv4.dns "$DnsServers"
+			;;
+			(*)
+				nmcli con mod "$newSsid" ipv4.method auto
+			;;
+		esac
+		echo 'About to con up'
+		nmcli con up "$newSsid"
+		echo 'Back from con up'
+	else
+		# Ethernet:
+		local eth0Name=$(LANG=C nmcli -t c s | awk '/ethernet/' | cut -d: -f1)
+		if [[ ! $eth0Name ]];
+		then
+			# Bad. No ethernet device found
+			echo -e ""$YELLOW"ERROR:"$RESET" No ethernet port found - and Wi-Fi AP has already been deleted"
+		else
+			# Paste in the new settings
+			echo "Modifying Ethernet connection to '$eth0Name'"
+			case $staticResponse in
+				(y|Y|"")
+					nmcli con mod "$eth0Name" ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
+					nmcli con mod "$eth0Name" ipv4.gateway $router
+					nmcli con mod "$eth0Name" ipv4.dns "$DnsServers"
+				;;
+				(*)
+					nmcli con mod "$eth0Name" ipv4.method auto
+				;;
+			esac
+			nmcli con mod "$eth0Name" connection.autoconnect true # Don't honestly know if this is required, but can't hurt?
+			echo 'About to con up'
+			nmcli con up "$eth0Name"
+			echo 'Back from con up'
+		fi
+	fi
+}
+
+
+# https://stackoverflow.com/questions/50413579/bash-convert-netmask-in-cidr-notation/50414560
+IPprefix_by_netmask ()
+{
+	c=0 x=0$( printf '%o' ${1//./ } )
+	while [ $x -gt 0 ]; do
+		let c+=$((x%2)) 'x>>=1'
+	done
+	echo $c ;
+}
+
+
+# https://stackoverflow.com/questions/20762575/explanation-of-convertor-of-cidr-to-netmask-in-linux-shell-netmask2cdir-and-cdir
+CIDRtoNetmask ()
+{
+	# Number of args to shift, 255..255, first non-255 byte, zeroes
+	set -- $(( 5 - ($1 / 8) )) 255 255 255 255 $(( (255 << (8 - ($1 % 8))) & 255 )) 0 0 0
+	[ $1 -gt 1 ] && shift $1 || shift
+	echo ${1-0}.${2-0}.${3-0}.${4-0}
+}
+
+
+isUserLocal ()
+{
+	whoAmI=$(who am i)
+	matchRegex='[0-9]+(\.[0-9]+){3}'
+	if [[ $whoAmI =~ $matchRegex ]] ;
+	then
+		# OK, the user has an IP address. Are they on a wired (OK) or wireless (bad) NIC?
+		clientIpAddress=${BASH_REMATCH}
+		#echo $clientIpAddress
+		wlanClients=$(arp -n | grep 'wlan[[:digit:]]')
+		#echo $wlanClients
+		if [[ $wlanClients == *"$clientIpAddress"* ]]
+		then
+			echo "false" # This user is on WiFi. No go
+		else
+			echo "true"  # This user is connected via an Ethernet NIC
+		fi
+	else
+		echo "true" # This user is directly connected to the Pi. (There is no IP address for this user)
+	fi
+}
+
+
+# I'm not sure if this will stay. It's a diagnostic tool at the moment, not (yet?) mentioned in the documentation
+test_token()
+{
+	echo -e "\n"$GREEN"Test tokens"$RESET""
+	echo ''
+	TELEGRAF_TOKEN=$(sed -n -E 's/^token = \"(.*)\"$/\1/p' /etc/telegraf/telegraf.conf)
+	INFLUX_TOKEN=$(sed -n -E 's/^\s*INFLUXDB_INIT_ADMIN_TOKEN=(.*)$/\1/p' /etc/influxdb/captureKNX.env)
+	GRAFANA_TOKEN=$(sed -n -E "s/^\s*httpHeaderValue1: 'Token (.*)'$/\1/p" /etc/grafana/provisioning/datasources/grafana-source.yaml)
+
+	if [[ "$TELEGRAF_TOKEN" == "xxxxxxxxx" ]];
+	then
+		echo -e ""$YELLOW"FAIL:"$RESET" The telegraf token is default. Re-run setup"
+		ABORT="True"
+	fi
+
+	if [[ "$INFLUX_TOKEN" == "changeme" ]];
+	then
+		echo -e ""$YELLOW"FAIL:"$RESET" The influxDB token is default. Re-run setup"
+		ABORT="True"
+	fi
+
+	if [[ "$GRAFANA_TOKEN" == "changeme" ]];
+	then
+		echo -e ""$YELLOW"FAIL:"$RESET" The grafana token is default. Re-run setup"
+		ABORT="True"
+	fi
+
+	if [[ $ABORT ]];
+	then
+		echo ''
+		exit 1
+	fi
+
+	if [[ "$INFLUX_TOKEN" == "$TELEGRAF_TOKEN" ]];
+	then
+		if [[ "$INFLUX_TOKEN" == "$GRAFANA_TOKEN" ]];
+		then
+			echo -e ""$GREEN"PASS:"$RESET" All three tokens are the same"
+		else
+			echo -e ""$YELLOW"FAIL:"$RESET" Tokens are NOT the same. Check /etc/grafana/provisioning/datasources/grafana-source.yaml"
+		fi
+	else
+		if [[ "$INFLUX_TOKEN" == "$GRAFANA_TOKEN" ]];
+		then
+			echo -e ""$YELLOW"FAIL:"$RESET" Tokens are NOT the same. Check /etc/telegraf/telegraf.conf"
+		else
+			if [[ "$TELEGRAF_TOKEN" == "$GRAFANA_TOKEN" ]];
+			then
+				echo -e ""$YELLOW"FAIL:"$RESET" Tokens are not the same. Check /etc/influxdb/captureKNX.env"
+			else
+				echo -e ""$YELLOW"FAIL:"$RESET" None of the tokens are the same. Re-run setup"
+			fi
+		fi
+	fi
 	echo ''
 }
 
@@ -1006,8 +1609,17 @@ test_64bit()
 	fi
 }
 
+
+# A place for me to test code within the structure of the script.
+# Ideally this function will never be released with code present. Let's see how I go.
+dev()
+{
+	echo 'dev'
+}
+
+
 # -----------------------------------
-# START FUNCTIONS
+# END FUNCTIONS
 # -----------------------------------
 
 # -----------------------------------
@@ -1025,9 +1637,31 @@ fi
 
 case "$1" in
 
+	('ap')
+		make_ap_nmcli
+		prompt_for_reboot
+		;;
+	('noap')
+		unmake_ap_nmcli
+		prompt_for_reboot
+		;;
+	('dev')
+		dev
+		;;
 	('test')
 		activate_venv
-		test_install
+		case "$2" in
+			('token')
+				test_token
+				;;
+			('')
+				test_install
+				;;
+			(*)
+				echo -e "\nThe test '$2' is invalid. Try again.\n"
+				exit 1
+				;;
+		esac
 		;;
 	('')
 		activate_venv
@@ -1046,7 +1680,7 @@ case "$1" in
 		test_install
 		;;
 	(*)
-		echo -e "\nThe switch '$1' is invalid. Try again.\n"
+		echo -e "\nThe switch '$1' is invalid. Try again. Valid options are 'ap', 'noap' and 'test'\n"
 		exit 1
 		;;
 esac

@@ -38,7 +38,7 @@ Build a Raspberry Pi that will capture all KNX telegrams to InfluxDB that you ca
 - Every telegram to a known Group Address is captured, however some esoteric DPT types might be misinterpreted or mis-represented. (Log an issue and we'll work to resolve this.)
 - If your installation is a works in progress, each time you create Group Addresses you'll need to close/export/import the updated project file so captureKNX knows how to decode the incoming data. (Telegrams to unknown GA's will be discarded.)
 - (Currently) English-only, and hasn't been tested in any other languages. Contributions welcome!
-- Untested with KNX Secure.
+- KNX Secure is not supported. (This is a limitation imposed by [knxd](https://github.com/knxd/knxd/issues/418), which interfaces to and decodes the bus.)
 
 ## Software architecture
 

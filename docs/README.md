@@ -16,6 +16,7 @@ The [shopping list](/docs/shopping-list.md) itemises everything you'll need, and
 4. [Login to InfluxDB](/docs/step4-login-to-influxdb.md) shows you how to login to InfluxDB, although this will be seldom required.
 5. [Login to Grafana](/docs/step5-login-to-grafana.md) is where all the fun happens. This page introduces you to the provided "Group Monitor dashboard" that shows your telegrams.
 6. A [Graphical Dashboard](/docs/step6-graphical-dashboard.md) is included with the installation, however you'll need to invest a little effort customising it to the GA's on YOUR network - but that's explained here.
+7. [Setup the Pi as an Access Point](/docs/setup-the-Pi-as-an-access-point.md) is optional. Follow this process if you don't have an existing data network on site, and/or want to have the Pi become its own Wi-Fi network.
 
 ## Debugging / troubleshooting
 

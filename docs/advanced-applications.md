@@ -3,7 +3,7 @@
 The captureKNX described here is a stand-alone on-site device, however if you're a little more adventurous, here are a few more things you can do with it:
 
 - [Setup the Pi as a Wi-Fi Access Point](#setup-the-pi-as-a-wi-fi-access-point)
-- ['Plug and play' - bake the Wi-Fi credentials into the Pi](#plug-and-play---bake-the-wi-fi-credentials-into-the-pi)
+- [Bake the Wi-Fi credentials into the Pi when you format the drive](#bake-the-Wi-Fi-credentials-into-the-Pi-when-you-format-the-drive)
 - [InfluxDB Cloud](#influxdb-cloud)
 - [Add remote.it for remote access](#add-remoteit-for-remote-access)
 - [NVMe Storage](#nvme-storage)
@@ -22,17 +22,17 @@ Let's say you're in the process of configuring and debugging a new KNX installat
 
 Not a problem, just turn its host Pi *into* the network! The Raspberry Pi's in-built Wi-Fi radio is able to behave as a Wi-Fi network of its own. You can leave the captureKNX on-site, and each day connect your PC to it and review the logs from overnight and the day before. When the customer's network is provisioned, just flip the captureKNX back to being a client (whether that be wired or wireless).
 
-Note that the Raspberry Pi's on-board hardware only supports 2.4GHz wireless, not 5GHz. (If you have a need for the 5GHz band, you can plug in a USB W-Fi dongle.)
+Note that the Raspberry Pi's on-board hardware only supports 2.4GHz wireless, not 5GHz. (If you have a need for the 5GHz band, you can plug in a USB Wi-Fi dongle.)
 
-TODO: I plan to add the config options for this to the setup script in the near future (before end CY 2024). 
+The process is documented in [setup-the-Pi-as-an-access-point.md](/docs/setup-the-Pi-as-an-access-point.md)
 
 [Top](#advanced-applications)
 
 <hr>
 
-## 'Plug and play' - bake the Wi-Fi credentials into the Pi
+## Bake the Wi-Fi credentials into the Pi when you format the drive
 
-The captureKNX becomes an even more useful tool if you pre-configure it for 'plug and play' operation. You can automatically add the Wi-Fi credentials when you format the memory card, which can be a real time-saver.
+If your captureKNX will be using Wi-Fi for its network connectivity, you can automatically add the Wi-Fi credentials when you format the storage device, which is a great time-saver.
 
 This somewhat hidden menu in the Raspberry Pi Imager software is accessed with control-shift-x:
 
@@ -83,14 +83,17 @@ I've previously used it on the intvlm8r project (which also uses the Raspberry P
 
 If you're looking for the most compact physical build and ultimate performance, replace the USB-connected SSD drive with a PCIe NVMe drive.
 
-Using an NVMe drive is a more complicated setup process because out of the box the Pi won't natively boot to a drive connected to the PCIe port.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/903e71ea-904d-4c49-8aec-246f632b0470" width="50%">
+</p>
 
-We used the [Pimoroni NVMe Base for Raspberry Pi 5](https://shop.pimoroni.com/products/nvme-base?variant=41219587178579), which we sourced from [Core Electronics](https://core-electronics.com.au/nvme-base-for-raspberry-pi-5-nvme-base.html) here in Newcastle for $AUD31.
+Using an NVMe drive is a more complicated setup process because out of the box the Pi won't natively boot to a drive connected to its PCIe port.
+
+We used the [Pimoroni NVMe Base for Raspberry Pi 5](https://shop.pimoroni.com/products/nvme-base?variant=41219587178579), which we sourced from [Core Electronics](https://core-electronics.com.au/nvme-base-for-raspberry-pi-5-nvme-base.html) here in Newcastle for $AUD31. Pimoroni has a [VERY detailed page](https://learn.pimoroni.com/article/getting-started-with-nvme-base) that takes you through the setup steps.
 
 [Amazon.com](https://amzn.to/47WDNKM) has a Chinese equivalent for $USD16.
 
-Thankfully Pimoroni has a [VERY detailed page](https://learn.pimoroni.com/article/getting-started-with-nvme-base) that takes you though the setup steps.
-
+The image shown here is of the Weinzierl HAT with the Pimoroni NVMe Base. Download the case files from [printables](https://www.printables.com/model/1059175-captureknx-case-for-weinzierl-knx-hat-pimoroni-nvm).
 
 [Top](#advanced-applications)
 
