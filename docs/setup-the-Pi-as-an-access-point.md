@@ -3,11 +3,10 @@ You should only perform the steps here once you've completed the config steps an
 
 This process will drop it off any active Wi-Fi network and turn it into its own network and Access Point, at which time it will lose Internet access and be unable to load new software components.
 
-Skip this document entirely if you're NOT wanting the Pi to be a Wi-Fi Access Point and accept client connections directly.\[[1](#1-configuring-the-pi-as-a-Wi-Fi-ap)\] \[[2](#2-setting-up-a-raspberry-pi-as-an-access-point-in-a-standalone-network-nat)\]
-
+Skip this document entirely if you're NOT wanting the Pi to be a Wi-Fi Access Point and accept client connections directly. \[[1](#1-configuring-the-pi-as-a-wi-fi-ap)\] \[[2](#2-setting-up-a-raspberry-pi-as-an-access-point-in-a-standalone-network-nat)\]
 
 - [Make AP](#make-ap)
-- [Revert to wired connection: 'unmake' AP](#unmake-ap)
+- [Revert to wired connection: 'unmake' AP](#un-make-ap)
 
 ## Starting from scratch?
 Jump to [step 1 - prepare the topology export](/docs/step1-prepare-the-topology-export.md).
@@ -32,16 +31,24 @@ Choose the starting IP address for DCHP: 10.10.10.10
 Choose  the  ending IP address for DCHP: 10.10.10.100
 Set the appropriate subnet mask        : 255.255.255.0
 Pick a nice SSID                       : captureKNX
-Choose a better password than this     : myPiNetw0rkAccess!
+Wi-Fi password                         : myPiNetw0rkAccess!
 Choose an appropriate Wi-Fi channel    : 1
 ```
 
-> The default radio channel #1 is valid around the world, HOWEVER you may find it congested in your area and choosing another may provide better connectivity.\[[3](#3-list-of-wlan-channels)\]
+> The default radio channel #1 is valid around the world, HOWEVER you may find it congested in your area and choosing another may provide better connectivity. \[[3](#3-list-of-wlan-channels)\]
 
-3. Upon completion the script will prompt for a reboot. 
+3. Are you sure?
 
 ```txt
-WARNING: After the next reboot, the Pi will come up as a Wi-Fi access point!
+WARNING: If you proceed, any existing wireless connection will end and the Pi will become its own Wi-Fi network (access point)
+WARNING: You will find it advertised as SSID 'captureKNX'
+
+Press any key to continue or ^C to abort
+```
+
+4. Upon completion the script will prompt for a reboot. 
+
+```txt
 Reboot now? [Y/n]:
 ```
 
@@ -84,6 +91,7 @@ Set the DNS Server(s) (space-delimited) : 192.168.19.2
 ```txt
 WARNING: If you proceed, the Pi will become a Wi-Fi *client*
 WARNING: It will attempt to connect to the 'abortretryignore' network
+
 Press any key to continue or ^C to abort
 
 Reboot now? [Y/n]:
@@ -91,7 +99,11 @@ Reboot now? [Y/n]:
 
 3b. Wired:
 
-TODO
+```txt
+WARNING: If you proceed, the Pi will use the lan0 port for its connectivity
+
+Press any key to continue or ^C to abort
+```
 
 ## Debugging
 
