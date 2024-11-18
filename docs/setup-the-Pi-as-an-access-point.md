@@ -22,8 +22,10 @@ sudo -E ./setup.sh ap
 2. The script will prompt you for all the required values. On its first run out of the box it will offer default values. These will usually be safe to use, but by all means change the SSID and Wi-Fi password from the defaults:
 
 ```txt
-Set your Pi as a Wi-Fi Access Point. (Ctrl-C to abort)
-If unsure, go with the defaults until you get to the SSID and password
+This process will configure the Pi as a Wi-Fi access point - its own Wi-Fi network
+(Control-C to abort at any time)
+
+If unsure of any question, accept the defaults until you get to the SSID and password
 
 Choose an IP address for the Pi        : 10.10.10.1
 Choose the starting IP address for DCHP: 10.10.10.10
@@ -49,19 +51,24 @@ Reboot now? [Y/n]:
 
 ## Un-make AP
 
-1. If at any time you want to switch the Pi from being an Access Point to being a wireless client on another network, run:
+1. If at any time you want to switch the Pi from being an Access Point to being a client on another network, run:
 ```txt
 sudo -E ./setup.sh noap
+
+This process will stop the Pi from being a Wi-Fi access point & instead connect to a wired or wireless network
+(Control-C to abort at any time)
+
+Setup a new wireless network? (Select N for wired) [y/n]:
 ```
 
-2. The script will then prompt you to set or reconfirm the Wi-Fi details:
+2. If you choose Y, the script will then prompt you to set or reconfirm the Wi-Fi details:
 ```txt
 Set your two-letter Wi-Fi country code : AU
 Set the network's SSID                 : yourWi-FiSSID
 Set the network's Psk (password)       : 12345Password!
 ```
 
-3. In the next step you have the option of setting a static IP address and related values. If you respond 'n' to this prompt, the Pi will request a dynamic IP address from the wireless router:
+3. In the next step you have the option of setting a static IP address and related values. If you respond 'n' to this prompt, the Pi will request a dynamic IP address from the network:
 ```txt
 Do you want to assign the Pi a static IP address? [Y/n]: y
 Choose an IP address for the Pi         : 192.168.19.123
@@ -70,14 +77,21 @@ Set the Router IP                       : 192.168.19.1
 Set the DNS Server(s) (space-delimited) : 192.168.19.2
 ```
 
-3. Upon completion the script will prompt for a reboot. 
+3. Upon completion the script will advise of the impending change and prompt for a reboot. 
+
+3a. Wireless:
+
 ```txt
-WARNING: After the next reboot, the Pi will come up as a Wi-Fi *client*
-WARNING: It will attempt to connect to this/these SSIDs: yourWi-FiSSID
-WARNING: 'sudo nano /etc/wpa_supplicant/wpa_supplicant.conf' to change
+WARNING: If you proceed, the Pi will become a Wi-Fi *client*
+WARNING: It will attempt to connect to the 'abortretryignore' network
+Press any key to continue or ^C to abort
 
 Reboot now? [Y/n]:
 ```
+
+3b. Wired:
+
+TODO
 
 ## Debugging
 
