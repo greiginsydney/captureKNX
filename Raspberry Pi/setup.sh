@@ -1254,7 +1254,7 @@ END
 	done
 
 	while true; do
-		read -e -i "$oldWifiPwd" -p        'Choose a better password than this      : ' wifiPwd
+		read -e -i "$oldWifiPwd" -p        'Wi-Fi password                          : ' wifiPwd
 		if [ -z "$wifiPwd" ];
 		then
 			echo -e ""$YELLOW"ERROR:"$RESET" Psk value cannot be empty."
@@ -1289,6 +1289,7 @@ END
 	echo ''
 	echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, any existing wireless connection will end and the Pi will become its own Wi-Fi network (access point)"
 	echo -e ""$YELLOW"WARNING:"$RESET" You will find it advertised as SSID '$wifiSsid'"
+	echo ''
 	read -p "Press any key to continue or ^C to abort " discard
 	echo ''
 	#Paste in the new settings
@@ -1309,7 +1310,7 @@ END
 			nmcli con del "$wlan0Name"
 			sleep 5
 		fi
-		echo 'Creating new Wi-Fi connection to "$wifiSsid"'
+		echo "Creating new Wi-Fi connection to '$wifiSsid'"
 		nmcli con add type wifi ifname wlan0 con-name hotspot autoconnect yes ssid "$wifiSsid"
 	fi
 	nmcli con modify hotspot 802-11-wireless.mode ap 802-11-wireless.band bg 802-11-wireless.channel $wifiChannel #ipv4.method shared
@@ -1406,10 +1407,10 @@ unmake_ap_nmcli ()
 	echo ''
 	if [[ "$wiredOrWireless" =~ [Yy] ]];
 	then
-		echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, this connection will end, and the Pi will come up as a Wi-Fi *client*"
+		echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, the Pi will become a Wi-Fi *client*"
 		echo -e ""$YELLOW"WARNING:"$RESET" It will attempt to connect to the '$newSsid' network"
 	else
-		echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, this connection will end, and the Pi will use the lan0 port for its connectivity"
+		echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, the Pi will use the lan0 port for its connectivity"
 	fi
 	read -p "Press any key to continue or ^C to abort " discard
 	echo ''
@@ -1423,15 +1424,19 @@ unmake_ap_nmcli ()
 		echo ''
 	fi
 
+	echo 'About to delete the hotspot'
 	set +e # Suspend the error trap. The below would otherwise throw a terminating error if 'hotspot' doesn't exist.
 	nmcli con del hotspot 2> /dev/null # Suppress any error display.
 	set -e # Resume the error trap
+	echo 'Back from deleting the hotspot'
 
 	if [[ "$wiredOrWireless" =~ [Yy] ]];
 	then
 		# Wireless:
 		sleep 5 # Sleep briefly having just deleted the hotspot, before creating the new wireless network connection
-		nmcli d wifi connect "$newSsid" password "$newPsk" ifname wlan0
+		echo 'About to connect to Wi-Fi'
+		nmcli dev wifi connect "$newSsid" password "$newPsk" ifname wlan0
+		echo 'Back from connecting to Wi-Fi'
 		# Paste in the new settings
 		case $staticResponse in
 			(y|Y|"")
@@ -1443,7 +1448,9 @@ unmake_ap_nmcli ()
 				nmcli con mod "$newSsid" ipv4.method auto
 			;;
 		esac
+		echo 'About to con up'
 		nmcli con up "$newSsid"
+		echo 'Back from con up'
 	else
 		# Ethernet:
 		local eth0Name=$(LANG=C nmcli -t c s | awk '/ethernet/' | cut -d: -f1)
@@ -1671,7 +1678,7 @@ case "$1" in
 		test_install
 		;;
 	(*)
-		echo -e "\nThe switch '$1' is invalid. Try again. Valid options are 'test'\n"
+		echo -e "\nThe switch '$1' is invalid. Try again. Valid options are 'ap', 'noap' and 'test'\n"
 		exit 1
 		;;
 esac
