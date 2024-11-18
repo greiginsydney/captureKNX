@@ -1287,7 +1287,7 @@ END
 	local cidr_mask=$(IPprefix_by_netmask $dhcpSubnetMask)
 
 	echo ''
-	echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, this connection will end, and the Pi will come up as its own Wi-Fi network (access point)"
+	echo -e ""$YELLOW"WARNING:"$RESET" If you proceed, any existing wireless connection will end and the Pi will become its own Wi-Fi network (access point)"
 	echo -e ""$YELLOW"WARNING:"$RESET" You will find it advertised as SSID '$wifiSsid'"
 	read -p "Press any key to continue or ^C to abort " discard
 	echo ''
