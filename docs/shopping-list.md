@@ -58,11 +58,11 @@ Here are the only ones we've found so far:
 
 ### Pi 5 RTC backup battery (required if running in AP mode)
 
-The Raspberry Pi family has a volatile real-time clock. Each time it loses power it loses the time. Kinda. It remembers the time when it was last turned off, and starts counting again when power is restored. This means it's going to drift badly into the past if it doesn't have a means to query an NTP server to sync up again - which it won't if it's running in Access Point mode.
+The Raspberry Pi family has a volatile real-time clock. Each time it loses power it loses the time. Kinda. It remembers the time when it was last turned off, and starts counting again when power is restored - until it syncs with NTP. This means it's going to drift badly into the past if it's running as a [Wi-Fi Access Point](/docs/advanced-applications.md#setup-the-pi-as-a-wi-fi-access-point) because it can't access an NTP server.
 
-The Pi Foundation sells a small rechargeable battery that plugs in to the Pi 5 board.
+The Pi Foundation sells a small rechargeable battery that plugs directly in to the Pi 5.
 
-* [Core Electronics} (https://core-electronics.com.au/raspberry-pi-5-rtc-battery.html) - $AUD8.61.
+* [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-rtc-battery.html) Raspberry Pi 5 Real-Time Clock (RTC) Battery - $AUD8.61.
 
 ### micro-HDMI to HDMI adapter cable (optional?)
 
