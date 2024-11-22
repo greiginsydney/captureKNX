@@ -851,6 +851,16 @@ test_install()
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" 32-bit OS"
 	fi
+ 	set +e #Suspend the error trap
+	desktop=$(type Xorg 2>&1)
+	set -e #Resume the error trap
+	matchRegex="not found$"
+	if [[ $desktop =~ $matchRegex ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" DESKTOP operating system not installed"
+	else
+		echo -e ""$YELLOW"FAIL:"$RESET" Unsupported DESKTOP operating system version detected"
+	fi
 
 	# ================== START Wi-Fi TESTS ==================
 	ap_test=0
