@@ -817,7 +817,7 @@ test_install()
 	fi
 	if [ -f /home/${SUDO_USER}/captureKNX/version ];
 	then
-		VERSION=$(cat /home/${SUDO_USER}/captureKNX/version)
+		VERSION=$(< /home/${SUDO_USER}/captureKNX/version)
 		if [[ $VERSION == $latestcaptureKNXRls ]];
 		then
 			echo -e ""$GREEN"Installed version of captureKNX is v$VERSION""$RESET"
@@ -844,6 +844,13 @@ test_install()
 	DISK_PERCENT_USED=$(df -kh . | tail -n1 | awk '{print $5}')
 	echo "$DISK_SIZE_FREE available out of $DISK_SIZE_TOTAL total ($DISK_PERCENT_USED used)"
 
+	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
+	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET $PIMODEL""
+	else
+		echo -e ""$YELLOW"FAIL:"$RESET $PIMODEL""
+	fi
 	RESULT=$(test_64bit)
 	if [[ $RESULT == "64" ]];
 	then
@@ -851,7 +858,7 @@ test_install()
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" 32-bit OS"
 	fi
- 	set +e #Suspend the error trap
+	set +e #Suspend the error trap
 	desktop=$(type Xorg 2>&1)
 	set -e #Resume the error trap
 	matchRegex="not found$"
