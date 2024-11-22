@@ -274,6 +274,6 @@ def decode_Group_Addresses(filename, grpAddLevels):
         print(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
         log(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
 
-    log(f'decode_Group_Addresses: found {foundGAs} group addresses and another {failedGAs} that failed decoding')
+    log(f"decode_Group_Addresses: found {foundGAs} group addresses and {f'another {failedGAs}' if failedGAs != 0 else 'none'} that failed decoding")
 
     return data
