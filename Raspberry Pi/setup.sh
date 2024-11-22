@@ -833,7 +833,6 @@ test_install()
 	echo ''
 	HOSTNAME=$(uname -n)
 	echo $HOSTNAME
-	cat /proc/device-tree/model
 	echo ''
 	release=$(sed -n -E 's/^PRETTY_NAME="(.*)"$/\1/p' /etc/os-release)
 	echo $release
