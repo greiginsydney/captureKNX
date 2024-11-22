@@ -56,6 +56,14 @@ Here are the only ones we've found so far:
 * Amazon AU - none found
 * Amazon US - none found
 
+### Pi 5 RTC backup battery (required if running in AP mode)
+
+The Raspberry Pi family has a volatile real-time clock. Each time it loses power it loses the time. Kinda. It remembers the time when it was last turned off, and starts counting again when power is restored. This means it's going to drift badly into the past if it doesn't have a means to query an NTP server to sync up again - which it won't if it's running in Access Point mode.
+
+The Pi Foundation sells a small rechargeable battery that plugs in to the Pi 5 board.
+
+* [Core Electronics} (https://core-electronics.com.au/raspberry-pi-5-rtc-battery.html) - $AUD8.61.
+
 ### micro-HDMI to HDMI adapter cable (optional?)
 
 If this is your first Pi 4 or 5 project you probably won't already have one of these in your toolbox, but the people who sell the Pi will have these in abundance.
