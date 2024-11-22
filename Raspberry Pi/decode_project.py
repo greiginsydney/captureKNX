@@ -114,6 +114,8 @@ def decode_Individual_Addresses(filename):
     '''
     data = {}
     location = {}
+    foundLocations = 0
+    foundAddresses = 0
     # Parse XML from a file object
     if not os.path.isfile(filename):
         log(f"decode_Addresses: file '{filename}' not found. Aborting")
@@ -143,6 +145,7 @@ def decode_Individual_Addresses(filename):
                             room = (node.getAttribute('Name')).strip()
                 if RefId not in location:
                     location[RefId] = (building, floor, room)
+                    foundLocations += 1
                     #print(f'RefId: {RefId} - Building: {building}, floor: {floor}, room: {room}')
 
     except Exception as e:
@@ -169,6 +172,7 @@ def decode_Individual_Addresses(filename):
                                 deviceAddress = (f'{area}.{line}.{device}')
                                 if deviceAddress not in data:
                                     data[deviceAddress] = (device_location, name)
+                                    foundAddresses += 1
                             # Routers and the X1 have 'additional addresses' as well:
                             for AdditionalAddresses in DeviceInstances.getElementsByTagName('AdditionalAddresses'):
                                 for EachAddress in AdditionalAddresses.getElementsByTagName('Address'):
@@ -177,9 +181,12 @@ def decode_Individual_Addresses(filename):
                                     deviceAddress = (f'{area}.{line}.{device}')
                                     if deviceAddress not in data:
                                         data[deviceAddress] = (device_location, name)
+                                        foundAddresses += 1
     except Exception as e:
         print(f"decode_Individual_Addresses: Exception thrown trying to read file '{filename}'. {e}")
         log(f"decode_Individual_Addresses: Exception thrown trying to read file '{filename}'. {e}")
+   
+    log(f'decode_Individual_Addresses: found {foundLocations} locations and {foundAddresses} individual addresses')
 
     return data
 
@@ -199,6 +206,8 @@ def decode_Group_Addresses(filename, grpAddLevels):
     Returns a dictionary where the key is the GA address, and the value is a tuple of datapoint type and name
     '''
     data = {}
+    foundGAs = 0
+    failedGAs = 0
     # Parse XML from a file object
     if not os.path.isfile(filename):
         log(f"decode_Group_Addresses: file '{filename}' not found. Aborting")
@@ -248,18 +257,23 @@ def decode_Group_Addresses(filename, grpAddLevels):
                                 else:
                                     # A broken DPT? Discard the whole GA
                                     print(f"decode_Group_Addresses: Failed to decode sub-type from '{DptString}' for Group Address {GA}. The GA has been discarded")
+                                    failedGAs += 1
                                     continue
 
                                 DPT = DPT_split[1] + '.' + sub_dpt
 
                                 if GA not in data:
                                     data[GA] = (DPT, name)
+                                    foundGAs += 1
 
                             else:
                                 log(f'decode_Group_Addresses discarded incomplete address=|{longAddress}|, name=|{name}|, DptString=|{DptString}|')
+                                failedGAs += 1
 
     except Exception as e:
         print(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
         log(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
+
+    log(f'decode_Group_Addresses: found {foundGAs} group addresses and another {failedGAs} that failed decoding')
 
     return data
