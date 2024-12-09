@@ -254,3 +254,10 @@ def DPT16(sub_DPT, value):
     This code is never called, it's left here just to remind me why
     '''
     return (value, '')
+
+
+def DPT232(sub_DPT, value):
+    '''
+    RGB colour as three bytes, 0-255. Passed by knxdclient as a tuple
+    '''
+    return ('#{0:X}{1:X}{2:X}'.format(*value), '')
