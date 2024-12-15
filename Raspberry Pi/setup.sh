@@ -333,8 +333,16 @@ setup1()
 	set +e #Suspend the error trap
 	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
 	set -e #Resume the error trap
-	if [[ ! $isTelegraf  ]];
+	if [[ $isTelegraf  ]];
 	then
+		echo -e "\n"$GREEN"telegraf is already installed - skipping"$RESET""
+		telegrafVersion=$(telegraf --version | cut -d ' ' -f2)
+		echo -e "\rCurrent  installed version of telegraf = $telegrafVersion"
+		
+		# TODO: Check version and update if there's newer.
+		
+		
+	else
 		echo -e "\n"$GREEN"Installing telegraf"$RESET""
 		rm -rf /home/$SUDO_USER/staging/telegraf
 		mkdir -pv /home/$SUDO_USER/staging/telegraf
@@ -343,11 +351,6 @@ setup1()
 		echo '943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515 influxdata-archive.key' | sha256sum -c && cat influxdata-archive.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null
 		echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
 		apt-get update && sudo apt-get install telegraf -y
-	else
-		echo -e "\n"$GREEN"telegraf is already installed - skipping"$RESET""
-		# telegrafVersion=$(telegraf --version | cut -d ' ' -f2)
-		# echo -e "\rCurrent  installed version of telegraf = $telegrafVersion"
-		# TODO: Check version and update if there's newer.
 	fi
 
 	# Suppress noisy error message in OOB telegraf.service (n/a on Debian/Raspbian):
