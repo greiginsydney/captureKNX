@@ -305,8 +305,28 @@ setup1()
 		sed -i -E "s|^(KNXD_OPTS=.*)( -b ip:)(.*)|\1 -b tpuarts:/dev/ttyKNX1\3|" /etc/knxd.conf
 	fi
 
-	echo -e "\n"$GREEN"Installing KNXDclient"$RESET""
-	sudo  -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient"
+	echo ''
+	isKnxdClient=$(sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 show knxdclient 2>/dev/null | sed -n 's/.*Version:\s\(.*\).*/\1/p'")
+	if [[ $isKnxdClient ]];
+	then
+		echo -e "Current installed version of KNXDclient = $isKnxdClient"
+		latestKnxdClientRls=$(curl --silent "https://api.github.com/repos/mhthies/knxdclient/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+		echo -e "Current   online  version of KNXDclient = $latestKnxdClientRls"
+		if dpkg --compare-versions $isKnxdClient "lt" $latestKnxdClientRls ;
+		then
+			echo ''
+			echo -e ""$GREEN"Updating KNXDclient"$RESET""
+			
+			# TODO: Upgrade installed version
+			
+		else
+			echo -e ""$GREEN"No KNXDclient upgrade required"$RESET""
+		fi
+	else
+		echo -e "\n"$GREEN"Installing KNXDclient"$RESET""
+		sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient"
+	fi
+ 
 	echo -e "\n"$GREEN"Installing requests"$RESET""
 	sudo -u ${SUDO_USER} bash  -c "source /home/${SUDO_USER}/venv/bin/activate && python3 -m pip install requests"
 
