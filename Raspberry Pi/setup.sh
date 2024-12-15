@@ -817,7 +817,7 @@ test_install()
 	fi
 	if [ -f /home/${SUDO_USER}/captureKNX/version ];
 	then
-		VERSION=$(cat /home/${SUDO_USER}/captureKNX/version)
+		VERSION=$(< /home/${SUDO_USER}/captureKNX/version)
 		if [[ $VERSION == $latestcaptureKNXRls ]];
 		then
 			echo -e ""$GREEN"Installed version of captureKNX is v$VERSION""$RESET"
@@ -833,7 +833,6 @@ test_install()
 	echo ''
 	HOSTNAME=$(uname -n)
 	echo $HOSTNAME
-	cat /proc/device-tree/model
 	echo ''
 	release=$(sed -n -E 's/^PRETTY_NAME="(.*)"$/\1/p' /etc/os-release)
 	echo $release
@@ -844,12 +843,29 @@ test_install()
 	DISK_PERCENT_USED=$(df -kh . | tail -n1 | awk '{print $5}')
 	echo "$DISK_SIZE_FREE available out of $DISK_SIZE_TOTAL total ($DISK_PERCENT_USED used)"
 
+	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
+	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET $PIMODEL""
+	else
+		echo -e ""$YELLOW"FAIL:"$RESET $PIMODEL""
+	fi
 	RESULT=$(test_64bit)
 	if [[ $RESULT == "64" ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" 64-bit OS"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" 32-bit OS"
+	fi
+	set +e #Suspend the error trap
+	desktop=$(type Xorg 2>&1)
+	set -e #Resume the error trap
+	matchRegex="not found$"
+	if [[ $desktop =~ $matchRegex ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" DESKTOP operating system not installed"
+	else
+		echo -e ""$YELLOW"FAIL:"$RESET" Unsupported DESKTOP operating system version detected"
 	fi
 
 	# ================== START Wi-Fi TESTS ==================

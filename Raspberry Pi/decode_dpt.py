@@ -43,7 +43,10 @@ DPT1 = {
     21 : ('Logical AND', 'Logical OR'),
     22 : ('Scene B', 'Scene A'),
     23 : ('Up/Down+Step/Stop', 'Up/Down'),
-    24 : ('Night', 'Day')
+    24 : ('Night', 'Day'),
+    100: ('Heating', 'Cooling'),    # HVAC FB
+    1200: ('Producer', 'Consumer'), # Metering
+    1201: ('Negative', 'Positive')  # Metering
 }
 
 
@@ -254,3 +257,10 @@ def DPT16(sub_DPT, value):
     This code is never called, it's left here just to remind me why
     '''
     return (value, '')
+
+
+def DPT232(sub_DPT, value):
+    '''
+    RGB colour as three bytes, 0-255. Passed by knxdclient as a tuple
+    '''
+    return ('#{0:X}{1:X}{2:X}'.format(*value), '')
