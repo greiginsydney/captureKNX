@@ -1057,11 +1057,10 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" knxd NOT installed"
 	fi
 
-	isKnxdClient=$(find /home/${SUDO_USER}/venv -type d -name knxdclient)
+	isKnxdClient=$(sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 show knxdclient 2>/dev/null | sed -n 's/.*Version:\s\(.*\).*/\1/p'")
 	if [[ $isKnxdClient ]];
-	#if [[ -d /home/${SUDO_USER}/venv/lib knxdclient ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET" KNXDclient installed"
+		echo -e ""$GREEN"PASS:"$RESET" KNXDclient installed ($isKnxdClient)"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" KNXDclient NOT installed"
 	fi
