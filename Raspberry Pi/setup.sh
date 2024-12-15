@@ -363,15 +363,17 @@ setup1()
 	set +e #Suspend the error trap
 	isInfluxd=$(command -v influxd)
 	set -e #Resume the error trap
-	if [[ ! $isInfluxd ]];
+	if [[ $isInfluxd ]];
 	then
+		echo -e "\n"$GREEN"InfluxDB is already installed - skipping"$RESET""
+		influxVersion=$(influxd version | cut -d ' ' -f2)
+		echo -e "\rCurrent  installed version of InfluxDB = $influxVersion"
+		
+		# TODO: Check version and update if there's newer.
+		
+	else
 		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
 		apt-get install influxdb2 -y
-	else
-		echo -e "\n"$GREEN"InfluxDB is already installed - skipping"$RESET""
-		# influxVersion=$(influxd version | cut -d ' ' -f2)
-		# echo -e "\rCurrent  installed version of InfluxDB = $influxVersion"
-		# TODO: Check version and update if there's newer.
 	fi
 
 
