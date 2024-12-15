@@ -272,20 +272,21 @@ setup1()
 	if [[ $isKnxd ]];
 	then
 		knxdVersion=$(dpkg -s knxd | grep "Version: " | cut -d ' ' -f2)
-		echo -e "\nCurrent  installed version of knxd = $knxdVersion"
-		echo -e ""$GREEN"knxd is already installed - skipping"$RESET""
-
-		# TODO: Check latest released version
+		echo -e "\nCurrent installed version of knxd = $knxdVersion"
 		
+		# TODO: Check latest released version
+		latestKnxdVersion='0.0.0'
+		echo -e "Current   online  version of knxd = $latestKnxdVersion"
 		if dpkg --compare-versions $knxdVersion "lt" $latestKnxdVersion ;
 		then
 			echo ''
 			echo -e ""$GREEN"Updating knxd"$RESET""
 			
 			# TODO: Upgrade installed version
+			# TODO: If we upgrade, make sure we don't overwrite the user's previous knxd.conf!
 			
 		else
-			echo 'No knxd upgrade required'
+			echo -e ""$GREEN"No knxd upgrade required"$RESET""
 		fi
 	else
 		echo -e "\n"$GREEN"Installing knxd "$RESET""
