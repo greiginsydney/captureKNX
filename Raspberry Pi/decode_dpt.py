@@ -44,7 +44,9 @@ DPT1 = {
     22 : ('Scene B', 'Scene A'),
     23 : ('Up/Down+Step/Stop', 'Up/Down'),
     24 : ('Night', 'Day'),
-    100: ('Heating', 'Cooling')
+    100: ('Heating', 'Cooling'),    # HVAC FB
+    1200: ('Producer', 'Consumer'), # Metering
+    1201: ('Negative', 'Positive')  # Metering
 }
 
 
