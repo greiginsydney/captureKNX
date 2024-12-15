@@ -380,8 +380,15 @@ setup1()
 	set +e #Suspend the error trap
 	isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
 	set -e #Resume the error trap
-	if [[ ! $isGrafana ]];
+	if [[ $isGrafana ]];
 	then
+		echo -e "\n"$GREEN"grafana is already installed - skipping"$RESET""
+		grafanaVersion=$(dpkg -s grafana-enterprise | grep "Version: " | cut -d ' ' -f2)
+		echo -e "\rCurrent  installed version of grafana = $grafanaVersion"
+		
+		# TODO: Check version and update if there's newer.
+		
+	else
 		echo -e "\n"$GREEN"Installing grafana"$RESET""
 		apt-get install -y apt-transport-https software-properties-common wget
 		mkdir -p /etc/apt/keyrings/
@@ -389,11 +396,6 @@ setup1()
 		echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
 		apt-get update
 		apt-get install grafana-enterprise -y
-	else
-		echo -e "\n"$GREEN"grafana is already installed - skipping"$RESET""
-		# grafanaVersion=$(dpkg -s grafana-enterprise | grep "Version: " | cut -d ' ' -f2)
-		# echo -e "\rCurrent  installed version of grafana = $grafanaVersion"
-		# TODO: Check version and update if there's newer.
 	fi
 
 	# grafana-source.yaml:
