@@ -316,9 +316,7 @@ setup1()
 		then
 			echo ''
 			echo -e ""$GREEN"Updating KNXDclient"$RESET""
-			
-			# TODO: Upgrade installed version
-			
+			sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient --upgrade"
 		else
 			echo -e ""$GREEN"No KNXDclient upgrade required"$RESET""
 		fi
