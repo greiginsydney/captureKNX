@@ -204,7 +204,7 @@ sudo -E -H ./setup.sh
 
 40. When the installation completes the script will report "Done" and execute a test:
 
-![image](https://github.com/user-attachments/assets/ef10b201-0ecc-456d-85c6-fcee46d3cf0d)
+![image](https://github.com/user-attachments/assets/846a6409-b300-442e-ae53-401978dec239)
 
 If the Pi isn't plugged in to the KNX bus at this stage, it's expected that knxd.service will show as "dead". In this example I hadn't yet copied the project file across, and this is also highlighted.
 
