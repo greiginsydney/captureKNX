@@ -369,17 +369,26 @@ setup1()
 	fi
 
 
+	echo ''
 	set +e #Suspend the error trap
-	isInfluxd=$(command -v influxd)
+	#isInfluxd=$(command -v influxd)
+	isInfluxd=$(influxd version | cut -d ' ' -f2 | cut -d 'v' -f2 )
 	set -e #Resume the error trap
 	if [[ $isInfluxd ]];
 	then
-		echo -e "\n"$GREEN"InfluxDB is already installed - skipping"$RESET""
-		influxVersion=$(influxd version | cut -d ' ' -f2)
-		echo -e "\rCurrent  installed version of InfluxDB = $influxVersion"
-		
-		# TODO: Check version and update if there's newer.
-		
+		echo -e "\rCurrent installed version of InfluxDB = $isInfluxd"
+		latestInfluxRls=$(sudo apt-cache show influxdb2 | sed -n 's/.*Version:\s\(.*\).*/\1/p' | head -1)
+		echo -e "Current   online  version of InfluxDB = $latestInfluxRls"
+		if dpkg --compare-versions $isInfluxd "lt" $latestInfluxRls ;
+		then
+			echo ''
+			echo -e ""$GREEN"Updating InfluxDB"$RESET""
+			
+			# TODO: Upgrade installed version
+			
+		else
+			echo -e ""$GREEN"No InfluxDB upgrade required"$RESET""
+		fi
 	else
 		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
 		apt-get install influxdb2 -y
