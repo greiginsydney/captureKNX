@@ -381,11 +381,8 @@ setup1()
 		echo -e "Current   online  version of InfluxDB = $latestInfluxRls"
 		if dpkg --compare-versions $isInfluxd "lt" $latestInfluxRls ;
 		then
-			echo ''
 			echo -e ""$GREEN"Updating InfluxDB"$RESET""
-			
-			# TODO: Upgrade installed version
-			
+			apt-get install --only-upgrade influxdb2 -y
 		else
 			echo -e ""$GREEN"No InfluxDB upgrade required"$RESET""
 		fi
@@ -393,7 +390,6 @@ setup1()
 		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
 		apt-get install influxdb2 -y
 	fi
-
 
 	echo ''
 	set +e #Suspend the error trap
