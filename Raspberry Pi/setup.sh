@@ -330,18 +330,27 @@ setup1()
 	echo -e "\n"$GREEN"Installing requests"$RESET""
 	sudo -u ${SUDO_USER} bash  -c "source /home/${SUDO_USER}/venv/bin/activate && python3 -m pip install requests"
 
+	echo ''
 	set +e #Suspend the error trap
-	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
+	#isTelegraf=$(dpkg -s telegraf 2>/dev/null)
+	isTelegraf=$(telegraf --version | cut -d ' ' -f2)
 	set -e #Resume the error trap
 	if [[ $isTelegraf  ]];
 	then
-		echo -e "\n"$GREEN"telegraf is already installed - skipping"$RESET""
-		telegrafVersion=$(telegraf --version | cut -d ' ' -f2)
-		echo -e "\rCurrent  installed version of telegraf = $telegrafVersion"
-		
-		# TODO: Check version and update if there's newer.
-		
-		
+		echo -e "\rCurrent installed version of telegraf = $isTelegraf"
+		# It's *assumed* the user has performed the 'apt-get update' at Step 26, so the latest telegraf will be available to us
+		latestTelegrafRls=$(sudo apt-cache show telegraf | sed -n 's/.*Version:\s\(.*\).*/\1/p' | head -1)
+		echo -e "Current   online  version of telegraf = $latestTelegrafRls"
+		if dpkg --compare-versions $isTelegraf "lt" $latestTelegrafRls ;
+		then
+			echo ''
+			echo -e ""$GREEN"Updating telegraf"$RESET""
+			
+			# TODO: Upgrade installed version
+			
+		else
+			echo -e ""$GREEN"No telegraf upgrade required"$RESET""
+		fi
 	else
 		echo -e "\n"$GREEN"Installing telegraf"$RESET""
 		rm -rf /home/$SUDO_USER/staging/telegraf
