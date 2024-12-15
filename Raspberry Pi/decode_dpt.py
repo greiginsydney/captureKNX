@@ -43,7 +43,8 @@ DPT1 = {
     21 : ('Logical AND', 'Logical OR'),
     22 : ('Scene B', 'Scene A'),
     23 : ('Up/Down+Step/Stop', 'Up/Down'),
-    24 : ('Night', 'Day')
+    24 : ('Night', 'Day'),
+    100: ('Heating', 'Cooling')
 }
 
 
