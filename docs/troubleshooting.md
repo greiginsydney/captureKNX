@@ -28,7 +28,7 @@ If the problems are continuing after a reboot, run the setup script's `test` mod
 
 `sudo -E -H ./setup.sh test`
 
-![image](https://github.com/user-attachments/assets/ef482497-89e7-4168-bf66-2583abc1ab4a)
+![image](https://github.com/user-attachments/assets/50e3d8cc-b1a5-4697-bfb1-415a4f3ebf0f)
 
 The tests check common errors and misconfigurations, and will be added to as captureKNX evolves. It needs to be said however that sometimes the script will report everying PASSing, but captureKNX's still misbehaving. Further investigation is required.
 
