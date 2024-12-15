@@ -274,9 +274,19 @@ setup1()
 		knxdVersion=$(dpkg -s knxd | grep "Version: " | cut -d ' ' -f2)
 		echo -e "\nCurrent  installed version of knxd = $knxdVersion"
 		echo -e ""$GREEN"knxd is already installed - skipping"$RESET""
+
+		# TODO: Check latest released version
 		
-		# TODO: Check version and update if there's newer.
-	
+		if dpkg --compare-versions $knxdVersion "lt" $latestKnxdVersion ;
+		then
+			echo ''
+			echo -e ""$GREEN"Updating knxd"$RESET""
+			
+			# TODO: Upgrade installed version
+			
+		else
+			echo 'No knxd upgrade required'
+		fi
 	else
 		echo -e "\n"$GREEN"Installing knxd "$RESET""
 		rm -rf /home/$SUDO_USER/staging/knxd
