@@ -259,6 +259,13 @@ def DPT16(sub_DPT, value):
     return (value, '')
 
 
+def DPT17(sub_DPT, value):
+    '''
+    1-octet. Displays scene number. Add 1 for zero-offset
+    '''
+    return (f'#{value + 1}', '')
+
+
 def DPT18(sub_DPT, value):
     '''
     1-octet. Activate/store scene number
