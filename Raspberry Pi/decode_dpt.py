@@ -259,6 +259,19 @@ def DPT16(sub_DPT, value):
     return (value, '')
 
 
+def DPT18(sub_DPT, value):
+    '''
+    1-octet. Activate/store scene number
+    '''
+    if isinstance(value, tuple):
+        ActivateOrStore, scene = value
+        if ActivateOrStore:
+            value = f'Learn #{scene + 1}'
+        else:
+            value = f'Activate #{scene + 1}'
+    return (value, '')
+
+
 def DPT232(sub_DPT, value):
     '''
     RGB colour as three bytes, 0-255. Passed by knxdclient as a tuple
