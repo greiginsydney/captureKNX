@@ -267,19 +267,16 @@ setup1()
 	fi
 
 	set +e #Suspend the error trap
-	isKnxd=$(command -v knxd)
+	#isKnxd=$(command -v knxd)
+	isKnxd=$(dpkg -s knxd | grep "Version: " | cut -d ' ' -f2)
 	set -e #Resume the error trap
 	if [[ $isKnxd ]];
 	then
-		knxdVersion=$(dpkg -s knxd | grep "Version: " | cut -d ' ' -f2)
-		echo -e "\nCurrent installed version of knxd = $knxdVersion"
-		
-		# TODO: Check latest released version
-		latestKnxdVersion='0.0.0'
-		echo -e "Current   online  version of knxd = $latestKnxdVersion"
-		if dpkg --compare-versions $knxdVersion "lt" $latestKnxdVersion ;
+		echo -e "\nCurrent installed version of knxd      = $isKnxd"
+		latestKnxdVersion=$(curl --silent "https://raw.githubusercontent.com/knxd/knxd/refs/heads/debian/debian/changelog" | sed -n 's/.*(\(\(.*\)\)).*/\1/p' | head -1 )
+		echo -e "Current   online  version of knxd      = $latestKnxdVersion"
+		if dpkg --compare-versions $isKnxd "lt" $latestKnxdVersion ;
 		then
-			echo ''
 			echo -e ""$GREEN"Updating knxd"$RESET""
 			
 			# TODO: Upgrade installed version
