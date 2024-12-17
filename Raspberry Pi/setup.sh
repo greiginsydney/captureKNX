@@ -944,8 +944,6 @@ test_install()
 
 			if [ -f $connectionFile ];
 			then
-				local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
-				local connectedChannel=$(grep -r '^channel=' $connectionFile | cut -s -d = -f 2)
 				local connectedMode=$(grep -r '^mode=' $connectionFile | cut -s -d = -f 2)
 				local connectedType=$(grep -r '^type=' $connectionFile | cut -s -d = -f 2)
 				local apCount=0   # Just in case we somehow end up with multiple connections. Each success only increments ap_test once
@@ -972,6 +970,9 @@ test_install()
 				elif [[ $connectedType == "wifi" ]];
 				then
 					isWiFi="true"
+     					local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
+					local connectedChannel=$(grep -r '^channel=' $connectionFile | cut -s -d = -f 2)
+					if [ ! -z "$connectedChannel" ]; then ((ap_test=ap_test+16)); fi
 				fi
 			else
 				echo "Script error: connectionFile '$connectionFile' not found"
