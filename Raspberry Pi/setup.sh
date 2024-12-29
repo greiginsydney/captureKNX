@@ -888,14 +888,28 @@ test_install()
 	release=$(sed -n -E 's/^PRETTY_NAME="(.*)"$/\1/p' /etc/os-release)
 	echo "Release : $release"
 
+	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
+	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
+	then
+		BATTERY_VOLTAGE=$(cat /sys/devices/platform/soc/soc:rpi_rtc/rtc/rtc0/battery_voltage)
+		BATTERY_VOLTAGE=$(awk -v var="$BATTERY_VOLTAGE" 'BEGIN { printf "%.2f\n", var / 1000000 }')
+		echo -n "Battery : ${BATTERY_VOLTAGE}V"
+		if grep -q 'dtparam=rtc_bbat_vchg=3000000' /boot/firmware/config.txt;
+		then
+			echo " (charging enabled)"
+		else
+			echo " (charging not enabled)"
+		fi
+	fi
+
 	# TY Jesse Nickles https://stackoverflow.com/a/71674677/13102734
 	DISK_SIZE_TOTAL=$(df -kh . | tail -n1 | awk '{print $2}')
 	DISK_SIZE_FREE=$(df -kh . | tail -n1 | awk '{print $4}')
 	DISK_PERCENT_USED=$(df -kh . | tail -n1 | awk '{print $5}')
-	echo "$DISK_SIZE_FREE available out of $DISK_SIZE_TOTAL total ($DISK_PERCENT_USED used)"
+	echo "Storage : $DISK_SIZE_FREE available out of $DISK_SIZE_TOTAL total ($DISK_PERCENT_USED used)"
+	echo ''
 
-	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
-	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
+ 	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET $PIMODEL""
 	else
