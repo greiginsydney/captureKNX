@@ -888,6 +888,12 @@ test_install()
 	release=$(sed -n -E 's/^PRETTY_NAME="(.*)"$/\1/p' /etc/os-release)
 	echo "Release : $release"
 
+	# TY Jesse Nickles https://stackoverflow.com/a/71674677/13102734
+	DISK_SIZE_TOTAL=$(df -kh . | tail -n1 | awk '{print $2}')
+	DISK_SIZE_FREE=$(df -kh . | tail -n1 | awk '{print $4}')
+	DISK_PERCENT_USED=$(df -kh . | tail -n1 | awk '{print $5}')
+	echo "Storage : $DISK_SIZE_FREE available out of $DISK_SIZE_TOTAL total ($DISK_PERCENT_USED used)"
+
 	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
 	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
 	then
@@ -900,21 +906,11 @@ test_install()
 		else
 			echo " (charging not enabled)"
 		fi
-	fi
-
-	# TY Jesse Nickles https://stackoverflow.com/a/71674677/13102734
-	DISK_SIZE_TOTAL=$(df -kh . | tail -n1 | awk '{print $2}')
-	DISK_SIZE_FREE=$(df -kh . | tail -n1 | awk '{print $4}')
-	DISK_PERCENT_USED=$(df -kh . | tail -n1 | awk '{print $5}')
-	echo "Storage : $DISK_SIZE_FREE available out of $DISK_SIZE_TOTAL total ($DISK_PERCENT_USED used)"
-	echo ''
-
- 	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
-	then
-		echo -e ""$GREEN"PASS:"$RESET $PIMODEL""
+  		echo -e "\n"$GREEN"PASS:"$RESET $PIMODEL""
 	else
-		echo -e ""$YELLOW"FAIL:"$RESET $PIMODEL""
+		echo -e "\n"$YELLOW"FAIL:"$RESET $PIMODEL""
 	fi
+
 	RESULT=$(test_64bit)
 	if [[ $RESULT == "64" ]];
 	then
