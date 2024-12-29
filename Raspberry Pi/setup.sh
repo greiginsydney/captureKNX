@@ -884,10 +884,9 @@ test_install()
 	fi
 	echo ''
 	HOSTNAME=$(uname -n)
-	echo $HOSTNAME
-	echo ''
+	echo "Hostname: $HOSTNAME"
 	release=$(sed -n -E 's/^PRETTY_NAME="(.*)"$/\1/p' /etc/os-release)
-	echo $release
+	echo "Release : $release"
 
 	# TY Jesse Nickles https://stackoverflow.com/a/71674677/13102734
 	DISK_SIZE_TOTAL=$(df -kh . | tail -n1 | awk '{print $2}')
