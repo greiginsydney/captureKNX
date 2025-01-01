@@ -279,6 +279,20 @@ def DPT18(sub_DPT, value):
     return (value, '')
 
 
+def DPT29(sub_DPT, value):
+    '''
+    8-byte signed value. Energy readings
+    '''
+    unit = ""
+    elif sub_DPT == 10:
+        unit = "Wh"
+    elif sub_DPT == 11:
+        unit = "VAh"
+    elif sub_DPT == 12:
+        unit = "VARh"
+    return (value, unit)
+
+
 def DPT232(sub_DPT, value):
     '''
     RGB colour as three bytes, 0-255. Passed by knxdclient as a tuple
