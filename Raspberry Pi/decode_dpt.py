@@ -284,7 +284,7 @@ def DPT29(sub_DPT, value):
     8-byte signed value. Energy readings
     '''
     unit = ""
-    elif sub_DPT == 10:
+    if sub_DPT == 10:
         unit = "Wh"
     elif sub_DPT == 11:
         unit = "VAh"
