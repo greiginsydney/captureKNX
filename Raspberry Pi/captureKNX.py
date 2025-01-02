@@ -115,7 +115,7 @@ async def main() -> None:
                         # If we fail a lookup (VERY unlikely) we'll send the original DPT value unchanged
                         log(f'Exception decoding DPT {DPT} in main at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
-                elif DPT_main in [3, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 29, 232]:
+                elif DPT_main in [3, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 26, 29, 232]:
                     try:
                         value, unit = globals()['DPT' + str(DPT_main)](sub_DPT, value) # decode_dpt.py
                     except Exception as e:
