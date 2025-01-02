@@ -78,6 +78,7 @@ async def main() -> None:
                     DPT, GA_name = GA_Data[str(packet.dst)]
                     DPT_main = int(DPT.split('.')[0])
                     sub_DPT = int(DPT.split('.')[1])
+                    # log(f'Telegram to {packet.src} to GAD {packet.dst}, DPT = {DPT}, decoded as {DPT_main}.{sub_DPT} & {float(DPT)}') # Raw data, retained here for debugging
                 except Exception as e:
                     # We failed to match on the destination
                     # Discard this telegram as we don't know how to decode the data
