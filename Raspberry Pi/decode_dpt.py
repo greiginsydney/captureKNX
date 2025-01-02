@@ -279,6 +279,19 @@ def DPT18(sub_DPT, value):
     return (value, '')
 
 
+def DPT26(sub_DPT, value):
+    '''
+    1-octet. Scene info
+    '''
+    if isinstance(value, tuple):
+        ActiveOrInactive, scene = value
+        if ActiveOrInactive:
+            value = f'Inactive {scene}'
+        else:
+            value = f'Active {scene}'
+    return (value, '')
+
+
 def DPT29(sub_DPT, value):
     '''
     8-byte signed value. Energy readings
