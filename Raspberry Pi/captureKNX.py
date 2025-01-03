@@ -115,13 +115,15 @@ async def main() -> None:
                         # If we fail a lookup (VERY unlikely) we'll send the original DPT value unchanged
                         log(f'Exception decoding DPT {DPT} in main at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
-                elif DPT_main in [3, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 26, 29, 232]:
+                elif ('DPT' + str(DPT_main)) in globals():
                     try:
                         value, unit = globals()['DPT' + str(DPT_main)](sub_DPT, value) # decode_dpt.py
                     except Exception as e:
                         log(f'Exception decoding DPT {DPT} in main at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
                         value = 'error'
+                else:
+                    log(f'DPT {str(DPT_main)} not in globals()')
                 try:
                     if isinstance(value, str):
                         telegram['info'] = value
