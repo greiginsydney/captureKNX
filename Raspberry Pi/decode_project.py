@@ -267,7 +267,7 @@ def decode_Group_Addresses(filename, grpAddLevels):
                                     foundGAs += 1
 
                             else:
-                                log(f'decode_Group_Addresses discarded incomplete address=|{longAddress}|, name=|{name}|, DptString=|{DptString}|')
+                                log(f'decode_Group_Addresses discarded incomplete address {longAddress} aka {GA}, name = |{name}|, DptString = |{DptString}|')
                                 failedGAs += 1
 
     except Exception as e:
