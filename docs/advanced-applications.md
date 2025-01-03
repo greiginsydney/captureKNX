@@ -8,6 +8,7 @@ The captureKNX described here is a stand-alone on-site device, however if you're
 - [Add remote.it for remote access](#add-remoteit-for-remote-access)
 - [NVMe Storage](#nvme-storage)
 - [Setup Grafana Alerting](#setup-grafana-alerting)
+- [Enable Passwordless SSH from Windows](#Enable-passwordless-ssh-from-windows)
 
 
 <hr/> 
@@ -113,6 +114,31 @@ References:
 - Watch [Creating alerts with Grafana | Grafana for Beginners Ep 11](https://youtu.be/6W8Nu4b_PXM?si=J4pcHWQqumGRUV31)
 
 &nbsp;<br>
+
+[Top](#advanced-applications)
+
+<hr>
+
+## Enable Passwordless SSH from Windows
+
+It will speed your build times if you enable passwordless SSH from Windows, and it's a simple process.
+
+I've condensed the info from [this post](https://endjin.com/blog/2019/09/passwordless-ssh-from-windows-10-to-raspberry-pi):
+&nbsp;<br>
+
+1. Open a PowerShell prompt on Windows
+2. `ssh-keygen` and hit return through all the prompts
+3. Where it says "Your public key has been saved in...", copy that path to the clipboard
+4. Type `scp`, a space, then paste the .pub file path from above - but don't hit return yet
+5. Add a trailing space
+6. Now copy and paste `pi@10.10.10.10:~\.ssh\authorized_keys`, changing the IP to your Pi before you hit return
+7. Enter the Pi's password and hit return
+8. Done! You should now be able to ssh to the Pi and not need the password!
+
+The copy line you created in steps 4-6 should look like this:
+```
+scp C:\Users\YourUser/.ssh/id_ed23456.pub pi@10.10.10.10:~\.ssh\authorized_keys
+```
 
 [Top](#advanced-applications)
 
