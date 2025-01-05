@@ -277,7 +277,7 @@ setup1()
 		echo -e "Current   online  version of knxd      = $latestKnxdVersion"
 		if dpkg --compare-versions $isKnxd "lt" $latestKnxdVersion ;
 		then
-			echo -e ""$GREEN"Updating knxd"$RESET""
+			echo -e ""$GREEN"TODO: Updating knxd"$RESET""
 			
 			# TODO: Upgrade installed version
 			# TODO: If we upgrade, make sure we don't overwrite the user's previous knxd.conf!
