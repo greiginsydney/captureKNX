@@ -1119,7 +1119,7 @@ test_install()
 	set -e #Resume the error trap
 	if [[ $isInfluxd ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET" InfluxDB installed ($influxVersion)"
+		echo -e ""$GREEN"PASS:"$RESET" InfluxDB installed ($isInfluxd)"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" InfluxDB NOT installed"
 	fi
@@ -1127,7 +1127,7 @@ test_install()
 	set +e #Suspend the error trap
 	isInfluxCLI=$(command -v influx)
 	set -e #Resume the error trap
-	if [[ $isInfluxd ]];
+	if [[ $isInfluxCLI ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" InfluxCLI installed"
 	else
