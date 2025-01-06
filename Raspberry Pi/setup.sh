@@ -364,7 +364,7 @@ setup1()
 	echo ''
 	set +e #Suspend the error trap
 	#isInfluxd=$(command -v influxd)
-	isInfluxd=$(influxd version | cut -d ' ' -f2 | cut -d 'v' -f2 )
+	isInfluxd=$(influxd version 2>/dev/null | cut -d ' ' -f2 | cut -d 'v' -f2 )
 	set -e #Resume the error trap
 	if [[ $isInfluxd ]];
 	then
@@ -1115,11 +1115,10 @@ test_install()
 	fi
 
 	set +e #Suspend the error trap
-	isInfluxd=$(command -v influxd)
+	isInfluxd=$(influxd version 2>/dev/null | cut -d ' ' -f2 | cut -d 'v' -f2 )
 	set -e #Resume the error trap
 	if [[ $isInfluxd ]];
 	then
-		influxVersion=$(influxd version | cut -d ' ' -f2)
 		echo -e ""$GREEN"PASS:"$RESET" InfluxDB installed ($influxVersion)"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" InfluxDB NOT installed"
