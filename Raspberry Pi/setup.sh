@@ -1109,7 +1109,7 @@ test_install()
 	set -e #Resume the error trap
 	if [[ $isTelegraf  ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET" telegraf installed ($telegraf)"
+		echo -e ""$GREEN"PASS:"$RESET" telegraf installed ($isTelegraf)"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" telegraf NOT installed"
 	fi
