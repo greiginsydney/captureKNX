@@ -78,6 +78,7 @@ async def main() -> None:
                     DPT, GA_name = GA_Data[str(packet.dst)]
                     DPT_main = int(DPT.split('.')[0])
                     sub_DPT = int(DPT.split('.')[1])
+                    # log(f'Telegram to {packet.src} to GAD {packet.dst}, DPT = {DPT}, decoded from 0.XML as {DPT_main}.{sub_DPT} & {float(DPT)} as a 3-digit float') # Raw data, retained here for debugging
                 except Exception as e:
                     # We failed to match on the destination
                     # Discard this telegram as we don't know how to decode the data
@@ -114,13 +115,15 @@ async def main() -> None:
                         # If we fail a lookup (VERY unlikely) we'll send the original DPT value unchanged
                         log(f'Exception decoding DPT {DPT} in main at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
-                elif DPT_main in [3, 5, 6, 7, 8, 9, 10, 11, 12, 232]:
+                elif ('DPT' + str(DPT_main)) in globals():
                     try:
                         value, unit = globals()['DPT' + str(DPT_main)](sub_DPT, value) # decode_dpt.py
                     except Exception as e:
                         log(f'Exception decoding DPT {DPT} in main at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
                         value = 'error'
+                else:
+                    log(f'DPT {str(DPT_main)} not in globals()')
                 try:
                     if isinstance(value, str):
                         telegram['info'] = value

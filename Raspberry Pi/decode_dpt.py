@@ -69,12 +69,12 @@ def DPT3(sub_DPT, value):
     return (decoded, unit)
 
 
+'''
 def DPT4(sub_DPT, value):
-    '''
-    It looks like knxd has already decoded DPT 4
-    This code is never called, it's left here just to remind me why
-    '''
+    # It looks like knxd has already decoded DPT 4
+    # This code is never called, it's left here just to remind me why
     return (value, '')
+'''
 
 
 def DPT5(sub_DPT, value):
@@ -251,12 +251,59 @@ def DPT12(sub_DPT, value):
     return (value, unit)
 
 
+'''
 def DPT16(sub_DPT, value):
-    '''
     It looks like knxd has already decoded DPT 16
     This code is never called, it's left here just to remind me why
-    '''
     return (value, '')
+'''
+
+
+def DPT17(sub_DPT, value):
+    '''
+    1-octet. Displays scene number. Add 1 for zero-offset
+    '''
+    return (f'#{value + 1}', '')
+
+
+def DPT18(sub_DPT, value):
+    '''
+    1-octet. Activate/store scene number
+    '''
+    if isinstance(value, tuple):
+        ActivateOrStore, scene = value
+        if ActivateOrStore:
+            value = f'Learn #{scene + 1}'
+        else:
+            value = f'Activate #{scene + 1}'
+    return (value, '')
+
+
+def DPT26(sub_DPT, value):
+    '''
+    1-octet. Scene info
+    '''
+    if isinstance(value, tuple):
+        ActiveOrInactive, scene = value
+        if ActiveOrInactive:
+            value = f'Inactive {scene}'
+        else:
+            value = f'Active {scene}'
+    return (value, '')
+
+
+def DPT29(sub_DPT, value):
+    '''
+    8-byte signed value. Energy readings
+    '''
+    unit = ""
+    if sub_DPT == 10:
+        unit = "Wh"
+    elif sub_DPT == 11:
+        unit = "VAh"
+    elif sub_DPT == 12:
+        unit = "VARh"
+    return (value, unit)
 
 
 def DPT232(sub_DPT, value):

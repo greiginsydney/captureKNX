@@ -267,10 +267,25 @@ setup1()
 	fi
 
 	set +e #Suspend the error trap
-	isKnxd=$(command -v knxd)
+	#isKnxd=$(command -v knxd)
+	isKnxd=$(dpkg -s knxd | grep "Version: " | cut -d ' ' -f2)
 	set -e #Resume the error trap
-	if [[ ! $isKnxd ]];
+	if [[ $isKnxd ]];
 	then
+		echo -e "\nCurrent installed version of knxd      = $isKnxd"
+		latestKnxdVersion=$(curl --silent "https://raw.githubusercontent.com/knxd/knxd/refs/heads/debian/debian/changelog" | sed -n 's/.*(\(\(.*\)\)).*/\1/p' | head -1 )
+		echo -e "Current   online  version of knxd      = $latestKnxdVersion"
+		if dpkg --compare-versions $isKnxd "lt" $latestKnxdVersion ;
+		then
+			echo -e ""$GREEN"TODO: Updating knxd"$RESET""
+			
+			# TODO: Upgrade installed version
+			# TODO: If we upgrade, make sure we don't overwrite the user's previous knxd.conf!
+			
+		else
+			echo -e ""$GREEN"No knxd upgrade required"$RESET""
+		fi
+	else
 		echo -e "\n"$GREEN"Installing knxd "$RESET""
 		rm -rf /home/$SUDO_USER/staging/knxd
 		mkdir -pv /home/$SUDO_USER/staging/knxd
@@ -285,23 +300,50 @@ setup1()
 		sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+:)([[:digit:]]+)( .*$)|\1\21\4|" /etc/knxd.conf
 		# Set data source to be ttyKNX1 & assume Tijl's HAT:
 		sed -i -E "s|^(KNXD_OPTS=.*)( -b ip:)(.*)|\1 -b tpuarts:/dev/ttyKNX1\3|" /etc/knxd.conf
-	else
-		echo -e "\n"$GREEN"knxd is already installed - skipping"$RESET""
-		# knxdVersion=$(dpkg -s knxd | grep "Version: " | cut -d ' ' -f2)
-		# echo -e "\rCurrent  installed version of knxd = $knxdVersion"
-		# TODO: Check version and update if there's newer.
 	fi
 
-	echo -e "\n"$GREEN"Installing KNXDclient"$RESET""
-	sudo  -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient"
+	echo ''
+	isKnxdClient=$(sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 show knxdclient 2>/dev/null | sed -n 's/.*Version:\s\(.*\).*/\1/p'")
+	if [[ $isKnxdClient ]];
+	then
+		echo -e "Current installed version of KNXDclient = $isKnxdClient"
+		latestKnxdClientRls=$(curl --silent "https://api.github.com/repos/mhthies/knxdclient/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+		echo -e "Current   online  version of KNXDclient = $latestKnxdClientRls"
+		if dpkg --compare-versions $isKnxdClient "lt" $latestKnxdClientRls ;
+		then
+			echo ''
+			echo -e ""$GREEN"Updating KNXDclient"$RESET""
+			sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient --upgrade"
+		else
+			echo -e ""$GREEN"No KNXDclient upgrade required"$RESET""
+		fi
+	else
+		echo -e "\n"$GREEN"Installing KNXDclient"$RESET""
+		sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient"
+	fi
+ 
 	echo -e "\n"$GREEN"Installing requests"$RESET""
 	sudo -u ${SUDO_USER} bash  -c "source /home/${SUDO_USER}/venv/bin/activate && python3 -m pip install requests"
 
+	echo ''
 	set +e #Suspend the error trap
-	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
+	#isTelegraf=$(dpkg -s telegraf 2>/dev/null)
+	isTelegraf=$(telegraf --version 2>/dev/null | cut -d ' ' -f2)
 	set -e #Resume the error trap
-	if [[ ! $isTelegraf  ]];
+	if [[ $isTelegraf  ]];
 	then
+		echo -e "\rCurrent installed version of telegraf = $isTelegraf"
+		# It's *assumed* the user has performed the 'apt-get update' at Step 26, so the latest telegraf will be available to us
+		latestTelegrafRls=$(sudo apt-cache show telegraf | sed -n 's/.*Version:\s\(.*\).*/\1/p' | head -1)
+		echo -e "Current   online  version of telegraf = $latestTelegrafRls"
+		if dpkg --compare-versions $isTelegraf "lt" $latestTelegrafRls ;
+		then
+			echo -e ""$GREEN"Updating telegraf"$RESET""
+			sudo apt-get install --only-upgrade telegraf -y
+		else
+			echo -e ""$GREEN"No telegraf upgrade required"$RESET""
+		fi
+	else
 		echo -e "\n"$GREEN"Installing telegraf"$RESET""
 		rm -rf /home/$SUDO_USER/staging/telegraf
 		mkdir -pv /home/$SUDO_USER/staging/telegraf
@@ -309,12 +351,7 @@ setup1()
 		curl -s https://repos.influxdata.com/influxdata-archive.key > influxdata-archive.key
 		echo '943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515 influxdata-archive.key' | sha256sum -c && cat influxdata-archive.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null
 		echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
-		apt-get update && sudo apt-get install telegraf -y
-	else
-		echo -e "\n"$GREEN"telegraf is already installed - skipping"$RESET""
-		# telegrafVersion=$(telegraf --version | cut -d ' ' -f2)
-		# echo -e "\rCurrent  installed version of telegraf = $telegrafVersion"
-		# TODO: Check version and update if there's newer.
+		apt-get update && apt-get install telegraf -y
 	fi
 
 	# Suppress noisy error message in OOB telegraf.service (n/a on Debian/Raspbian):
@@ -324,38 +361,53 @@ setup1()
 	fi
 
 
+	echo ''
 	set +e #Suspend the error trap
-	isInfluxd=$(command -v influxd)
+	#isInfluxd=$(command -v influxd)
+	isInfluxd=$(influxd version 2>/dev/null | cut -d ' ' -f2 | cut -d 'v' -f2 )
 	set -e #Resume the error trap
-	if [[ ! $isInfluxd ]];
+	if [[ $isInfluxd ]];
 	then
+		echo -e "\rCurrent installed version of InfluxDB = $isInfluxd"
+		latestInfluxRls=$(sudo apt-cache show influxdb2 | sed -n 's/.*Version:\s\(.*\).*/\1/p' | head -1)
+		echo -e "Current   online  version of InfluxDB = $latestInfluxRls"
+		if dpkg --compare-versions $isInfluxd "lt" $latestInfluxRls ;
+		then
+			echo -e ""$GREEN"Updating InfluxDB"$RESET""
+			apt-get install --only-upgrade influxdb2 -y
+		else
+			echo -e ""$GREEN"No InfluxDB upgrade required"$RESET""
+		fi
+	else
 		echo -e "\n"$GREEN"Installing InfluxDB "$RESET""
 		apt-get install influxdb2 -y
-	else
-		echo -e "\n"$GREEN"InfluxDB is already installed - skipping"$RESET""
-		# influxVersion=$(influxd version | cut -d ' ' -f2)
-		# echo -e "\rCurrent  installed version of InfluxDB = $influxVersion"
-		# TODO: Check version and update if there's newer.
 	fi
 
-
+	echo ''
 	set +e #Suspend the error trap
-	isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
+	#isGrafana=$(dpkg -s grafana-enterprise 2>/dev/null)
+	isGrafana=$(dpkg -s grafana-enterprise | grep "Version: " | cut -d ' ' -f2)
 	set -e #Resume the error trap
-	if [[ ! $isGrafana ]];
+	if [[ $isGrafana ]];
 	then
+		echo -e "\rCurrent installed version of grafana  = $isGrafana"
+		latestGrafanaRls=$(sudo apt-cache show grafana | sed -n 's/.*Version:\s\(.*\).*/\1/p' | head -1)
+		echo -e "Current   online  version of grafana  = $latestGrafanaRls"
+		if dpkg --compare-versions $isGrafana "lt" $latestGrafanaRls ;
+		then
+			echo -e ""$GREEN"Updating grafana"$RESET""
+			apt-get install --only-upgrade grafana-enterprise -y
+		else
+			echo -e ""$GREEN"No grafana upgrade required"$RESET""
+		fi
+		
+	else
 		echo -e "\n"$GREEN"Installing grafana"$RESET""
 		apt-get install -y apt-transport-https software-properties-common wget
 		mkdir -p /etc/apt/keyrings/
 		wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
 		echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
-		apt-get update
-		apt-get install grafana-enterprise -y
-	else
-		echo -e "\n"$GREEN"grafana is already installed - skipping"$RESET""
-		# grafanaVersion=$(dpkg -s grafana-enterprise | grep "Version: " | cut -d ' ' -f2)
-		# echo -e "\rCurrent  installed version of grafana = $grafanaVersion"
-		# TODO: Check version and update if there's newer.
+		apt-get update && apt-get install grafana-enterprise -y
 	fi
 
 	# grafana-source.yaml:
@@ -774,12 +826,15 @@ setup3()
 		echo -e "Wi-Fi power save mode is already off"
 	fi
 	# Permanently disable Wi-Fi power save mode:
-	if grep -q '/sbin/iw dev wlan0 set power_save off' /etc/rc.local;
+	if [ -f /etc/rc.local ];
 	then
-		echo -e 'Wi-Fi power save mode is already disabled in /etc/rc.local'
-	else
-		sed -i '/^exit 0/i \/sbin\/iw dev wlan0 set power_save off\n' /etc/rc.local
-		echo -e ""$GREEN"Wi-Fi power save mode disabled in /etc/rc.local"$RESET""
+		if grep -q '/sbin/iw dev wlan0 set power_save off' /etc/rc.local;
+		then
+			echo -e 'Wi-Fi power save mode is already disabled in /etc/rc.local'
+		else
+			sed -i '/^exit 0/i \/sbin\/iw dev wlan0 set power_save off\n' /etc/rc.local
+			echo -e ""$GREEN"Wi-Fi power save mode disabled in /etc/rc.local"$RESET""
+		fi
 	fi
 
 	echo ''
@@ -832,24 +887,33 @@ test_install()
 	fi
 	echo ''
 	HOSTNAME=$(uname -n)
-	echo $HOSTNAME
-	echo ''
+	echo "Hostname: $HOSTNAME"
 	release=$(sed -n -E 's/^PRETTY_NAME="(.*)"$/\1/p' /etc/os-release)
-	echo $release
+	echo "Release : $release"
 
 	# TY Jesse Nickles https://stackoverflow.com/a/71674677/13102734
 	DISK_SIZE_TOTAL=$(df -kh . | tail -n1 | awk '{print $2}')
 	DISK_SIZE_FREE=$(df -kh . | tail -n1 | awk '{print $4}')
 	DISK_PERCENT_USED=$(df -kh . | tail -n1 | awk '{print $5}')
-	echo "$DISK_SIZE_FREE available out of $DISK_SIZE_TOTAL total ($DISK_PERCENT_USED used)"
+	echo "Storage : $DISK_SIZE_FREE available out of $DISK_SIZE_TOTAL total ($DISK_PERCENT_USED used)"
 
 	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
 	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET $PIMODEL""
+		BATTERY_VOLTAGE=$(cat /sys/devices/platform/soc/soc:rpi_rtc/rtc/rtc0/battery_voltage)
+		BATTERY_VOLTAGE=$(awk -v var="$BATTERY_VOLTAGE" 'BEGIN { printf "%.2f\n", var / 1000000 }')
+		echo -n "Battery : ${BATTERY_VOLTAGE}V"
+		if grep -q 'dtparam=rtc_bbat_vchg=3000000' /boot/firmware/config.txt;
+		then
+			echo " (charging enabled)"
+		else
+			echo " (charging not enabled)"
+		fi
+  		echo -e "\n"$GREEN"PASS:"$RESET $PIMODEL""
 	else
-		echo -e ""$YELLOW"FAIL:"$RESET $PIMODEL""
+		echo -e "\n"$YELLOW"FAIL:"$RESET $PIMODEL""
 	fi
+
 	RESULT=$(test_64bit)
 	if [[ $RESULT == "64" ]];
 	then
@@ -892,8 +956,6 @@ test_install()
 
 			if [ -f $connectionFile ];
 			then
-				local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
-				local connectedChannel=$(grep -r '^channel=' $connectionFile | cut -s -d = -f 2)
 				local connectedMode=$(grep -r '^mode=' $connectionFile | cut -s -d = -f 2)
 				local connectedType=$(grep -r '^type=' $connectionFile | cut -s -d = -f 2)
 				local apCount=0   # Just in case we somehow end up with multiple connections. Each success only increments ap_test once
@@ -920,6 +982,9 @@ test_install()
 				elif [[ $connectedType == "wifi" ]];
 				then
 					isWiFi="true"
+     					local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
+					local connectedChannel=$(grep -r '^channel=' $connectionFile | cut -s -d = -f 2)
+					if [ ! -z "$connectedChannel" ]; then ((ap_test=ap_test+16)); fi
 				fi
 			else
 				echo "Script error: connectionFile '$connectionFile' not found"
@@ -1024,11 +1089,10 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" knxd NOT installed"
 	fi
 
-	isKnxdClient=$(find /home/${SUDO_USER}/venv -type d -name knxdclient)
+	isKnxdClient=$(sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 show knxdclient 2>/dev/null | sed -n 's/.*Version:\s\(.*\).*/\1/p'")
 	if [[ $isKnxdClient ]];
-	#if [[ -d /home/${SUDO_USER}/venv/lib knxdclient ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET" KNXDclient installed"
+		echo -e ""$GREEN"PASS:"$RESET" KNXDclient installed ($isKnxdClient)"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" KNXDclient NOT installed"
 	fi
@@ -1043,23 +1107,22 @@ test_install()
 
 
 	set +e #Suspend the error trap
-	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
+	#isTelegraf=$(dpkg -s telegraf 2>/dev/null)
+ 	isTelegraf=$(telegraf --version 2>/dev/null | cut -d ' ' -f2)
 	set -e #Resume the error trap
 	if [[ $isTelegraf  ]];
 	then
-		telegrafVersion=$(telegraf --version | cut -d ' ' -f2)
-		echo -e ""$GREEN"PASS:"$RESET" telegraf installed ($telegrafVersion)"
+		echo -e ""$GREEN"PASS:"$RESET" telegraf installed ($isTelegraf)"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" telegraf NOT installed"
 	fi
 
 	set +e #Suspend the error trap
-	isInfluxd=$(command -v influxd)
+	isInfluxd=$(influxd version 2>/dev/null | cut -d ' ' -f2 | cut -d 'v' -f2 )
 	set -e #Resume the error trap
 	if [[ $isInfluxd ]];
 	then
-		influxVersion=$(influxd version | cut -d ' ' -f2)
-		echo -e ""$GREEN"PASS:"$RESET" InfluxDB installed ($influxVersion)"
+		echo -e ""$GREEN"PASS:"$RESET" InfluxDB installed ($isInfluxd)"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" InfluxDB NOT installed"
 	fi
@@ -1067,7 +1130,7 @@ test_install()
 	set +e #Suspend the error trap
 	isInfluxCLI=$(command -v influx)
 	set -e #Resume the error trap
-	if [[ $isInfluxd ]];
+	if [[ $isInfluxCLI ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" InfluxCLI installed"
 	else
