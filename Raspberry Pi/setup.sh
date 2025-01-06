@@ -1104,12 +1104,12 @@ test_install()
 
 
 	set +e #Suspend the error trap
-	isTelegraf=$(dpkg -s telegraf 2>/dev/null)
+	#isTelegraf=$(dpkg -s telegraf 2>/dev/null)
+ 	isTelegraf=$(telegraf --version 2>/dev/null | cut -d ' ' -f2)
 	set -e #Resume the error trap
 	if [[ $isTelegraf  ]];
 	then
-		telegrafVersion=$(telegraf --version | cut -d ' ' -f2)
-		echo -e ""$GREEN"PASS:"$RESET" telegraf installed ($telegrafVersion)"
+		echo -e ""$GREEN"PASS:"$RESET" telegraf installed ($telegraf)"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" telegraf NOT installed"
 	fi
