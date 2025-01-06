@@ -297,7 +297,7 @@ setup1()
 		# Paste in captureKNX's new default device addresses:
 		sed -i -E "s|(^KNXD_OPTS.*-e )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)( .*$)|\11.1.250\3|" /etc/knxd.conf
 		sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+)(:.*$)|\11.1.251\3|" /etc/knxd.conf
-		sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+:)([[:digit:]]+)( .*$)|\1\23\4|" /etc/knxd.conf
+		sed -i -E "s|(^KNXD_OPTS.*-E )([[:digit:]]+.[[:digit:]]+.[[:digit:]]+:)([[:digit:]]+)( .*$)|\1\21\4|" /etc/knxd.conf
 		# Set data source to be ttyKNX1 & assume Tijl's HAT:
 		sed -i -E "s|^(KNXD_OPTS=.*)( -b ip:)(.*)|\1 -b tpuarts:/dev/ttyKNX1\3|" /etc/knxd.conf
 	fi
