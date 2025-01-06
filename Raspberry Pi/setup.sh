@@ -826,12 +826,15 @@ setup3()
 		echo -e "Wi-Fi power save mode is already off"
 	fi
 	# Permanently disable Wi-Fi power save mode:
-	if grep -q '/sbin/iw dev wlan0 set power_save off' /etc/rc.local;
+	if [ -f /etc/rc.local ];
 	then
-		echo -e 'Wi-Fi power save mode is already disabled in /etc/rc.local'
-	else
-		sed -i '/^exit 0/i \/sbin\/iw dev wlan0 set power_save off\n' /etc/rc.local
-		echo -e ""$GREEN"Wi-Fi power save mode disabled in /etc/rc.local"$RESET""
+		if grep -q '/sbin/iw dev wlan0 set power_save off' /etc/rc.local;
+		then
+			echo -e 'Wi-Fi power save mode is already disabled in /etc/rc.local'
+		else
+			sed -i '/^exit 0/i \/sbin\/iw dev wlan0 set power_save off\n' /etc/rc.local
+			echo -e ""$GREEN"Wi-Fi power save mode disabled in /etc/rc.local"$RESET""
+		fi
 	fi
 
 	echo ''
