@@ -328,7 +328,7 @@ setup1()
 	echo ''
 	set +e #Suspend the error trap
 	#isTelegraf=$(dpkg -s telegraf 2>/dev/null)
-	isTelegraf=$(telegraf --version | cut -d ' ' -f2)
+	isTelegraf=$(telegraf --version 2>/dev/null | cut -d ' ' -f2)
 	set -e #Resume the error trap
 	if [[ $isTelegraf  ]];
 	then
