@@ -396,7 +396,7 @@ setup1()
 		if dpkg --compare-versions $isGrafana "lt" $latestGrafanaRls ;
 		then
 			echo -e ""$GREEN"Updating grafana"$RESET""
-			sudo apt-get install --only-upgrade grafana-enterprise -y
+			apt-get install --only-upgrade grafana-enterprise -y
 		else
 			echo -e ""$GREEN"No grafana upgrade required"$RESET""
 		fi
