@@ -1228,7 +1228,8 @@ test_install()
 	isKnxProject=$(find /home/${SUDO_USER}/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isKnxProject ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET" knx project file $isKnxProject found"
+		creationDatestamp=$(stat -c %w /home/$isKnxProject | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
+		echo -e ""$GREEN"PASS:"$RESET" knx project file $isKnxProject found, created $creationDatestamp"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" knx project file NOT found"
 		echo -e "      Copy one across to the /home/${SUDO_USER}/ folder and 'sudo systemctl restart captureKNX'"
