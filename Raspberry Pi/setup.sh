@@ -900,7 +900,10 @@ test_install()
 	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
 	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
 	then
-		BATTERY_VOLTAGE=$(cat /sys/devices/platform/soc/soc:rpi_rtc/rtc/rtc0/battery_voltage)
+		if [ -f /sys/devices/platform/soc/soc:rpi_rtc/rtc/rtc0/battery_voltage ];
+		then
+			BATTERY_VOLTAGE=$(cat /sys/devices/platform/soc/soc:rpi_rtc/rtc/rtc0/battery_voltage)
+		fi
 		BATTERY_VOLTAGE=$(awk -v var="$BATTERY_VOLTAGE" 'BEGIN { printf "%.2f\n", var / 1000000 }')
 		echo -n "Battery : ${BATTERY_VOLTAGE}V"
 		if grep -q 'dtparam=rtc_bbat_vchg=3000000' /boot/firmware/config.txt;
