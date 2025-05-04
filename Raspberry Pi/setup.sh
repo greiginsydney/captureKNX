@@ -985,7 +985,7 @@ test_install()
 				elif [[ $connectedType == "wifi" ]];
 				then
 					isWiFi="true"
-     					local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
+					local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
 					local connectedChannel=$(grep -r '^channel=' $connectionFile | cut -s -d = -f 2)
 					if [ ! -z "$connectedChannel" ]; then ((ap_test=ap_test+16)); fi
 				fi
