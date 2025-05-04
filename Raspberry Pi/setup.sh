@@ -1399,6 +1399,7 @@ END
 	nmcli con mod hotspot 802-11-wireless.mode ap 802-11-wireless.band bg 802-11-wireless.channel $wifiChannel #ipv4.method shared
 	nmcli con mod hotspot wifi-sec.key-mgmt wpa-psk
 	nmcli con mod hotspot wifi-sec.psk "$wifiPwd"
+	nmcli con mod hotspot wifi.powersave disable
 	nmcli con mod hotspot ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
 	nmcli con up hotspot
 }
@@ -1531,6 +1532,7 @@ unmake_ap_nmcli ()
 				nmcli con mod "$newSsid" ipv4.method auto
 			;;
 		esac
+		nmcli con mod "$newSsid" wifi.powersave disable
 		echo 'About to con up'
 		nmcli con up "$newSsid"
 		echo 'Back from con up'
