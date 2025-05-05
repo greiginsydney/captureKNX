@@ -985,6 +985,8 @@ test_install()
 				elif [[ $connectedType == "wifi" ]];
 				then
 					isWiFi="true"
+     					local wifiConnection=$thisConnection # Used by the Power-Save test further down
+					local wlanId=$(nmcli -t -f NAME,DEVICE connection show | grep $thisConnection | cut -d: -f2)
 					local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
 					local connectedChannel=$(grep -r '^channel=' $connectionFile | cut -s -d = -f 2)
 					if [ ! -z "$connectedChannel" ]; then ((ap_test=ap_test+16)); fi
@@ -1071,12 +1073,25 @@ test_install()
 				echo ''
 				;;
 		esac
-		if iw wlan0 get power_save | grep -q 'on';
-		then
-			echo -e ""$YELLOW"FAIL:"$RESET" Wi-Fi power save is ON"
-		else
-			echo -e ""$GREEN"PASS:"$RESET" Wi-Fi power save is OFF"
-		fi
+		powerSave=$(nmcli -p connection show $wifiConnection | grep 802-11-wireless.powersave | cut -s -d : -f 2 | tr -cd '0-9') 
+		# echo "|$powerSave|"
+		case $powerSave in
+			('0')
+				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId Wi-Fi power save is set to 'default' (ambiguous)"
+				;;
+			('1')
+				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId Wi-Fi power save is set to 'ignore' (ambiguous)"
+				;;
+			('2')
+				echo -e ""$GREEN"PASS:"$RESET" $wlanId  Wi-Fi power save is OFF"
+				;;
+			('3')
+				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId  Wi-Fi power save is ON"
+				;;
+			(*)
+				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId  Wi-Fi power save test returned an unexpected response: $powerSave"
+				;;
+		esac
 	fi
 	echo '-------------------------------------'
 	# ================== END Wi-Fi TESTS ==================
