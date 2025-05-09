@@ -1050,7 +1050,7 @@ test_install()
 			(10)
 				# Good. Wi-Fi client.
 				echo -e ""$GREEN"PASS:"$RESET" The Pi is a Wi-Fi client, not an Access Point"
-				echo -e ""$GREEN"PASS:"$RESET" It has an active connection to this/these SSIDs: $connectedSsid"
+				echo -e ""$GREEN"PASS:"$RESET" It has an active connection to SSID(s): $connectedSsid"
 				;;
 			(22)
 				# Good-ish. Wi-Fi AP.
