@@ -1086,13 +1086,13 @@ test_install()
 				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId Wi-Fi power save is set to 'ignore' (ambiguous)"
 				;;
 			('2')
-				echo -e ""$GREEN"PASS:"$RESET" $wlanId  Wi-Fi power save is OFF"
+				echo -e ""$GREEN"PASS:"$RESET" $wlanId Wi-Fi power save is OFF"
 				;;
 			('3')
-				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId  Wi-Fi power save is ON"
+				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId Wi-Fi power save is ON"
 				;;
 			(*)
-				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId  Wi-Fi power save test returned an unexpected response: $powerSave"
+				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId Wi-Fi power save test returned an unexpected response: $powerSave"
 				;;
 		esac
 	fi
