@@ -818,23 +818,26 @@ setup3()
 
 	# Wi-Fi Power Save
 	# Disable Wi-Fi power save mode:
-	if iw wlan0 get power_save | grep -q 'on';
+	local activeConnections=$(nmcli -t c s -a | awk '!/loopback/' | cut -d: -f 1  )
+	if [ ! -z "$activeConnections" ];
 	then
-		iw wlan0 set power_save off
-		echo -e ""$GREEN"Disabled Wi-Fi power save mode"$RESET""
-	else
-		echo -e "Wi-Fi power save mode is already off"
-	fi
-	# Permanently disable Wi-Fi power save mode:
-	if [ -f /etc/rc.local ];
-	then
-		if grep -q '/sbin/iw dev wlan0 set power_save off' /etc/rc.local;
-		then
-			echo -e 'Wi-Fi power save mode is already disabled in /etc/rc.local'
-		else
-			sed -i '/^exit 0/i \/sbin\/iw dev wlan0 set power_save off\n' /etc/rc.local
-			echo -e ""$GREEN"Wi-Fi power save mode disabled in /etc/rc.local"$RESET""
-		fi
+		# Loop through them:
+		IFS=$'\n'
+		for thisConnection in $activeConnections;
+		do
+			local powerSave=$(nmcli -p connection show $thisConnection | grep 802-11-wireless.powersave | cut -s -d : -f 2 | tr -cd '0-9') 
+			local wlanId=$(nmcli -t -f NAME,DEVICE connection show | grep $thisConnection | cut -d: -f2)
+			case $powerSave in
+				('2')
+					echo -e ""$GREEN"PASS:"$RESET" $wlanId Wi-Fi power save is already OFF"
+					;;
+				(*)
+					echo -e ""$GREEN"PASS:"$RESET" $wlanId Wi-Fi power save has been turned OFF"
+					nmcli connection modify $thisConnection 802-11-wireless.powersave 2
+					;;
+			esac
+		done
+		unset IFS
 	fi
 
 	echo ''
