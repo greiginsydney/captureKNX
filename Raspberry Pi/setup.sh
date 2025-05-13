@@ -903,8 +903,8 @@ test_install()
 	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
 	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
 	then
-		BATTERY_VOLTAGE=$(vcgencmd pmic_read_adc BATT_V | cut -d = -f 2)
-		echo -n "Battery : ${BATTERY_VOLTAGE}"
+		BATTERY_VOLTAGE=$(vcgencmd pmic_read_adc BATT_V | cut -d = -f 2 | cut -d V -f 1 | xargs printf "%.*f\n" 2)
+		echo -n "Battery : ${BATTERY_VOLTAGE}V"
 		if grep -q 'dtparam=rtc_bbat_vchg=3000000' /boot/firmware/config.txt;
 		then
 			echo " (charging enabled)"
