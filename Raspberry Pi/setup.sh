@@ -266,6 +266,14 @@ setup1()
 		systemctl mask dnsmasq
 	fi
 
+
+	# Added in 1.0.4 May 2025:
+	echo -e "\n"$GREEN"Disabling serial-getty@ttyAMA0.service"$RESET""
+	systemctl stop serial-getty@ttyAMA0.service
+	systemctl disable serial-getty@ttyAMA0.service
+	systemctl mask serial-getty@ttyAMA0.service
+
+
 	set +e #Suspend the error trap
 	#isKnxd=$(command -v knxd)
 	isKnxd=$(dpkg -s knxd | grep "Version: " | cut -d ' ' -f2)
