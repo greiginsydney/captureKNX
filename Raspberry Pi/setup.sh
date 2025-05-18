@@ -839,7 +839,7 @@ setup3()
 				local powerSave=$(nmcli -p connection show $thisConnection | grep 802-11-wireless.powersave | cut -s -d : -f 2 | tr -cd '0-9') 
 				case $powerSave in
 					('')
-						echo -e ""$GREEN"INFO:"$RESET" $wlanId returned no Wi-Fi power save value"
+						echo -e ""$YELLOW"FAIL:"$RESET" $wlanId returned no Wi-Fi power save value"
 						;;
 					('2')
 						echo -e ""$GREEN"PASS:"$RESET" $wlanId Wi-Fi power save is already OFF"
