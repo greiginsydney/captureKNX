@@ -833,17 +833,23 @@ setup3()
 		IFS=$'\n'
 		for thisConnection in $activeConnections;
 		do
-			local powerSave=$(nmcli -p connection show $thisConnection | grep 802-11-wireless.powersave | cut -s -d : -f 2 | tr -cd '0-9') 
 			local wlanId=$(nmcli -t -f NAME,DEVICE connection show | grep $thisConnection | cut -d: -f2)
-			case $powerSave in
-				('2')
-					echo -e ""$GREEN"PASS:"$RESET" $wlanId Wi-Fi power save is already OFF"
-					;;
-				(*)
-					echo -e ""$GREEN"PASS:"$RESET" $wlanId Wi-Fi power save has been turned OFF"
-					nmcli connection modify $thisConnection 802-11-wireless.powersave 2
-					;;
-			esac
+			if [[ "$wlanId" =~ "wlan" ]];
+			then
+				local powerSave=$(nmcli -p connection show $thisConnection | grep 802-11-wireless.powersave | cut -s -d : -f 2 | tr -cd '0-9') 
+				case $powerSave in
+					('')
+						echo -e ""$GREEN"INFO:"$RESET" $wlanId returned no Wi-Fi power save value"
+						;;
+					('2')
+						echo -e ""$GREEN"PASS:"$RESET" $wlanId Wi-Fi power save is already OFF"
+						;;
+					(*)
+						echo -e ""$GREEN"PASS:"$RESET" $wlanId Wi-Fi power save has been turned OFF"
+						nmcli connection modify $thisConnection 802-11-wireless.powersave 2
+						;;
+				esac
+			fi
 		done
 		unset IFS
 	fi
