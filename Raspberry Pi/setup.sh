@@ -856,7 +856,7 @@ setup3()
 
 read_TTY()
 {
-	serial=$(udevadm info -a /dev/ttyAMA0  | grep KERNELS.*serial | cut -d'=' -f3 | xargs )
+	serial=$(udevadm info -a /dev/ttyAMA0  | grep KERNELS.*serial\" | cut -d'=' -f3 | xargs )
 	id=$(udevadm info -a /dev/ttyAMA0  | grep  \{id\} | cut -d'=' -f3 | xargs )
 	if [[ $serial ]];
 	then
