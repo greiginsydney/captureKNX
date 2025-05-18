@@ -1717,6 +1717,46 @@ test_64bit()
 }
 
 
+# Enable charging of the RTC backup battery. Only applies to the Pi 5
+charge_battery()
+{
+	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
+	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
+	then
+  		if ! grep -q '^dtparam=rtc_bbat_vchg=3000000' /boot/firmware/config.txt;
+		then
+			echo -e 'dtparam=rtc_bbat_vchg=3000000' >> /boot/firmware/config.txt
+			echo -e "\n"$GREEN"PASS:"$RESET \'dtparam=rtc_bbat_vchg=3000000\' added to /boot/firmware/config.txt""
+		else
+			echo -e "\n"$GREEN"INFO:"$RESET \'dtparam=rtc_bbat_vchg=3000000\' is already present in /boot/firmware/config.txt. Nothing to do""
+		fi
+	else
+		echo -e "\n"$YELLOW"FAIL:"$RESET Not a Pi 5. Nothing to do""
+	fi
+	echo ''
+}
+
+
+# Disable charging of the RTC backup battery. Only applies to the Pi 5
+no_charge_battery()
+{
+	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
+	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
+	then
+  		if grep -q '^dtparam=rtc_bbat_vchg=3000000' /boot/firmware/config.txt;
+		then
+			sed -i '/dtparam=rtc_bbat_vchg=3000000/d' /boot/firmware/config.txt
+			echo -e "\n"$GREEN"PASS:"$RESET \'dtparam=rtc_bbat_vchg=3000000\' removed from /boot/firmware/config.txt""
+		else
+			echo -e "\n"$GREEN"INFO:"$RESET \'dtparam=rtc_bbat_vchg=3000000\' is not present in /boot/firmware/config.txt. Nothing to do""
+		fi
+	else
+		echo -e "\n"$YELLOW"FAIL:"$RESET Not a Pi 5. Nothing to do""
+	fi
+	echo ''
+}
+
+
 # A place for me to test code within the structure of the script.
 # Ideally this function will never be released with code present. Let's see how I go.
 dev()
@@ -1751,6 +1791,12 @@ case "$1" in
 	('noap')
 		unmake_ap_nmcli
 		prompt_for_reboot
+		;;
+	('batt')
+		charge_battery
+		;;
+	('nobatt')
+		no_charge_battery
 		;;
 	('dev')
 		dev
@@ -1787,7 +1833,7 @@ case "$1" in
 		test_install
 		;;
 	(*)
-		echo -e "\nThe switch '$1' is invalid. Try again. Valid options are 'ap', 'noap' and 'test'\n"
+		echo -e "\nThe switch '$1' is invalid. Try again. Valid options are 'ap', 'noap', 'batt', 'nobatt' and 'test'\n"
 		exit 1
 		;;
 esac
