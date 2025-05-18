@@ -268,10 +268,6 @@ setup1()
 
 
 	# Added in 1.0.4 May 2025:
-	echo -e "\n"$GREEN"Disabling getty@tty1.service"$RESET""
-	systemctl stop getty@tty1.service
-	systemctl disable getty@tty1.service
-	systemctl mask getty@tty1.service
 	echo -e "\n"$GREEN"Disabling serial-getty@ttyAMA0.service"$RESET""
 	systemctl stop serial-getty@ttyAMA0.service
 	systemctl disable serial-getty@ttyAMA0.service
