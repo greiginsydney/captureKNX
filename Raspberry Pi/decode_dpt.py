@@ -251,6 +251,34 @@ def DPT12(sub_DPT, value):
     return (value, unit)
 
 
+def DPT13(sub_DPT, value):
+    '''
+    4-octet signed value. Counter pulses & electrical energy
+    '''
+    unit = ""
+    if sub_DPT == 1:
+        pass
+    elif sub_DPT == 2:
+        pass
+    elif sub_DPT == 10:
+        unit = "Wh"
+    elif sub_DPT == 11:
+        unit = "VAh"
+    elif sub_DPT == 12:
+        unit = "VARh"
+    elif sub_DPT == 13:
+        unit = "kWh"
+    elif sub_DPT == 14:
+        unit = "kVAh"
+    elif sub_DPT == 15:
+        unit = "kVARh"
+    elif sub_DPT == 16:
+        unit = "MWh"
+    elif sub_DPT == 100:
+        unit = "s"
+    return (value, unit)
+
+
 '''
 def DPT16(sub_DPT, value):
     It looks like knxd has already decoded DPT 16
