@@ -285,13 +285,13 @@ def DPT14(sub_DPT, value):
     '''
     unit = ""
     if sub_DPT == 0:
-        unit = "ms^-2"
+        unit = "m/s²"
     if sub_DPT == 1:
-        unit = "rad s^-2"
+        unit = "rad/s²"
     elif sub_DPT == 2:
-        unit = "J mol^-1"
+        unit = "J/mol"
     elif sub_DPT == 3:
-        unit = "s^-1"
+        unit = "1/s"
     elif sub_DPT == 4:
         unit = "mol"
     elif sub_DPT == 5:
@@ -301,49 +301,49 @@ def DPT14(sub_DPT, value):
     elif sub_DPT == 7:
         unit = "°"
     elif sub_DPT == 8:
-        unit = "J s"
+        unit = "Js"
     elif sub_DPT == 9:
-        unit = "rad s^-1"
+        unit = "rad/s"
     elif sub_DPT == 10:
         unit = "m²"
     elif sub_DPT == 11:
         unit = "F"
     elif sub_DPT == 12:
-        unit = "C m^-2"
+        unit = "C/m²"
     elif sub_DPT == 13:
-        unit = "C m^-3"
+        unit = "C/m³"
     elif sub_DPT == 14:
-        unit = "m² N-1"
+        unit = "m²/N"
     elif sub_DPT == 15:
         unit = "S"
     elif sub_DPT == 16:
         unit = "S"
     elif sub_DPT == 17:
-        unit = "kg m^-3"
+        unit = "kg/m³"
     elif sub_DPT == 18:
         unit = "C"
     elif sub_DPT == 19:
         unit = "A"
     elif sub_DPT == 20:
-        unit = "A m^-2"
+        unit = "A/m²"
     elif sub_DPT == 21:
         unit = "C m"
     elif sub_DPT == 22:
-        unit = "C m^-2"
+        unit = "C/m²"
     elif sub_DPT == 23:
-        unit = "V m^-1"
+        unit = "V/m"
     elif sub_DPT == 24:
         unit = "c"
     elif sub_DPT == 25:
-        unit = "C m^-2"
+        unit = "C/m²"
     elif sub_DPT == 26:
-        unit = "C m^-2"
+        unit = "C/m²"
     elif sub_DPT == 27:
         unit = "V"
     elif sub_DPT == 28:
         unit = "V"
     elif sub_DPT == 29:
-        unit = "A m²"
+        unit = "Am²"
     elif sub_DPT == 30:
         unit = "V"
     elif sub_DPT == 31:
@@ -353,9 +353,9 @@ def DPT14(sub_DPT, value):
     elif sub_DPT == 33:
         unit = "Hz"
     elif sub_DPT == 34:
-        unit = "rad s^-1"
+        unit = "rad/s"
     elif sub_DPT == 35:
-        unit = "J K^-1"
+        unit = "J/K"
     elif sub_DPT == 36:
         unit = "W"
     elif sub_DPT == 37:
@@ -367,31 +367,31 @@ def DPT14(sub_DPT, value):
     elif sub_DPT == 40:
         unit = "J"
     elif sub_DPT == 41:
-        unit = "cd m^-2"
+        unit = "cd/m²"
     elif sub_DPT == 42:
         unit = "lm"
     elif sub_DPT == 43:
         unit = "cd"
     elif sub_DPT == 44:
-        unit = "A m^-1"
+        unit = "A/m"
     elif sub_DPT == 45:
         unit = "Wb"
     elif sub_DPT == 46:
         unit = "T"
     elif sub_DPT == 47:
-        unit = "A m²"
+        unit = "Am²"
     elif sub_DPT == 48:
         unit = "T"
     elif sub_DPT == 49:
-        unit = "A m^-1"
+        unit = "A/m"
     elif sub_DPT == 50:
         unit = "A"
     elif sub_DPT == 51:
         unit = "kg"
     elif sub_DPT == 52:
-        unit = "kg s^-1"
+        unit = "kg/s"
     elif sub_DPT == 53:
-        unit = "N s^-1"
+        unit = "N/s"
     elif sub_DPT == 54:
         unit = "rad"
     elif sub_DPT == 55:
@@ -413,13 +413,13 @@ def DPT14(sub_DPT, value):
     elif sub_DPT == 63:
         unit = "sr"
     elif sub_DPT == 64:
-        unit = "W m^-2"
+        unit = "W/m²"
     elif sub_DPT == 65:
-        unit = "m s^-1"
+        unit = "m/s"
     elif sub_DPT == 66:
         unit = "Pa"
     elif sub_DPT == 67:
-        unit = "Nm^-1"
+        unit = "N/m"
     elif sub_DPT == 68:
         unit = "°C"
     elif sub_DPT == 69:
@@ -427,11 +427,11 @@ def DPT14(sub_DPT, value):
     elif sub_DPT == 70:
         unit = "K"
     elif sub_DPT == 71:
-        unit = "JK^-1"
+        unit = "J/K"
     elif sub_DPT == 72:
-        unit = "W m^-1 K^-1"
+        unit = "W/mK"
     elif sub_DPT == 73:
-        unit = "V K^-1"
+        unit = "V/K"
     elif sub_DPT == 74:
         unit = "s"
     elif sub_DPT == 75:
@@ -439,7 +439,7 @@ def DPT14(sub_DPT, value):
     elif sub_DPT == 76:
         unit = "m³"
     elif sub_DPT == 77:
-        unit = "m³ s^-1"
+        unit = "m³/s"
     elif sub_DPT == 78:
         unit = "N"
     elif sub_DPT == 79:
