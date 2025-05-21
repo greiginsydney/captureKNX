@@ -1268,7 +1268,8 @@ test_install()
 
 	echo '-------------------------------------'
 	set +e #Suspend the error trap
-	lastTelegram=$(sed -n -E 's/^(.*) ([[:digit:]]+)$/\2/p' /home/pi/log/telegraf/debug_output.log | tail -1)
+	telegrafDebugFile="/var/log/telegraf/debug_output.log"
+	lastTelegram=$(sed -n -E 's/^(.*) ([[:digit:]]+)$/\2/p' $telegrafDebugFile | tail -1)
 	if [[ $lastTelegram ]];
 	then
 		((lastTelegram=lastTelegram/1000000000))
@@ -1276,7 +1277,7 @@ test_install()
 		lastTelegramDate=$(date -d @"$lastTelegram" +"%Y %b %d %H:%M:%S %Z")
 		echo -e "Last successful telegram: $lastTelegramDate"
 	else
-		echo -e "Last successful telegram unknown. /home/pi/log/telegraf/debug_output.log returned no result. Try again"
+		echo -e "Last successful telegram unknown. $telegrafDebugFile returned no result. Try again"
 	fi
 	echo ''
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
