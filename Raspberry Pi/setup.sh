@@ -286,10 +286,10 @@ setup1()
 		if dpkg --compare-versions $isKnxd "lt" $latestKnxdVersion ;
 		then
 			echo -e ""$GREEN"TODO: Updating knxd"$RESET""
-			
+
 			# TODO: Upgrade installed version
 			# TODO: If we upgrade, make sure we don't overwrite the user's previous knxd.conf!
-			
+
 		else
 			echo -e ""$GREEN"No knxd upgrade required"$RESET""
 		fi
@@ -329,7 +329,7 @@ setup1()
 		echo -e "\n"$GREEN"Installing KNXDclient"$RESET""
 		sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient"
 	fi
- 
+
 	echo -e "\n"$GREEN"Installing requests"$RESET""
 	sudo -u ${SUDO_USER} bash  -c "source /home/${SUDO_USER}/venv/bin/activate && python3 -m pip install requests"
 
@@ -408,7 +408,7 @@ setup1()
 		else
 			echo -e ""$GREEN"No grafana upgrade required"$RESET""
 		fi
-		
+
 	else
 		echo -e "\n"$GREEN"Installing grafana"$RESET""
 		apt-get install -y apt-transport-https software-properties-common wget
@@ -836,7 +836,7 @@ setup3()
 			local wlanId=$(nmcli -t -f NAME,DEVICE connection show | grep $thisConnection | cut -d: -f2)
 			if [[ "$wlanId" =~ "wlan" ]];
 			then
-				local powerSave=$(nmcli -p connection show $thisConnection | grep 802-11-wireless.powersave | cut -s -d : -f 2 | tr -cd '0-9') 
+				local powerSave=$(nmcli -p connection show $thisConnection | grep 802-11-wireless.powersave | cut -s -d : -f 2 | tr -cd '0-9')
 				case $powerSave in
 					('')
 						echo -e ""$YELLOW"FAIL:"$RESET" $wlanId returned no Wi-Fi power save value"
@@ -1086,7 +1086,7 @@ test_install()
 				echo ''
 				;;
 		esac
-		powerSave=$(nmcli -p connection show $wifiConnection | grep 802-11-wireless.powersave | cut -s -d : -f 2 | tr -cd '0-9') 
+		powerSave=$(nmcli -p connection show $wifiConnection | grep 802-11-wireless.powersave | cut -s -d : -f 2 | tr -cd '0-9')
 		# echo "|$powerSave|"
 		case $powerSave in
 			('0')
@@ -1324,7 +1324,7 @@ test_install()
 	else
 		echo -e ""$GREEN"PASS:"$RESET captureKNX.log reports no unknown group addresses""
 	fi
-	
+
 	#Reconstitute DPTs as a comma-delimited string:
 	if [[ ! (${#unknownDPTs[@]} == 0) ]];
 	then
