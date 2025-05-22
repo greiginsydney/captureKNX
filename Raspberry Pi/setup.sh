@@ -1279,6 +1279,70 @@ test_install()
 	else
 		echo -e "Last successful telegram unknown. $telegrafDebugFile returned no result. Try again"
 	fi
+
+ 	local captureKnxLogFile="/home/pi/captureKNX/log/captureKNX.log" # TODO: remove this baked-in reference to 'pi'
+	declare -a unknownGroups=()
+	declare -a unknownDPTs=()
+	while read line;
+	do
+		# Find and create a de-duped list of all unknown group addresses:
+		if [[ "$line" =~ "Exception decoding a telegram" ]];
+		then
+			# Extract GA from here: "<preamble> The telegram has been discarded. '8/3/1'"
+			local unknownGroup=$(echo $line | cut -d "'" -f2)
+			if [[ ! " ${unknownGroups[@]} " =~ "$unknownGroup" ]];
+			then
+				unknownGroups+=("$unknownGroup")
+			fi
+		fi
+		# Find and create a de-duped list of all unknown DataPoint Types:
+		if [[ "$line" =~ "is not a valid KNXDPT" ]];
+		then
+			# Extract DPT from here: "<preamble>. 255 is not a valid KNXDPT"
+			local unknownDPT=$(echo $line |	sed -E 's/.*\. ([[:digit:]]+.) is not a valid KNXDPT$/\1/')
+			if [[ ! " ${unknownDPTs[@]} " =~ "$unknownDPT" ]];
+			then
+				unknownDPTs+=("$unknownDPT")
+			fi
+		fi
+	done < $captureKnxLogFile
+	#Reconstitute group addresses as a comma-delimited string:
+	if [[ ! (${#unknownGroups[@]} == 0) ]];
+	then
+		for oneGroup in "${unknownGroups[@]}"
+		do
+			unknownGroupsString+=$oneGroup
+			unknownGroupsString+=", "
+		done
+		unknownGroupsString=$(echo $unknownGroupsString | sed 's/,*$//' ) # Strip the trailing comma and space
+		if [[ (${#unknownGroups[@]} == 1) ]];
+		then
+			echo -e ""$YELLOW"FAIL:"$RESET captureKNX.log reports unknown Group Address: $unknownGroupsString""
+		else
+			echo -e ""$YELLOW"FAIL:"$RESET captureKNX.log reports unknown Group Addresses: $unknownGroupsString""
+		fi
+	else
+		echo -e ""$GREEN"PASS:"$RESET captureKNX.log reports no unknown group addresses""
+	fi
+	
+	#Reconstitute DPTs as a comma-delimited string:
+	if [[ ! (${#unknownDPTs[@]} == 0) ]];
+	then
+		for oneDPT in "${unknownDPTs[@]}"
+		do
+			unknownDPTsString+=$oneDPT
+			unknownDPTsString+=", "
+		done
+		unknownDPTsString=$(echo $unknownDPTsString | sed 's/,*$//' ) # Strip the trailing comma and space
+		if [[ (${#unknownDPTs[@]} == 1) ]];
+		then
+			echo -e ""$YELLOW"FAIL:"$RESET captureKNX.log reports unknown DPT: $unknownDPTsString""
+		else
+			echo -e ""$YELLOW"FAIL:"$RESET captureKNX.log reports unknown DPTs: $unknownDPTsString""
+		fi
+	else
+		echo -e ""$GREEN"PASS:"$RESET captureKNX.log reports no unknown DPTs""
+	fi
 	echo ''
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
 	echo ''
