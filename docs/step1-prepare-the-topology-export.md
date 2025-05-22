@@ -23,7 +23,7 @@ The Topology provides us with the details of each sending device, the Group Addr
 3. Click 'Export' on the mini-menu that appears when you hover, and save the project file on your machine.
 4. Copy this file to the /home/pi/ directory on the Pi. (You don't need to change its name or do anything else).
 
-> Not sure how to copy? I use a great util called "WinSCP".
+> Not sure how to copy? I use a great util called "[WinSCP](https://winscp.net/eng/index.php)".
 
    TODO: Can I prompt for the password on the Pi to allow the extraction to take place?
 

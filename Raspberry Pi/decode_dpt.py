@@ -251,6 +251,204 @@ def DPT12(sub_DPT, value):
     return (value, unit)
 
 
+def DPT13(sub_DPT, value):
+    '''
+    4-octet signed value. Counter pulses & electrical energy
+    '''
+    unit = ""
+    if sub_DPT == 1:
+        pass
+    elif sub_DPT == 2:
+        pass
+    elif sub_DPT == 10:
+        unit = "Wh"
+    elif sub_DPT == 11:
+        unit = "VAh"
+    elif sub_DPT == 12:
+        unit = "VARh"
+    elif sub_DPT == 13:
+        unit = "kWh"
+    elif sub_DPT == 14:
+        unit = "kVAh"
+    elif sub_DPT == 15:
+        unit = "kVARh"
+    elif sub_DPT == 16:
+        unit = "MWh"
+    elif sub_DPT == 100:
+        unit = "s"
+    return (value, unit)
+
+
+def DPT14(sub_DPT, value):
+    '''
+    4-octet float value. Lots of SI(?) units
+    '''
+    unit = ""
+    if sub_DPT == 0:
+        unit = "m/s²"
+    if sub_DPT == 1:
+        unit = "rad/s²"
+    elif sub_DPT == 2:
+        unit = "J/mol"
+    elif sub_DPT == 3:
+        unit = "1/s"
+    elif sub_DPT == 4:
+        unit = "mol"
+    elif sub_DPT == 5:
+        pass
+    elif sub_DPT == 6:
+        unit = "rad"
+    elif sub_DPT == 7:
+        unit = "°"
+    elif sub_DPT == 8:
+        unit = "Js"
+    elif sub_DPT == 9:
+        unit = "rad/s"
+    elif sub_DPT == 10:
+        unit = "m²"
+    elif sub_DPT == 11:
+        unit = "F"
+    elif sub_DPT == 12:
+        unit = "C/m²"
+    elif sub_DPT == 13:
+        unit = "C/m³"
+    elif sub_DPT == 14:
+        unit = "m²/N"
+    elif sub_DPT == 15:
+        unit = "S"
+    elif sub_DPT == 16:
+        unit = "S"
+    elif sub_DPT == 17:
+        unit = "kg/m³"
+    elif sub_DPT == 18:
+        unit = "C"
+    elif sub_DPT == 19:
+        unit = "A"
+    elif sub_DPT == 20:
+        unit = "A/m²"
+    elif sub_DPT == 21:
+        unit = "C m"
+    elif sub_DPT == 22:
+        unit = "C/m²"
+    elif sub_DPT == 23:
+        unit = "V/m"
+    elif sub_DPT == 24:
+        unit = "c"
+    elif sub_DPT == 25:
+        unit = "C/m²"
+    elif sub_DPT == 26:
+        unit = "C/m²"
+    elif sub_DPT == 27:
+        unit = "V"
+    elif sub_DPT == 28:
+        unit = "V"
+    elif sub_DPT == 29:
+        unit = "Am²"
+    elif sub_DPT == 30:
+        unit = "V"
+    elif sub_DPT == 31:
+        unit = "J"
+    elif sub_DPT == 32:
+        unit = "N"
+    elif sub_DPT == 33:
+        unit = "Hz"
+    elif sub_DPT == 34:
+        unit = "rad/s"
+    elif sub_DPT == 35:
+        unit = "J/K"
+    elif sub_DPT == 36:
+        unit = "W"
+    elif sub_DPT == 37:
+        unit = "J"
+    elif sub_DPT == 38:
+        unit = "Ω"
+    elif sub_DPT == 39:
+        unit = "m"
+    elif sub_DPT == 40:
+        unit = "J"
+    elif sub_DPT == 41:
+        unit = "cd/m²"
+    elif sub_DPT == 42:
+        unit = "lm"
+    elif sub_DPT == 43:
+        unit = "cd"
+    elif sub_DPT == 44:
+        unit = "A/m"
+    elif sub_DPT == 45:
+        unit = "Wb"
+    elif sub_DPT == 46:
+        unit = "T"
+    elif sub_DPT == 47:
+        unit = "Am²"
+    elif sub_DPT == 48:
+        unit = "T"
+    elif sub_DPT == 49:
+        unit = "A/m"
+    elif sub_DPT == 50:
+        unit = "A"
+    elif sub_DPT == 51:
+        unit = "kg"
+    elif sub_DPT == 52:
+        unit = "kg/s"
+    elif sub_DPT == 53:
+        unit = "N/s"
+    elif sub_DPT == 54:
+        unit = "rad"
+    elif sub_DPT == 55:
+        unit = "°"
+    elif sub_DPT == 56:
+        unit = "W"
+    elif sub_DPT == 57:
+        pass
+    elif sub_DPT == 58:
+        unit = "Pa"
+    elif sub_DPT == 59:
+        unit = "Ω"
+    elif sub_DPT == 60:
+        unit = "Ω"
+    elif sub_DPT == 61:
+        unit = "Ωm"
+    elif sub_DPT == 62:
+        unit = "H"
+    elif sub_DPT == 63:
+        unit = "sr"
+    elif sub_DPT == 64:
+        unit = "W/m²"
+    elif sub_DPT == 65:
+        unit = "m/s"
+    elif sub_DPT == 66:
+        unit = "Pa"
+    elif sub_DPT == 67:
+        unit = "N/m"
+    elif sub_DPT == 68:
+        unit = "°C"
+    elif sub_DPT == 69:
+        unit = "K"
+    elif sub_DPT == 70:
+        unit = "K"
+    elif sub_DPT == 71:
+        unit = "J/K"
+    elif sub_DPT == 72:
+        unit = "W/mK"
+    elif sub_DPT == 73:
+        unit = "V/K"
+    elif sub_DPT == 74:
+        unit = "s"
+    elif sub_DPT == 75:
+        unit = "Nm"
+    elif sub_DPT == 76:
+        unit = "m³"
+    elif sub_DPT == 77:
+        unit = "m³/s"
+    elif sub_DPT == 78:
+        unit = "N"
+    elif sub_DPT == 79:
+        unit = "J"
+    elif sub_DPT == 80:
+        unit = "VA"
+    return (value, unit)
+
+
 '''
 def DPT16(sub_DPT, value):
     It looks like knxd has already decoded DPT 16

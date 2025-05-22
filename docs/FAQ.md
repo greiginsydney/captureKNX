@@ -74,7 +74,7 @@ If you're re-deploying a captureKNX to a new site you'll want to cleanse the exi
 Edit this code snippet from the [CLI documentation](https://docs.influxdata.com/influxdb/cloud/write-data/delete-data/) with a start date before you commenced the build, and a stop date that's tomorrow or later. (It's OK with you flushing data to a future-dated event).
 
 ```text
-sudo influx delete --bucket captureKNX --start 2024-01-01T00:00:00Z --stop 2024-12-31T00:00:00Z
+sudo influx delete --bucket captureKNX --start 2024-01-01T00:00:00Z --stop 2025-12-31T00:00:00Z
 ```
 
 [Top](#frequently-asked-questions)

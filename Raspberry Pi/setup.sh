@@ -266,9 +266,17 @@ setup1()
 		systemctl mask dnsmasq
 	fi
 
+
+	# Added in 1.0.4 May 2025:
+	echo -e "\n"$GREEN"Disabling serial-getty@ttyAMA0.service"$RESET""
+	systemctl stop serial-getty@ttyAMA0.service
+	systemctl disable serial-getty@ttyAMA0.service
+	systemctl mask serial-getty@ttyAMA0.service
+
+
 	set +e #Suspend the error trap
 	#isKnxd=$(command -v knxd)
-	isKnxd=$(dpkg -s knxd | grep "Version: " | cut -d ' ' -f2)
+	isKnxd=$(dpkg -s knxd 2>/dev/null | grep "Version: " | cut -d ' ' -f2)
 	set -e #Resume the error trap
 	if [[ $isKnxd ]];
 	then
@@ -278,10 +286,10 @@ setup1()
 		if dpkg --compare-versions $isKnxd "lt" $latestKnxdVersion ;
 		then
 			echo -e ""$GREEN"TODO: Updating knxd"$RESET""
-			
+
 			# TODO: Upgrade installed version
 			# TODO: If we upgrade, make sure we don't overwrite the user's previous knxd.conf!
-			
+
 		else
 			echo -e ""$GREEN"No knxd upgrade required"$RESET""
 		fi
@@ -321,7 +329,7 @@ setup1()
 		echo -e "\n"$GREEN"Installing KNXDclient"$RESET""
 		sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient"
 	fi
- 
+
 	echo -e "\n"$GREEN"Installing requests"$RESET""
 	sudo -u ${SUDO_USER} bash  -c "source /home/${SUDO_USER}/venv/bin/activate && python3 -m pip install requests"
 
@@ -400,7 +408,7 @@ setup1()
 		else
 			echo -e ""$GREEN"No grafana upgrade required"$RESET""
 		fi
-		
+
 	else
 		echo -e "\n"$GREEN"Installing grafana"$RESET""
 		apt-get install -y apt-transport-https software-properties-common wget
@@ -818,23 +826,32 @@ setup3()
 
 	# Wi-Fi Power Save
 	# Disable Wi-Fi power save mode:
-	if iw wlan0 get power_save | grep -q 'on';
+	local activeConnections=$(nmcli -t c s -a | awk '!/loopback/' | cut -d: -f 1  )
+	if [ ! -z "$activeConnections" ];
 	then
-		iw wlan0 set power_save off
-		echo -e ""$GREEN"Disabled Wi-Fi power save mode"$RESET""
-	else
-		echo -e "Wi-Fi power save mode is already off"
-	fi
-	# Permanently disable Wi-Fi power save mode:
-	if [ -f /etc/rc.local ];
-	then
-		if grep -q '/sbin/iw dev wlan0 set power_save off' /etc/rc.local;
-		then
-			echo -e 'Wi-Fi power save mode is already disabled in /etc/rc.local'
-		else
-			sed -i '/^exit 0/i \/sbin\/iw dev wlan0 set power_save off\n' /etc/rc.local
-			echo -e ""$GREEN"Wi-Fi power save mode disabled in /etc/rc.local"$RESET""
-		fi
+		# Loop through them:
+		IFS=$'\n'
+		for thisConnection in $activeConnections;
+		do
+			local wlanId=$(nmcli -t -f NAME,DEVICE connection show | grep $thisConnection | cut -d: -f2)
+			if [[ "$wlanId" =~ "wlan" ]];
+			then
+				local powerSave=$(nmcli -p connection show $thisConnection | grep 802-11-wireless.powersave | cut -s -d : -f 2 | tr -cd '0-9')
+				case $powerSave in
+					('')
+						echo -e ""$YELLOW"FAIL:"$RESET" $wlanId returned no Wi-Fi power save value"
+						;;
+					('2')
+						echo -e ""$GREEN"PASS:"$RESET" $wlanId Wi-Fi power save is already OFF"
+						;;
+					(*)
+						echo -e ""$GREEN"PASS:"$RESET" $wlanId Wi-Fi power save has been turned OFF"
+						nmcli connection modify $thisConnection 802-11-wireless.powersave 2
+						;;
+				esac
+			fi
+		done
+		unset IFS
 	fi
 
 	echo ''
@@ -845,7 +862,7 @@ setup3()
 
 read_TTY()
 {
-	serial=$(udevadm info -a /dev/ttyAMA0  | grep KERNELS.*serial | cut -d'=' -f3 | xargs )
+	serial=$(udevadm info -a /dev/ttyAMA0  | grep KERNELS.*serial\" | cut -d'=' -f3 | xargs )
 	id=$(udevadm info -a /dev/ttyAMA0  | grep  \{id\} | cut -d'=' -f3 | xargs )
 	if [[ $serial ]];
 	then
@@ -900,8 +917,7 @@ test_install()
 	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
 	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
 	then
-		BATTERY_VOLTAGE=$(cat /sys/devices/platform/soc/soc:rpi_rtc/rtc/rtc0/battery_voltage)
-		BATTERY_VOLTAGE=$(awk -v var="$BATTERY_VOLTAGE" 'BEGIN { printf "%.2f\n", var / 1000000 }')
+		BATTERY_VOLTAGE=$(vcgencmd pmic_read_adc BATT_V | cut -d = -f 2 | cut -d V -f 1 | xargs printf "%.*f\n" 2)
 		echo -n "Battery : ${BATTERY_VOLTAGE}V"
 		if grep -q 'dtparam=rtc_bbat_vchg=3000000' /boot/firmware/config.txt;
 		then
@@ -982,7 +998,9 @@ test_install()
 				elif [[ $connectedType == "wifi" ]];
 				then
 					isWiFi="true"
-     					local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
+     					local wifiConnection=$thisConnection # Used by the Power-Save test further down
+					local wlanId=$(nmcli -t -f NAME,DEVICE connection show | grep $thisConnection | cut -d: -f2)
+					local connectedSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
 					local connectedChannel=$(grep -r '^channel=' $connectionFile | cut -s -d = -f 2)
 					if [ ! -z "$connectedChannel" ]; then ((ap_test=ap_test+16)); fi
 				fi
@@ -1045,7 +1063,7 @@ test_install()
 			(10)
 				# Good. Wi-Fi client.
 				echo -e ""$GREEN"PASS:"$RESET" The Pi is a Wi-Fi client, not an Access Point"
-				echo -e ""$GREEN"PASS:"$RESET" It has an active connection to this/these SSIDs: $connectedSsid"
+				echo -e ""$GREEN"PASS:"$RESET" It has an active connection to SSID(s): $connectedSsid"
 				;;
 			(22)
 				# Good-ish. Wi-Fi AP.
@@ -1068,12 +1086,25 @@ test_install()
 				echo ''
 				;;
 		esac
-		if iw wlan0 get power_save | grep -q 'on';
-		then
-			echo -e ""$YELLOW"FAIL:"$RESET" Wi-Fi power save is ON"
-		else
-			echo -e ""$GREEN"PASS:"$RESET" Wi-Fi power save is OFF"
-		fi
+		powerSave=$(nmcli -p connection show $wifiConnection | grep 802-11-wireless.powersave | cut -s -d : -f 2 | tr -cd '0-9')
+		# echo "|$powerSave|"
+		case $powerSave in
+			('0')
+				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId Wi-Fi power save is set to 'default' (ambiguous)"
+				;;
+			('1')
+				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId Wi-Fi power save is set to 'ignore' (ambiguous)"
+				;;
+			('2')
+				echo -e ""$GREEN"PASS:"$RESET" $wlanId Wi-Fi power save is OFF"
+				;;
+			('3')
+				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId Wi-Fi power save is ON"
+				;;
+			(*)
+				echo -e ""$YELLOW"FAIL:"$RESET" $wlanId Wi-Fi power save test returned an unexpected response: $powerSave"
+				;;
+		esac
 	fi
 	echo '-------------------------------------'
 	# ================== END Wi-Fi TESTS ==================
@@ -1228,7 +1259,8 @@ test_install()
 	isKnxProject=$(find /home/${SUDO_USER}/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isKnxProject ]];
 	then
-		echo -e ""$GREEN"PASS:"$RESET" knx project file $isKnxProject found"
+		creationDatestamp=$(stat -c %w /home/$isKnxProject | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
+		echo -e ""$GREEN"PASS:"$RESET" knx project file $isKnxProject found, created $creationDatestamp"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" knx project file NOT found"
 		echo -e "      Copy one across to the /home/${SUDO_USER}/ folder and 'sudo systemctl restart captureKNX'"
@@ -1236,7 +1268,8 @@ test_install()
 
 	echo '-------------------------------------'
 	set +e #Suspend the error trap
-	lastTelegram=$(sed -n -E 's/^(.*) ([[:digit:]]+)$/\2/p' /home/pi/log/telegraf/debug_output.log | tail -1)
+	telegrafDebugFile="/var/log/telegraf/debug_output.log"
+	lastTelegram=$(sed -n -E 's/^(.*) ([[:digit:]]+)$/\2/p' $telegrafDebugFile | tail -1)
 	if [[ $lastTelegram ]];
 	then
 		((lastTelegram=lastTelegram/1000000000))
@@ -1244,7 +1277,71 @@ test_install()
 		lastTelegramDate=$(date -d @"$lastTelegram" +"%Y %b %d %H:%M:%S %Z")
 		echo -e "Last successful telegram: $lastTelegramDate"
 	else
-		echo -e "Last successful telegram unknown. /home/pi/log/telegraf/debug_output.log returned no result. Try again"
+		echo -e "Last successful telegram unknown. $telegrafDebugFile returned no result. Try again"
+	fi
+
+ 	local captureKnxLogFile="/home/pi/captureKNX/log/captureKNX.log" # TODO: remove this baked-in reference to 'pi'
+	declare -a unknownGroups=()
+	declare -a unknownDPTs=()
+	while read line;
+	do
+		# Find and create a de-duped list of all unknown group addresses:
+		if [[ "$line" =~ "Exception decoding a telegram" ]];
+		then
+			# Extract GA from here: "<preamble> The telegram has been discarded. '8/3/1'"
+			local unknownGroup=$(echo $line | cut -d "'" -f2)
+			if [[ ! " ${unknownGroups[@]} " =~ "$unknownGroup" ]];
+			then
+				unknownGroups+=("$unknownGroup")
+			fi
+		fi
+		# Find and create a de-duped list of all unknown DataPoint Types:
+		if [[ "$line" =~ "is not a valid KNXDPT" ]];
+		then
+			# Extract DPT from here: "<preamble>. 255 is not a valid KNXDPT"
+			local unknownDPT=$(echo $line |	sed -E 's/.*\. ([[:digit:]]+.) is not a valid KNXDPT$/\1/')
+			if [[ ! " ${unknownDPTs[@]} " =~ "$unknownDPT" ]];
+			then
+				unknownDPTs+=("$unknownDPT")
+			fi
+		fi
+	done < $captureKnxLogFile
+	#Reconstitute group addresses as a comma-delimited string:
+	if [[ ! (${#unknownGroups[@]} == 0) ]];
+	then
+		for oneGroup in "${unknownGroups[@]}"
+		do
+			unknownGroupsString+=$oneGroup
+			unknownGroupsString+=", "
+		done
+		unknownGroupsString=$(echo $unknownGroupsString | sed 's/,*$//' ) # Strip the trailing comma and space
+		if [[ (${#unknownGroups[@]} == 1) ]];
+		then
+			echo -e ""$YELLOW"WARN:"$RESET captureKNX.log reports unknown Group Address: $unknownGroupsString""
+		else
+			echo -e ""$YELLOW"WARN:"$RESET captureKNX.log reports unknown Group Addresses: $unknownGroupsString""
+		fi
+	else
+		echo -e ""$GREEN"PASS:"$RESET captureKNX.log reports no unknown group addresses""
+	fi
+
+	#Reconstitute DPTs as a comma-delimited string:
+	if [[ ! (${#unknownDPTs[@]} == 0) ]];
+	then
+		for oneDPT in "${unknownDPTs[@]}"
+		do
+			unknownDPTsString+=$oneDPT
+			unknownDPTsString+=", "
+		done
+		unknownDPTsString=$(echo $unknownDPTsString | sed 's/,*$//' ) # Strip the trailing comma and space
+		if [[ (${#unknownDPTs[@]} == 1) ]];
+		then
+			echo -e ""$YELLOW"WARN:"$RESET captureKNX.log reports unknown DPT: $unknownDPTsString""
+		else
+			echo -e ""$YELLOW"WARN:"$RESET captureKNX.log reports unknown DPTs: $unknownDPTsString""
+		fi
+	else
+		echo -e ""$GREEN"PASS:"$RESET captureKNX.log reports no unknown DPTs""
 	fi
 	echo ''
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
@@ -1392,9 +1489,10 @@ END
 		echo "Creating new Wi-Fi connection to '$wifiSsid'"
 		nmcli con add type wifi ifname wlan0 con-name hotspot autoconnect yes ssid "$wifiSsid"
 	fi
-	nmcli con modify hotspot 802-11-wireless.mode ap 802-11-wireless.band bg 802-11-wireless.channel $wifiChannel #ipv4.method shared
-	nmcli con modify hotspot wifi-sec.key-mgmt wpa-psk
-	nmcli con modify hotspot wifi-sec.psk "$wifiPwd"
+	nmcli con mod hotspot 802-11-wireless.mode ap 802-11-wireless.band bg 802-11-wireless.channel $wifiChannel #ipv4.method shared
+	nmcli con mod hotspot wifi-sec.key-mgmt wpa-psk
+	nmcli con mod hotspot wifi-sec.psk "$wifiPwd"
+	nmcli con mod hotspot wifi.powersave disable
 	nmcli con mod hotspot ipv4.addresses "${piIpV4}/${cidr_mask}" ipv4.method manual
 	nmcli con up hotspot
 }
@@ -1527,6 +1625,7 @@ unmake_ap_nmcli ()
 				nmcli con mod "$newSsid" ipv4.method auto
 			;;
 		esac
+		nmcli con mod "$newSsid" wifi.powersave disable
 		echo 'About to con up'
 		nmcli con up "$newSsid"
 		echo 'Back from con up'
@@ -1689,6 +1788,46 @@ test_64bit()
 }
 
 
+# Enable charging of the RTC backup battery. Only applies to the Pi 5
+charge_battery()
+{
+	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
+	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
+	then
+  		if ! grep -q '^dtparam=rtc_bbat_vchg=3000000' /boot/firmware/config.txt;
+		then
+			echo -e 'dtparam=rtc_bbat_vchg=3000000' >> /boot/firmware/config.txt
+			echo -e "\n"$GREEN"PASS:"$RESET \'dtparam=rtc_bbat_vchg=3000000\' added to /boot/firmware/config.txt""
+		else
+			echo -e "\n"$GREEN"INFO:"$RESET \'dtparam=rtc_bbat_vchg=3000000\' is already present in /boot/firmware/config.txt. Nothing to do""
+		fi
+	else
+		echo -e "\n"$YELLOW"FAIL:"$RESET Not a Pi 5. Nothing to do""
+	fi
+	echo ''
+}
+
+
+# Disable charging of the RTC backup battery. Only applies to the Pi 5
+no_charge_battery()
+{
+	PIMODEL=$(tr -d '\0' < /proc/device-tree/model)
+	if [[ "$PIMODEL" =~ "Raspberry Pi 5" ]];
+	then
+  		if grep -q '^dtparam=rtc_bbat_vchg=3000000' /boot/firmware/config.txt;
+		then
+			sed -i '/dtparam=rtc_bbat_vchg=3000000/d' /boot/firmware/config.txt
+			echo -e "\n"$GREEN"PASS:"$RESET \'dtparam=rtc_bbat_vchg=3000000\' removed from /boot/firmware/config.txt""
+		else
+			echo -e "\n"$GREEN"INFO:"$RESET \'dtparam=rtc_bbat_vchg=3000000\' is not present in /boot/firmware/config.txt. Nothing to do""
+		fi
+	else
+		echo -e "\n"$YELLOW"FAIL:"$RESET Not a Pi 5. Nothing to do""
+	fi
+	echo ''
+}
+
+
 # A place for me to test code within the structure of the script.
 # Ideally this function will never be released with code present. Let's see how I go.
 dev()
@@ -1723,6 +1862,12 @@ case "$1" in
 	('noap')
 		unmake_ap_nmcli
 		prompt_for_reboot
+		;;
+	('batt')
+		charge_battery
+		;;
+	('nobatt')
+		no_charge_battery
 		;;
 	('dev')
 		dev
@@ -1759,7 +1904,7 @@ case "$1" in
 		test_install
 		;;
 	(*)
-		echo -e "\nThe switch '$1' is invalid. Try again. Valid options are 'ap', 'noap' and 'test'\n"
+		echo -e "\nThe switch '$1' is invalid. Try again. Valid options are 'ap', 'noap', 'batt', 'nobatt' and 'test'\n"
 		exit 1
 		;;
 esac
