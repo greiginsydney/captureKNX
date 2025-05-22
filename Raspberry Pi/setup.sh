@@ -276,7 +276,7 @@ setup1()
 
 	set +e #Suspend the error trap
 	#isKnxd=$(command -v knxd)
-	isKnxd=$(dpkg -s knxd | grep "Version: " | cut -d ' ' -f2)
+	isKnxd=$(dpkg -s knxd 2>/dev/null | grep "Version: " | cut -d ' ' -f2)
 	set -e #Resume the error trap
 	if [[ $isKnxd ]];
 	then
