@@ -1317,9 +1317,9 @@ test_install()
 		unknownGroupsString=$(echo $unknownGroupsString | sed 's/,*$//' ) # Strip the trailing comma and space
 		if [[ (${#unknownGroups[@]} == 1) ]];
 		then
-			echo -e ""$YELLOW"FAIL:"$RESET captureKNX.log reports unknown Group Address: $unknownGroupsString""
+			echo -e ""$YELLOW"WARN:"$RESET captureKNX.log reports unknown Group Address: $unknownGroupsString""
 		else
-			echo -e ""$YELLOW"FAIL:"$RESET captureKNX.log reports unknown Group Addresses: $unknownGroupsString""
+			echo -e ""$YELLOW"WARN:"$RESET captureKNX.log reports unknown Group Addresses: $unknownGroupsString""
 		fi
 	else
 		echo -e ""$GREEN"PASS:"$RESET captureKNX.log reports no unknown group addresses""
@@ -1336,9 +1336,9 @@ test_install()
 		unknownDPTsString=$(echo $unknownDPTsString | sed 's/,*$//' ) # Strip the trailing comma and space
 		if [[ (${#unknownDPTs[@]} == 1) ]];
 		then
-			echo -e ""$YELLOW"FAIL:"$RESET captureKNX.log reports unknown DPT: $unknownDPTsString""
+			echo -e ""$YELLOW"WARN:"$RESET captureKNX.log reports unknown DPT: $unknownDPTsString""
 		else
-			echo -e ""$YELLOW"FAIL:"$RESET captureKNX.log reports unknown DPTs: $unknownDPTsString""
+			echo -e ""$YELLOW"WARN:"$RESET captureKNX.log reports unknown DPTs: $unknownDPTsString""
 		fi
 	else
 		echo -e ""$GREEN"PASS:"$RESET captureKNX.log reports no unknown DPTs""
