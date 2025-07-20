@@ -429,6 +429,10 @@ setup1()
 		fi
 	fi
 
+	# customise Grafana tab title & login screen. (TY https://volkovlabs.io/blog/how-to-customize-grafana-11.1.0/)
+	find "/usr/share/grafana/public/build" -type f -name "*.js" -print0 | xargs -0 sed -i 's|this.LoginTitle="Welcome to Grafana"|this.LoginTitle="Welcome to captureKNX"|g'
+	find "/usr/share/grafana/public/build" -type f -name "*.js" -print0 | xargs -0 sed -i 's|this.AppTitle="Grafana"|this.AppTitle="captureKNX"|g'
+
 	if [ $SUDO_USER != 'pi' ];
 	then
 		echo -e ""$GREEN"Changing user from default:"$RESET" Updated hard-coded user references to new user $SUDO_USER"
