@@ -274,6 +274,11 @@ setup1()
 	systemctl mask serial-getty@ttyAMA0.service
 
 
+	echo -e ""$GREEN"Autoremoving prior to knxd installation"$RESET""
+	apt-get autoremove -y
+	apt autoremove
+	apt-get clean
+
 	set +e #Suspend the error trap
 	#isKnxd=$(command -v knxd)
 	isKnxd=$(dpkg -s knxd 2>/dev/null | grep "Version: " | cut -d ' ' -f2)
