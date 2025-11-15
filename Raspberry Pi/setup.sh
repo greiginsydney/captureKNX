@@ -863,6 +863,11 @@ setup3()
 		unset IFS
 	fi
 
+	echo -e "\n"$GREEN"Autoremoving unneeded packages"$RESET""
+	apt-get autoremove -y
+	apt autoremove
+	apt-get clean
+
 	echo ''
 	echo -e "\n"$GREEN"Done!"$RESET""
 	echo ''
