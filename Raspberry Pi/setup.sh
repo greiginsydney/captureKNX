@@ -274,7 +274,7 @@ setup1()
 	systemctl mask serial-getty@ttyAMA0.service
 
 
-	echo -e ""$GREEN"Autoremoving prior to knxd installation"$RESET""
+	echo -e "\n"$GREEN"Autoremoving prior to knxd installation"$RESET""
 	apt-get autoremove -y
 	apt autoremove
 	apt-get clean
