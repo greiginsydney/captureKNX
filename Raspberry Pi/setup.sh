@@ -447,6 +447,7 @@ setup1()
 	fi
 
 	# customise Grafana tab title & login screen. (TY https://volkovlabs.io/blog/how-to-customize-grafana-11.1.0/)
+	echo -e "\n"$GREEN"Customising Grafana tab title & login screen"$RESET""
 	find "/usr/share/grafana/public/build" -type f -name "*.js" -print0 | xargs -0 sed -i 's|this.LoginTitle="Welcome to Grafana"|this.LoginTitle="Welcome to captureKNX"|g'
 	find "/usr/share/grafana/public/build" -type f -name "*.js" -print0 | xargs -0 sed -i 's|this.AppTitle="Grafana"|this.AppTitle="captureKNX"|g'
 
