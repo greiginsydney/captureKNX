@@ -461,10 +461,12 @@ setup1()
 	fi
 
 	# hciuart needs to be stopped and disabled before we can control the TTY port
-	systemctl stop hciuart.service
-	systemctl disable hciuart.service
-	systemctl mask hciuart.service
-
+	if systemctl --all --type service | grep -q 'hciuart.service';
+	then
+		systemctl stop hciuart.service
+		systemctl disable hciuart.service
+		systemctl mask hciuart.service
+	fi
 
 	# Customise /boot/firmware/config.txt:
 	NEEDS_REBOOT=''
