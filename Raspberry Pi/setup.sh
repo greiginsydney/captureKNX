@@ -421,7 +421,14 @@ setup1()
 
 	else
 		echo -e "\n"$GREEN"Installing grafana"$RESET""
-		apt-get install -y apt-transport-https software-properties-common wget
+		apt-get install -y apt-transport-https wget
+		releaseTest=$(sed -n -E 's/^VERSION_ID="(.*)"$/\1/p' /etc/os-release)
+		if [[ $releaseTest -lt 13 ]];
+		then
+			apt-get install -y software-properties-common #not in Trixie or later. Trixie is 13.
+		else
+			echo -e ""$GREEN"INFO:"$RESET" o/s version is $releaseTest. software-properties-common no longer applies"
+		fi
 		mkdir -p /etc/apt/keyrings/
 		wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
 		echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
