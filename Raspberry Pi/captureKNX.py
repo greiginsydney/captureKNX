@@ -169,7 +169,10 @@ async def main() -> None:
 
     except Exception as e:
         log(f'Fatal exception in main at line {e.__traceback__.tb_lineno}: {e}')
-        log(f'Destination was {packet.dst}')
+        try:
+            log(f'Destination was {packet.dst}')
+        except:
+            log(f'No destination available')
 
     finally:
         # Let's stop the connection and wait for graceful termination of the receive loop:
