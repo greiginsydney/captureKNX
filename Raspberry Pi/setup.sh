@@ -305,6 +305,12 @@ setup1()
 		cd /home/${SUDO_USER}/staging/knxd/
 		apt-get install git-core -y
 		git clone -b debian https://github.com/knxd/knxd.git
+		if [[ $releaseTest -lt 13 ]];
+		then
+			# 'systemd-dev' is not in Bookworm (aka Rls < 13). It was added in Trixie. libsystemd-dev does all we need
+			sed -i '/systemd-dev,$/d' /home/$SUDO_USER/staging/knxd/knxd/debian/control
+			echo -e ""$GREEN"INFO:"$RESET" deleted 'systemd-dev' from debian/control file, as it does not exist in Bookworm"
+		fi
 		sh knxd/install-debian.sh
 
 		# Paste in captureKNX's new default device addresses:
@@ -422,7 +428,6 @@ setup1()
 	else
 		echo -e "\n"$GREEN"Installing grafana"$RESET""
 		apt-get install -y apt-transport-https wget
-		releaseTest=$(sed -n -E 's/^VERSION_ID="(.*)"$/\1/p' /etc/os-release)
 		if [[ $releaseTest -lt 13 ]];
 		then
 			apt-get install -y software-properties-common #not in Trixie or later. Trixie is 13.
@@ -1882,6 +1887,7 @@ then
 	exit 1
 fi
 
+releaseTest=$(sed -n -E 's/^VERSION_ID="(.*)"$/\1/p' /etc/os-release)	# Referenced twice during installation
 
 case "$1" in
 
