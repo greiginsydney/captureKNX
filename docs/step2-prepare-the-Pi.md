@@ -29,6 +29,8 @@ The process to copy the operating system onto your Pi will vary slightly dependi
 
 4. You want the `Raspberry Pi OS Lite (64-bit)` `A port of Debian Trixie with no desktop environment (Compatible with Raspberry Pi 3/4/400/5` version. Click NEXT.
 
+> Trixie is recommended, however Bookworm is still supported.
+
 <p align="center">
 <img src="https://github.com/user-attachments/assets/4cc5587b-ce43-4851-a903-2d93d4a396b6" width="50%">
 </p>
