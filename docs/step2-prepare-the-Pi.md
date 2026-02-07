@@ -15,33 +15,30 @@ The process to copy the operating system onto your Pi will vary slightly dependi
 
 1. Plug the drive into your PC and launch the Raspberry Pi Imager.
 
-2. Click `CHOOSE DEVICE`:
+2. Click `Raspberry Pi 5` and NEXT:
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/48df65a7-738b-493f-9e3f-3e3defbd3766" width="50%">
+  <img src="https://github.com/user-attachments/assets/004cb38e-22f1-4ba4-b83d-8614d8fc7a35" width="50%">
 </p>
 
-3. Select a Pi 5:
- 
+3. Skipped:
+
+4. Scroll until `Raspberry Pi OS (other)` is in view and click it:
+
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/a9378ecd-231c-4dd5-99e9-89180171a1d0" width="50%">
+  <img src="https://github.com/user-attachments/assets/9886b6d9-1de6-4fbe-ab9e-8cbfc5c51ce9" width="50%">
 </p>
 
-4. Having selected the device, now click `CHOOSE OS` and select `Raspberry Pi OS (other)`:
+5. You want the `Raspberry Pi OS Lite (64-bit)` `A port of Debian Trixie with no desktop environment (Compatible with Raspberry Pi 3/4/400/5` version. Click NEXT.
+
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/1583d726-06c1-4b54-b280-9537ce648574" width="50%">
+<img src="https://github.com/user-attachments/assets/4cc5587b-ce43-4851-a903-2d93d4a396b6" width="50%">
 </p>
 
-5. You want the `Raspberry Pi OS Lite (64-bit)` `A port of Debian Bookworm with no desktop environment (Compatible with Raspberry Pi 3/4/400/5` version.
+6. At `Select your storage device`, select the destination device and then `NEXT`:
 
 <p align="center">
-<img src="https://github.com/user-attachments/assets/a6ff10f2-6b27-4745-953e-fd7cd7c4871e" width="50%">
-</p>
-
-6. Now click `CHOOSE STORAGE`, select the destination device and then `NEXT`:
-
-<p align="center">
-<img src="https://github.com/user-attachments/assets/a2443a96-bf9a-4673-a62e-5c9ddb08d7b2" width="50%">
+<img src="https://github.com/user-attachments/assets/20310362-d674-4415-a8b8-b4a768dd3257" width="50%">
 </p>
 
 7. If you've [previously baked your Wi-Fi settings into the Imager](/docs/advanced-applications.md#plug-and-play---bake-the-wi-fi-credentials-into-the-pi), you'll be asked if you want to use them in this instance. Click YES to have them applied when the card is formatted:
@@ -65,7 +62,7 @@ The process to copy the operating system onto your Pi will vary slightly dependi
 10. Upon successful completion you'll be prompted to remove the drive and plug it in to the Pi:
 
 <p align="center">
-<img src="https://github.com/user-attachments/assets/2dddabd4-85a7-4a96-9335-74cd7959549a" width="50%">
+<img src="https://github.com/user-attachments/assets/72380dd2-dd84-4b3d-bf05-87917a465b63" width="50%">
 </p>
 
 11. Done! Jump to [step3-setup-the-Pi.md](/docs/step3-setup-the-Pi.md).
