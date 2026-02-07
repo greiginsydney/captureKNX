@@ -229,7 +229,7 @@ def decode_Group_Addresses(filename, grpAddLevels):
                             name          = (GroupAddress.getAttribute('Name')).strip()
                             DptString     = (GroupAddress.getAttribute('DatapointType')).strip()
 
-                            if longAddress and DptString:
+                            if longAddress:
                                 # Both the address and DPT are crucial. Discard this GA if either is absent
                                 # Bit decoding thanks to: https://knxer.net/?p=49
                                 if grpAddLevels == 3:
@@ -244,6 +244,7 @@ def decode_Group_Addresses(filename, grpAddLevels):
                                 else:
                                     GA = longAddress
 
+                            if longAddress and DptString:
                                 # Turn the DPT back into a *string* that resembles a float: "DPST-5-1" becomes 5.001
                                 # (I couldn't get the trailing zeroes to work for all types as a float, so it's now a string)
 

@@ -274,6 +274,11 @@ setup1()
 	systemctl mask serial-getty@ttyAMA0.service
 
 
+	echo -e "\n"$GREEN"Autoremoving prior to knxd installation"$RESET""
+	apt-get autoremove -y
+	apt autoremove
+	apt-get clean
+
 	set +e #Suspend the error trap
 	#isKnxd=$(command -v knxd)
 	isKnxd=$(dpkg -s knxd 2>/dev/null | grep "Version: " | cut -d ' ' -f2)
@@ -300,6 +305,12 @@ setup1()
 		cd /home/${SUDO_USER}/staging/knxd/
 		apt-get install git-core -y
 		git clone -b debian https://github.com/knxd/knxd.git
+		if [[ $releaseTest -lt 13 ]];
+		then
+			# 'systemd-dev' is not in Bookworm (aka Rls < 13). It was added in Trixie. libsystemd-dev does all we need
+			sed -i '/systemd-dev,$/d' /home/$SUDO_USER/staging/knxd/knxd/debian/control
+			echo -e ""$GREEN"INFO:"$RESET" deleted 'systemd-dev' from debian/control file, as it does not exist in Bookworm"
+		fi
 		sh knxd/install-debian.sh
 
 		# Paste in captureKNX's new default device addresses:
@@ -353,11 +364,16 @@ setup1()
 		fi
 	else
 		echo -e "\n"$GREEN"Installing telegraf"$RESET""
+		# Install steps from here: https://www.influxdata.com/downloads/
 		rm -rf /home/$SUDO_USER/staging/telegraf
 		mkdir -pv /home/$SUDO_USER/staging/telegraf
 		cd /home/${SUDO_USER}/staging/telegraf/
-		curl -s https://repos.influxdata.com/influxdata-archive.key > influxdata-archive.key
-		echo '943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515 influxdata-archive.key' | sha256sum -c && cat influxdata-archive.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null
+		
+		# influxdata-archive.key GPG fingerprint:
+		#   Primary key fingerprint: 24C9 75CB A61A 024E E1B6  3178 7C3D 5715 9FC2 F927
+		#   Subkey fingerprint:      9D53 9D90 D332 8DC7 D6C8  D3B9 D8FF 8E1F 7DF8 B07E
+		wget -q https://repos.influxdata.com/influxdata-archive.key
+		gpg --show-keys --with-fingerprint --with-colons ./influxdata-archive.key 2>&1 | grep -q '^fpr:\+24C975CBA61A024EE1B631787C3D57159FC2F927:$' && cat influxdata-archive.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null
 		echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
 		apt-get update && apt-get install telegraf -y
 	fi
@@ -411,7 +427,13 @@ setup1()
 
 	else
 		echo -e "\n"$GREEN"Installing grafana"$RESET""
-		apt-get install -y apt-transport-https software-properties-common wget
+		apt-get install -y apt-transport-https wget
+		if [[ $releaseTest -lt 13 ]];
+		then
+			apt-get install -y software-properties-common #not in Trixie or later. Trixie is 13.
+		else
+			echo -e ""$GREEN"INFO:"$RESET" o/s version is $releaseTest. software-properties-common no longer applies"
+		fi
 		mkdir -p /etc/apt/keyrings/
 		wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
 		echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
@@ -429,6 +451,12 @@ setup1()
 		fi
 	fi
 
+	echo -e -n "\n"$GREEN"Customising Grafana tab title & login screen"$RESET""
+	# customise Grafana tab title & login screen. (TY https://volkovlabs.io/blog/how-to-customize-grafana-11.1.0/)
+	find "/usr/share/grafana/public/build" -type f -name "*.js" -print0 | xargs -0 sed -i 's|this.LoginTitle="Welcome to Grafana"|this.LoginTitle="Welcome to captureKNX"|g'
+	find "/usr/share/grafana/public/build" -type f -name "*.js" -print0 | xargs -0 sed -i 's|this.AppTitle="Grafana"|this.AppTitle="captureKNX"|g'
+	echo -e ""$GREEN" - DONE"$RESET""
+
 	if [ $SUDO_USER != 'pi' ];
 	then
 		echo -e ""$GREEN"Changing user from default:"$RESET" Updated hard-coded user references to new user $SUDO_USER"
@@ -438,10 +466,12 @@ setup1()
 	fi
 
 	# hciuart needs to be stopped and disabled before we can control the TTY port
-	systemctl stop hciuart.service
-	systemctl disable hciuart.service
-	systemctl mask hciuart.service
-
+	if systemctl --all --type service | grep -q 'hciuart.service';
+	then
+		systemctl stop hciuart.service
+		systemctl disable hciuart.service
+		systemctl mask hciuart.service
+	fi
 
 	# Customise /boot/firmware/config.txt:
 	NEEDS_REBOOT=''
@@ -853,6 +883,11 @@ setup3()
 		done
 		unset IFS
 	fi
+
+	echo -e "\n"$GREEN"Autoremoving unneeded packages"$RESET""
+	apt-get autoremove -y
+	apt autoremove
+	apt-get clean
 
 	echo ''
 	echo -e "\n"$GREEN"Done!"$RESET""
@@ -1852,6 +1887,7 @@ then
 	exit 1
 fi
 
+releaseTest=$(sed -n -E 's/^VERSION_ID="(.*)"$/\1/p' /etc/os-release)	# Referenced twice during installation
 
 case "$1" in
 
