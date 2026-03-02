@@ -1863,6 +1863,49 @@ no_charge_battery()
 }
 
 
+which_wlan()
+{
+	# Get a list of wlan devices that are type "wifi" only
+	local wlanDevices=($(nmcli device | grep wlan | awk '$2 == "wifi" {print $1}'))
+	local wlanCount=${#wlanDevices[@]}
+
+	if [ $wlanCount -eq 0 ];
+	then
+		echo -e "\n"$YELLOW"FAIL:"$RESET No wireless interfaces found. Aborting""
+		exit 1
+	elif [ $wlanCount -eq 1 ];
+	then
+		# Only one found, use it automatically
+		selectedWlan=${wlanDevices[0]}
+		# echo "Using wireless interface: $selectedWlan" >&2
+	else
+		# Multiple found, prompt user to choose
+		echo -e "Found multiple wireless interfaces" >&2
+		for i in "${!wlanDevices[@]}";
+			do
+				echo "  ${wlanDevices[$i]}: $i" >&2
+			done
+		echo
+		while true;
+		do
+			read -p "Select interface (0-$((wlanCount-1))): " selection
+			# Validate selection
+			if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 0 ] && [ "$selection" -lt $wlanCount ];
+			then
+				selectedWlan=${wlanDevices[$selection]}
+				echo "Selected: $selectedWlan" >&2
+				break
+			else
+				echo "Invalid selection" >&2
+			fi
+		done
+	fi
+
+	# Now use $selectedWlan for your operations
+	echo "$selectedWlan"
+}
+
+
 # A place for me to test code within the structure of the script.
 # Ideally this function will never be released with code present. Let's see how I go.
 dev()
