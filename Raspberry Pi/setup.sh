@@ -1401,6 +1401,16 @@ make_ap_nmcli ()
 		exit
 	fi
 
+	# Refuse to run if there's an ACTIVE 'hotspot' connection right now - an accidental re-run should never
+	# reconfigure (and disrupt) a live, working AP. A 'hotspot' that merely exists but isn't currently
+	# active (e.g. left over from an earlier run) is fine - it gets safely reused further down.
+	if nmcli -t -f NAME,ACTIVE con show | grep -Fxq 'hotspot:yes';
+	then
+		echo -e "\n"$YELLOW"FAIL:"$RESET" This Pi is already running as a Wi-Fi Access Point (an active 'hotspot' connection was found)."
+		echo -e ""$YELLOW"FAIL:"$RESET" Run 'sudo -E ./setup.sh noap' first if you want to change its settings, then re-run 'ap'."
+		exit 1
+	fi
+
 	# Checks we have a Wi-Fi interface, and if there are multiple present, has the user nominate the one to use:
 	which_wlan
 	local wifiDevice="$selectedWlan"
