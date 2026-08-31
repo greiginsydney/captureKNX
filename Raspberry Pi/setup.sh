@@ -1525,10 +1525,23 @@ END
 	systemctl enable dnsmasq
 	systemctl start dnsmasq
 
-	# Modify existing hotspot, otherwise delete and start afresh
-	if [[ $wlan0Name == "hotspot" ]];
+	# Modify existing hotspot, otherwise delete and start afresh.
+	# Check by NAME across all connections, not just what's active on $wifiDevice right now - a 'hotspot'
+	# profile can exist perfectly validly while inactive (e.g. left over from an earlier run), and nmcli
+	# happily lets you add a second, identically-named connection if you don't check for that first.
+	local hotspotUuids=($(LANG=C nmcli -t -f NAME,UUID con show | awk -F: '$1 == "hotspot" {print $2}'))
+	if [ ${#hotspotUuids[@]} -gt 0 ];
 	then
-		nmcli con mod hotspot autoconnect yes ssid "$wifiSsid"
+		if [ ${#hotspotUuids[@]} -gt 1 ];
+		then
+			echo -e ""$YELLOW"WARNING:"$RESET" Found ${#hotspotUuids[@]} connections named 'hotspot' - keeping one, removing the rest"
+			for uuid in "${hotspotUuids[@]:1}";
+			do
+				nmcli con del uuid "$uuid"
+			done
+		fi
+		# Re-assert the interface binding too, in case the surviving profile was previously bound to a different NIC:
+		nmcli con mod hotspot connection.interface-name "$wifiDevice" autoconnect yes ssid "$wifiSsid"
 	else
 		if [[ "$wlan0Name" != "" ]];
 		then
