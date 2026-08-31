@@ -16,7 +16,7 @@ import glob                         # Finding the most recent (youngest) project
 import os                           # Path manipulation
 import re                           # Used to decode the topology + escape text fields sent to telegraf
 import requests                     # To push the values to telegraf
-from xml.dom.minidom import parse   # Decoding the ETS XML file
+from xml.dom.minidom import parse, parseString       # Decoding the ETS XML file
 import zipfile                      # Reading the project file (it's just a ZIP file!)
 
 import common
@@ -26,37 +26,70 @@ from common import ETS_0_XML_FILE as ETS_0_XML_FILE
 from common import ETS_PROJECT_XML_FILE as ETS_PROJECT_XML_FILE
 
 
-def unzip_project_archive():
+def get_project_timestamp(path):
     '''
-    Walk through the user's root folder recursively in search of the most recent (youngest) project file.
-    If project file is found, compare its creation time to existing 0.XML & project.XML. If they're *younger*, exit.
-    If project file and 0 or Project are OLDER, extract the files.
-    If project file not found, just exit, as previous 0.XML & project.XML may already exist.
+    Thank you Claude.ai: Returns the LastModified timestamp (an ISO-8601 string, 
+    e.g. "2026-08-17T02:37:31Z") from a project.xml <ProjectInformation> element.
+    'path' can be either an already-extracted, plain project.xml file, OR a .knxproj
+    archive - in which case its embedded project.xml is read directly out of the zip.
+    Returns '' if the timestamp can't be determined, so callers can safely compare
+    it against other results without special-casing "file missing" or "unreadable".
     '''
     try:
-        oldest = 0  # Initialise to 1970
-        if os.path.isfile(ETS_0_XML_FILE) and os.path.isfile(ETS_PROJECT_XML_FILE):
-            # Good. We have files, that's a start.
-            # Check their datestamps:
-            oldest = min(os.path.getmtime(ETS_0_XML_FILE),os.path.getmtime(ETS_PROJECT_XML_FILE))
-
-        project_files = glob.glob(PI_USER_HOME + "/**/*.knxproj", recursive = True)
-        if project_files:
-            project_file = max(project_files, key=os.path.getctime)
-            if os.path.getctime(project_file) > oldest:
-                log(f'unzip_project_archive: Unzipping {project_file}')
-                with zipfile.ZipFile(project_file) as z:
-                    allFiles = z.namelist()
-                    for etsFile in (os.path.split(ETS_0_XML_FILE)[1], os.path.split(ETS_PROJECT_XML_FILE)[1]):
-                        for thisFile in allFiles:
-                            if etsFile == thisFile.split('/')[-1]:
-                                with open(PI_USER_HOME + '/captureKNX/' + etsFile , 'wb') as f:
-                                    f.write(z.read(thisFile))
-                                break
-            else:
-                log(f'unzip_project_archive: existing XML files are younger than {project_file}. Skipping extraction')
+        if zipfile.is_zipfile(path):
+            with zipfile.ZipFile(path) as z:
+                for name in z.namelist():
+                    if name.split('/')[-1] == os.path.split(ETS_PROJECT_XML_FILE)[1]:
+                        doc = parseString(z.read(name))
+                        break
+                else:
+                    return ''
         else:
+            if not os.path.isfile(path):
+                return ''
+            with open(path) as file:
+                doc = parse(file)
+
+        for el in doc.getElementsByTagName('ProjectInformation'):
+            return el.getAttribute('LastModified').strip()
+    except Exception as e:
+        log(f"get_project_timestamp: {type(e).__name__} reading '{path}': {e}")
+    return ''
+
+
+def unzip_project_archive():
+    '''
+    Walk through the user's root folder recursively in search of the most recently EXPORTED
+    project file - using the LastModified timestamp ETS embeds in project.xml.
+    If a project file is found and its embedded date is newer than what's already extracted,
+    extract it. If no project file is found, just exit - previous 0.XML & project.XML may
+    already exist.
+    '''
+    try:
+        project_files = glob.glob(PI_USER_HOME + "/**/*.knxproj", recursive=True)
+        if not project_files:
             log(f'unzip_project_archive: No project file found')
+            return
+
+        project_file = max(project_files, key=get_project_timestamp)
+        newest_timestamp = get_project_timestamp(project_file)
+        current_timestamp = get_project_timestamp(ETS_PROJECT_XML_FILE)
+
+        if newest_timestamp and newest_timestamp > current_timestamp:
+            log(f'unzip_project_archive: Unzipping {project_file} '
+                f'(LastModified {newest_timestamp}, current is {current_timestamp or "none"})')
+            with zipfile.ZipFile(project_file) as z:
+                allFiles = z.namelist()
+                for etsFile in (os.path.split(ETS_0_XML_FILE)[1], os.path.split(ETS_PROJECT_XML_FILE)[1]):
+                    for thisFile in allFiles:
+                        if etsFile == thisFile.split('/')[-1]:
+                            with open(PI_USER_HOME + '/captureKNX/' + etsFile, 'wb') as f:
+                                f.write(z.read(thisFile))
+                            break
+        else:
+            log(f'unzip_project_archive: existing XML files (LastModified {current_timestamp or "unknown"}) '
+                f'are not older than {project_file} ({newest_timestamp or "unreadable"}). Skipping extraction')
+
     except Exception as e:
         log(f'unzip_project_archive: {type(e).__name__} exception thrown trying to unzip archive: {e}')
 
