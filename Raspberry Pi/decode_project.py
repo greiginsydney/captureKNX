@@ -296,7 +296,7 @@ def decode_Group_Addresses(filename, grpAddLevels):
                                         # Rare, possibly junk value, maybe an old GA no longer used. e.g. "DPST-1" Format to 1.000
                                         # Valid occurrences are seen in ETS as (e.g.) DPT "9.*", a 2-byte float not fully defined.
                                         sub_dpt = '000'
-                                        log(f"decode_Group_Addresses Group Address {GA} has DPT '{DptString}' but no sub-type. Appending '000'")
+                                        log(f"decode_Group_Addresses Group Address {GA}, name = |{name}| has DPT '{DptString}' but no sub-type. Appending '000'")
                                     elif len(DPT_split) == 3:
                                         sub_dpt = DPT_split[2].zfill(3) #Right-justifies sub-dpt to three digits.
                                     else:
