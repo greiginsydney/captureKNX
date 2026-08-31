@@ -16,6 +16,7 @@ import glob                         # Finding the most recent (youngest) project
 import os                           # Path manipulation
 import re                           # Used to decode the topology + escape text fields sent to telegraf
 import requests                     # To push the values to telegraf
+import sys                          # Capturing more info from Exceptions
 from xml.dom.minidom import parse   # Decoding the ETS XML file
 import zipfile                      # Reading the project file (it's just a ZIP file!)
 
@@ -58,7 +59,7 @@ def unzip_project_archive():
         else:
             log(f'unzip_project_archive: No project file found')
     except Exception as e:
-        log(f'unzip_project_archive: Exception thrown trying to unzip archive: {e}')
+        log(f'unzip_project_archive: {type(e).__name__} exception thrown trying to unzip archive: {e}')
 
     return
 
@@ -96,7 +97,7 @@ def decode_GroupLevels(filename):
         else:
             return 1
     except Exception as e:
-        log(f"decode_GroupLevels: Exception thrown trying to read GA Style from '{filename}'. {e}")
+        log(f"decode_GroupLevels: {type(e).__name__} exception thrown trying to read GA Style from '{filename}'. {e}")
 
 
 # Decode this Topology data from 0.xml (NB: this is an edited extract):
@@ -125,7 +126,7 @@ def decode_Individual_Addresses(filename):
         with open(filename) as file:
             document = parse(file)
     except Exception as e:
-        log(f"decode_ETS_GA_Export: Exception thrown trying to read file '{filename}'. {e}")
+        log(f"decode_ETS_GA_Export: {type(e).__name__} exception thrown trying to read file '{filename}'. {e}")
 
     try:
         locations = document.getElementsByTagName('Locations')
@@ -149,8 +150,8 @@ def decode_Individual_Addresses(filename):
                     #print(f'RefId: {RefId} - Building: {building}, floor: {floor}, room: {room}')
 
     except Exception as e:
-        print(f"decode_Individual_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
-        log(f"decode_Individual_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
+        print(f"decode_Individual_Addresses: {type(e).__name__} exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
+        log(f"decode_Individual_Addresses: {type(e).__name__} exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
 
     try:
         topo = document.getElementsByTagName('Topology')
@@ -183,8 +184,8 @@ def decode_Individual_Addresses(filename):
                                         data[deviceAddress] = (device_location, name)
                                         foundAddresses += 1
     except Exception as e:
-        print(f"decode_Individual_Addresses: Exception thrown trying to read file '{filename}'. {e}")
-        log(f"decode_Individual_Addresses: Exception thrown trying to read file '{filename}'. {e}")
+        print(f"decode_Individual_Addresses: {type(e).__name__} exception thrown trying to read file '{filename}'. {e}")
+        log(f"decode_Individual_Addresses: {type(e).__name__} exception thrown trying to read file '{filename}'. {e}")
    
     log(f'decode_Individual_Addresses: found {foundLocations} locations and {foundAddresses} individual addresses')
 
@@ -217,7 +218,7 @@ def decode_Group_Addresses(filename, grpAddLevels):
         with open(filename) as file:
             document = parse(file)
     except Exception as e:
-        log(f"decode_Group_Addresses: Exception thrown trying to read file '{filename}'. {e}")
+        log(f"decode_Group_Addresses: {type(e).__name__} exception thrown trying to read file '{filename}'. {e}")
 
     try:
         for GAs in document.getElementsByTagName('GroupAddresses'):
@@ -272,15 +273,15 @@ def decode_Group_Addresses(filename, grpAddLevels):
                                 else:
                                     log(f'decode_Group_Addresses discarded incomplete address {longAddress} aka {GA}, name = |{name}|, DptString = |{DptString}|')
                                     failedGAs += 1
+
                             except Exception as e:
-                                log(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}"
-                                f"processing GA element {GroupAddress.toxml()}: {e}")
+                                log(f"decode_Group_Addresses: {type(e).__name__} exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML processing GA element {GroupAddress.toxml()}: {e}")
                                 failedGAs += 1
                                 continue
 
     except Exception as e:
-        print(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
-        log(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
+        print(f"decode_Group_Addresses: {type(e).__name__} exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
+        log(f"decode_Group_Addresses: {type(e).__name__} exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
 
     log(f"decode_Group_Addresses: found {foundGAs} group addresses and {f'another {failedGAs}' if failedGAs != 0 else 'none'} that failed decoding")
 
