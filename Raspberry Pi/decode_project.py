@@ -212,6 +212,11 @@ def decode_Group_Addresses(filename, grpAddLevels):
     data = {}
     foundGAs = 0
     failedGAs = 0
+
+    if grpAddLevels not in (1, 2, 3):
+        log(f"decode_Group_Addresses aborted. Invalid 'grpAddLevels'")
+        return None
+        
     # Parse XML from a file object
     if not os.path.isfile(filename):
         log(f"decode_Group_Addresses: file '{filename}' not found. Aborting")
