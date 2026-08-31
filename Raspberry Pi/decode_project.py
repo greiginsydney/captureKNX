@@ -123,12 +123,13 @@ def decode_Individual_Addresses(filename):
     if not os.path.isfile(filename):
         log(f"decode_Addresses: file '{filename}' not found. Aborting")
         print(f"decode_Addresses: file '{filename}' not found. Aborting")
-        return
+        return None
     try:
         with open(filename) as file:
             document = parse(file)
     except Exception as e:
-        log(f"decode_ETS_GA_Export: {type(e).__name__} exception thrown trying to read file '{filename}'. {e}")
+        log(f"decode_ETS_GA_Export: {type(e).__name__} exception thrown trying to read file '{filename}'. Aborting. ({e})")
+        return None
 
     try:
         locations = document.getElementsByTagName('Locations')
@@ -215,12 +216,13 @@ def decode_Group_Addresses(filename, grpAddLevels):
     if not os.path.isfile(filename):
         log(f"decode_Group_Addresses: file '{filename}' not found. Aborting")
         print(f"decode_Group_Addresses: file '{filename}' not found. Aborting")
-        return
+        return None
     try:
         with open(filename) as file:
             document = parse(file)
     except Exception as e:
-        log(f"decode_Group_Addresses: {type(e).__name__} exception thrown trying to read file '{filename}'. {e}")
+        log(f"decode_Group_Addresses: {type(e).__name__} exception thrown trying to read file '{filename}'. Aborting. ({e})")
+        return None
 
     try:
         for GAs in document.getElementsByTagName('GroupAddresses'):
