@@ -1406,10 +1406,10 @@ make_ap_nmcli ()
 	local wifiDevice="$selectedWlan"
 
 	# ================== START DHCP ==================
-	if  grep -q 'interface=wlan0' /etc/dnsmasq.conf;
+	if  grep -q "interface=$wifiDevice" /etc/dnsmasq.conf;
 	then
 		#Read the current values:
-		wlanLine=$(sed -n '/interface=wlan0/=' /etc/dnsmasq.conf) #This is the line number that the wlan config starts at
+		wlanLine=$(sed -n "/interface=$wifiDevice/=" /etc/dnsmasq.conf) #This is the line number that the wlan config starts at
 		oldDhcpStartIp=$(sed -n -E "$wlanLine,$ s|^\s*dhcp-range=(.*)$|\1|p" /etc/dnsmasq.conf ) # Delimiter is '|'
 		matchRegex="\s*(([0-9]{1,3}\.){3}[0-9]{1,3}),(([0-9]{1,3}\.){3}[0-9]{1,3}),(([0-9]{1,3}\.){3}[0-9]{1,3})," # Bash doesn't do digits as "\d"
 		if [[ $oldDhcpStartIp =~ $matchRegex ]] ;
@@ -1422,7 +1422,7 @@ make_ap_nmcli ()
 		echo 'No IPs in /etc/dnsmasq.conf. Adding some defaults'
 		#Create default values:
 		cat <<END >> /etc/dnsmasq.conf
-interface=wlan0      # Use the required wireless interface - usually wlan0
+interface=$wifiDevice      # Use the required wireless interface - usually wlan0
 	dhcp-range=10.10.10.10,10.10.10.100,255.255.255.0,24h
 END
 	fi
@@ -1434,7 +1434,7 @@ END
 	# ================== END DHCP ==================
 
 	# ================= START Wi-Fi =================
-	local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show wlan0 | cut -d: -f2-)
+	local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show "$wifiDevice" | cut -d: -f2-)
 	connectionFile="/etc/NetworkManager/system-connections/"$wlan0Name".nmconnection"
 	if [ -f $connectionFile ];
 	then
@@ -1526,7 +1526,7 @@ END
 			sleep 5
 		fi
 		echo "Creating new Wi-Fi connection to '$wifiSsid'"
-		nmcli con add type wifi ifname wlan0 con-name hotspot autoconnect yes ssid "$wifiSsid"
+		nmcli con add type wifi ifname "$wifiDevice" con-name hotspot autoconnect yes ssid "$wifiSsid"
 	fi
 	nmcli con mod hotspot 802-11-wireless.mode ap 802-11-wireless.band bg 802-11-wireless.channel $wifiChannel #ipv4.method shared
 	nmcli con mod hotspot wifi-sec.key-mgmt wpa-psk
@@ -1906,7 +1906,6 @@ which_wlan()
 	fi
 
 	# Now use $selectedWlan for your operations
-	echo "$selectedWlan"
 }
 
 
