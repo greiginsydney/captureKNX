@@ -80,12 +80,13 @@ def decode_GroupLevels(filename):
     if not os.path.isfile(filename):
         log(f"decode_GroupLevels: file '{filename}' not found. Aborting")
         print(f"decode_GroupLevels: file '{filename}' not found. Aborting")
-        return
+        return None
     try:
         with open(filename) as file:
             document = parse(file)
     except Exception as e:
-        log(f"decode_GroupLevels: Exception thrown trying to read file '{filename}'. {e}")
+        log(f"decode_GroupLevels: {type(e).__name__} exception thrown trying to read file '{filename}'. Aborting. ({e})")
+        return None
 
     try:
         for elements in document.getElementsByTagName('ProjectInformation'):
@@ -97,7 +98,8 @@ def decode_GroupLevels(filename):
         else:
             return 1
     except Exception as e:
-        log(f"decode_GroupLevels: {type(e).__name__} exception thrown trying to read GA Style from '{filename}'. {e}")
+        log(f"decode_GroupLevels: {type(e).__name__} exception thrown trying to read GA Style from '{filename}'. Aborting. ({e})")
+        return None
 
 
 # Decode this Topology data from 0.xml (NB: this is an edited extract):
