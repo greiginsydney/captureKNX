@@ -225,52 +225,58 @@ def decode_Group_Addresses(filename, grpAddLevels):
                 for GroupRange in GroupRanges.getElementsByTagName('GroupRange'):
                     for GroupRange2 in GroupRange.getElementsByTagName('GroupRange'):
                         for GroupAddress in GroupRange2.getElementsByTagName('GroupAddress'):
-                            longAddress   = int((GroupAddress.getAttribute('Address')).strip())
-                            name          = (GroupAddress.getAttribute('Name')).strip()
-                            DptString     = (GroupAddress.getAttribute('DatapointType')).strip()
+                            try:
+                                longAddress   = int((GroupAddress.getAttribute('Address')).strip())
+                                name          = (GroupAddress.getAttribute('Name')).strip()
+                                DptString     = (GroupAddress.getAttribute('DatapointType')).strip()
 
-                            if longAddress:
-                                # Both the address and DPT are crucial. Discard this GA if either is absent
-                                # Bit decoding thanks to: https://knxer.net/?p=49
-                                if grpAddLevels == 3:
-                                    main = longAddress >> 11
-                                    middle = (longAddress >> 8) & 0x07
-                                    sub = longAddress & 0b0000000011111111
-                                    GA = (f'{main}/{middle}/{sub}')
-                                elif grpAddLevels == 2:
-                                    main = longAddress >> 11
-                                    sub = longAddress & 0b0000011111111111
-                                    GA = (f'{main}/{sub}')
+                                if longAddress:
+                                    # Both the address and DPT are crucial. Discard this GA if either is absent
+                                    # Bit decoding thanks to: https://knxer.net/?p=49
+                                    if grpAddLevels == 3:
+                                        main = longAddress >> 11
+                                        middle = (longAddress >> 8) & 0x07
+                                        sub = longAddress & 0b0000000011111111
+                                        GA = (f'{main}/{middle}/{sub}')
+                                    elif grpAddLevels == 2:
+                                        main = longAddress >> 11
+                                        sub = longAddress & 0b0000011111111111
+                                        GA = (f'{main}/{sub}')
+                                    else:
+                                        GA = longAddress
+
+                                if longAddress and DptString:
+                                    # Turn the DPT back into a *string* that resembles a float: "DPST-5-1" becomes 5.001
+                                    # (I couldn't get the trailing zeroes to work for all types as a float, so it's now a string)
+
+                                    DPT_split = DptString.split('-')
+                                    if len(DPT_split) == 2:
+                                        # Rare, possibly junk value, maybe an old GA no longer used. e.g. "DPST-1" Format to 1.000
+                                        # Valid occurrences are seen in ETS as (e.g.) DPT "9.*", a 2-byte float not fully defined.
+                                        sub_dpt = '000'
+                                        log(f"decode_Group_Addresses Group Address {GA} has DPT '{DptString}' but no sub-type. Appending '000'")
+                                    elif len(DPT_split) == 3:
+                                        sub_dpt = DPT_split[2].zfill(3) #Right-justifies sub-dpt to three digits.
+                                    else:
+                                        # A broken DPT? Discard the whole GA
+                                        log(f"decode_Group_Addresses failed to decode sub-type from '{DptString}' for Group Address {GA}. The GA has been discarded")
+                                        failedGAs += 1
+                                        continue
+
+                                    DPT = DPT_split[1] + '.' + sub_dpt
+
+                                    if GA not in data:
+                                        data[GA] = (DPT, name)
+                                        foundGAs += 1
+
                                 else:
-                                    GA = longAddress
-
-                            if longAddress and DptString:
-                                # Turn the DPT back into a *string* that resembles a float: "DPST-5-1" becomes 5.001
-                                # (I couldn't get the trailing zeroes to work for all types as a float, so it's now a string)
-
-                                DPT_split = DptString.split('-')
-                                if len(DPT_split) == 2:
-                                    # Rare, possibly junk value, maybe an old GA no longer used. e.g. "DPST-1" Format to 1.000
-                                    # Valid occurrences are seen in ETS as (e.g.) DPT "9.*", a 2-byte float not fully defined.
-                                    sub_dpt = '000'
-                                    log(f"decode_Group_Addresses Group Address {GA} has DPT '{DptString}' but no sub-type. Appending '000'")
-                                elif len(DPT_split) == 3:
-                                    sub_dpt = DPT_split[2].zfill(3) #Right-justifies sub-dpt to three digits.
-                                else:
-                                    # A broken DPT? Discard the whole GA
-                                    log(f"decode_Group_Addresses failed to decode sub-type from '{DptString}' for Group Address {GA}. The GA has been discarded")
+                                    log(f'decode_Group_Addresses discarded incomplete address {longAddress} aka {GA}, name = |{name}|, DptString = |{DptString}|')
                                     failedGAs += 1
-                                    continue
-
-                                DPT = DPT_split[1] + '.' + sub_dpt
-
-                                if GA not in data:
-                                    data[GA] = (DPT, name)
-                                    foundGAs += 1
-
-                            else:
-                                log(f'decode_Group_Addresses discarded incomplete address {longAddress} aka {GA}, name = |{name}|, DptString = |{DptString}|')
+                            except Exception as e:
+                                log(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}"
+                                f"processing GA element {GroupAddress.toxml()}: {e}")
                                 failedGAs += 1
+                                continue
 
     except Exception as e:
         print(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
