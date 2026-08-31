@@ -508,4 +508,4 @@ def DPT232(sub_DPT, value):
     '''
     RGB colour as three bytes, 0-255. Passed by knxdclient as a tuple
     '''
-    return ('#{0:X}{1:X}{2:X}'.format(*value), '')
+    return ('#{0:02X}{1:02X}{2:02X}'.format(*value), '')
