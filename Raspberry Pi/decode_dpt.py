@@ -218,7 +218,7 @@ def DPT10(sub_DPT, value):
     if isinstance(value, tuple):
         # Which it certainly should be!
         time, day = value
-        if day:
+        if day is not None:
             value = f'{DOW[day]} {time}'
         else:
             value = f'{time}'
