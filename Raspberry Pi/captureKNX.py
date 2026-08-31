@@ -17,7 +17,6 @@ import json                         # For sending to telegraf
 import knxdclient
 import math                         # Sending the 'floor' (main DPT) value to knclient
 import requests                     # To push the values to telegraf
-import sys                          # Capturing more info from Exceptions
 
 from decode_dpt  import *           # Decodes popular DPT sub-types
 from decode_project import *        # Read the topo file & decode pysical and group addresses
