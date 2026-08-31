@@ -1401,6 +1401,10 @@ make_ap_nmcli ()
 		exit
 	fi
 
+	# Checks we have a Wi-Fi interface, and if there are multiple present, has the user nominate the one to use:
+	which_wlan
+	local wifiDevice="$selectedWlan"
+
 	# ================== START DHCP ==================
 	if  grep -q 'interface=wlan0' /etc/dnsmasq.conf;
 	then
@@ -1866,7 +1870,7 @@ no_charge_battery()
 which_wlan()
 {
 	# Get a list of wlan devices that are type "wifi" only
-	local wlanDevices=($(nmcli device | grep wlan | awk '$2 == "wifi" {print $1}'))
+	local wlanDevices=($(LANG=C nmcli device | grep wlan | awk '$2 == "wifi" {print $1}'))
 	local wlanCount=${#wlanDevices[@]}
 
 	if [ $wlanCount -eq 0 ];
