@@ -16,7 +16,6 @@ import glob                         # Finding the most recent (youngest) project
 import os                           # Path manipulation
 import re                           # Used to decode the topology + escape text fields sent to telegraf
 import requests                     # To push the values to telegraf
-import sys                          # Capturing more info from Exceptions
 from xml.dom.minidom import parse   # Decoding the ETS XML file
 import zipfile                      # Reading the project file (it's just a ZIP file!)
 
