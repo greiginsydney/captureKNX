@@ -266,16 +266,16 @@ setup1()
 		systemctl mask dnsmasq
 	fi
 
-
-	# Updated 1 Sept 2026. Trixie gets verbose if it's already masked:
+	# Updated in 2.0.1, Sept 2026. Trixie gets verbose if it's already masked, so I now test first:
 	if [[ "$(systemctl is-enabled serial-getty@ttyAMA0.service 2>/dev/null)" != masked* ]];
 	then
 		echo -e "\n"$GREEN"Disabling serial-getty@ttyAMA0.service"$RESET""
 		systemctl stop serial-getty@ttyAMA0.service
 		systemctl disable serial-getty@ttyAMA0.service
 		systemctl mask serial-getty@ttyAMA0.service
+	else
+		echo -e "\n"$GREEN"Skipping: serial-getty@ttyAMA0.service is already masked"$RESET""
 	fi
-
 
 	echo -e "\n"$GREEN"Autoremoving prior to knxd installation"$RESET""
 	apt-get autoremove -y
