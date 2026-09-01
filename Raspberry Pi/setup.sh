@@ -89,33 +89,33 @@ setup1()
 		exit 1
 	fi
 
-	mkdir -p /home/$SUDO_USER/captureKNX/log
-	chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/captureKNX/
-	mkdir -p /home/$SUDO_USER/staging
-	#cd /home/$SUDO_USER/captureKNX
+	mkdir -p ${USER_HOME}/captureKNX/log
+	chown $SUDO_USER:$SUDO_USER ${USER_HOME}/captureKNX/
+	mkdir -p ${USER_HOME}/staging
+	#cd ${USER_HOME}/captureKNX
 
-	if [[ -d /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi ]];
+	if [[ -d ${USER_HOME}/staging/captureKNX/Raspberry\ Pi ]];
 	then
 		echo -e "\n"$GREEN"Moving repo files."$RESET""
 
 		# Python files: captureKNX, decode_project, decode_dpt & common.py:
-		find /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/ -maxdepth 1 -type f -name '*.py*' -exec mv -fv {} /home/${SUDO_USER}/captureKNX/ \;
+		find ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/ -maxdepth 1 -type f -name '*.py*' -exec mv -fv {} ${USER_HOME}/captureKNX/ \;
 
 		# captureKNX.service:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.service ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.service ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.service /etc/systemd/system/captureKNX.service;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.service /etc/systemd/system/captureKNX.service;
 			then
 				echo "Skipped: the file '/etc/systemd/system/captureKNX.service' already exists & the new version is unchanged"
 			else
-				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.service /etc/systemd/system/captureKNX.service
+				mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.service /etc/systemd/system/captureKNX.service
 			fi
 		fi
 
 		# telegraf.conf:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/telegraf.conf ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/telegraf.conf ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf;
 			then
 				echo "Skipped: the file '/etc/telegraf/telegraf.conf' already exists & the new version is unchanged"
 			else
@@ -124,41 +124,41 @@ setup1()
 					echo "Skipped: a customised version of '/etc/telegraf/telegraf.conf' already exists"
 				else
 					mkdir -p /etc/telegraf/
-					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf
+					mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf
 				fi
 			fi
 		fi
 
 		# grafana-source.yaml:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
 			then
 				echo "Skipped: the file /etc/grafana/provisioning/datasources/grafana-source.yaml' already exists & the new version is unchanged"
 			else
 				[ -f /etc/grafana/provisioning/datasources/grafana-source.yaml ] && mv -fv /etc/grafana/provisioning/datasources/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml.old
 				mkdir -p /etc/grafana/provisioning/datasources/
-				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
+				mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
 			fi
 		fi
 
 		# captureKNX-dashboards.yaml:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml;
 			then
 				echo "Skipped: the file /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml already exists & the new version is unchanged"
 			else
 				[ -f /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml ] && mv -fv /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml.old
 				mkdir -p /etc/grafana/provisioning/dashboards/
-				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml
+				mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml
 			fi
 		fi
 
 		# group-monitor.json:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json;
 			then
 				echo "Skipped: the file /etc/grafana/provisioning/dashboards/group-monitor.json already exists & the new version is unchanged"
 			else
@@ -166,19 +166,19 @@ setup1()
 				then
 					# File already exists. Copy new version over as ".new" (will not be used by Grafana)
 					echo "A newer version of the file 'group-monitor.json' has been copied to /etc/grafana/provisioning/dashboards/ as '.new'"
-					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json.new
+					mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json.new
 				else
 					# Does not exist. Create directory and copy the file
 					mkdir -p /etc/grafana/provisioning/dashboards/
-					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json
+					mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json
 				fi
 			fi
 		fi
 
 		# sample-graphical-dashboard.json:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json;
 			then
 				echo "Skipped: the file /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json' already exists & the new version is unchanged"
 			else
@@ -186,19 +186,19 @@ setup1()
 				then
 					# File already exists. Copy new version over as ".new" (will not be used by Grafana)
 					echo "A newer version of the file 'sample-graphical-dashboard.json' has been copied to /etc/grafana/provisioning/dashboards/ as '.new'"
-					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json.new
+					mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json.new
 				else
 					# Does not exist. Create directory and copy the file
 					mkdir -p /etc/grafana/provisioning/dashboards/
-					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json
+					mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json
 				fi
 			fi
 		fi
 
 		# captureKNX.env:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.env ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.env ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.env /etc/influxdb/captureKNX.env;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.env /etc/influxdb/captureKNX.env;
 			then
 				echo "Skipped: the file '/etc/influxdb/captureKNX.env' already exists & the new version is unchanged"
 			else
@@ -207,19 +207,19 @@ setup1()
 					echo "Skipped: a customised version of '/etc/influxdb/captureKNX.env' already exists"
 				else
 					mkdir -p /etc/influxdb/
-					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.env /etc/influxdb/captureKNX.env
+					mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.env /etc/influxdb/captureKNX.env
 				fi
 			fi
 		fi
 
 		# captureKNX.logrotate:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate /etc/logrotate.d/captureKNX.logrotate;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate /etc/logrotate.d/captureKNX.logrotate;
 			then
 				echo "Skipped: the file '/etc/logrotate.d/captureKNX.logrotate' already exists & the new version is unchanged"
 			else
-				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate /etc/logrotate.d/captureKNX.logrotate
+				mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate /etc/logrotate.d/captureKNX.logrotate
 			fi
 		fi
 		if ! chown --quiet root /etc/logrotate.d/captureKNX.logrotate ;
@@ -231,17 +231,17 @@ setup1()
 			echo -e "\n"$YELLOW"Error trying to 'chgrp' logrotate"$RESET""
 		fi
 
-		touch /home/${SUDO_USER}/captureKNX/log/captureKNX.log
-		chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/captureKNX/log/captureKNX.log
+		touch ${USER_HOME}/captureKNX/log/captureKNX.log
+		chown $SUDO_USER:$SUDO_USER ${USER_HOME}/captureKNX/log/captureKNX.log
 
 		# version:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/version ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/version ];
 		then
-			mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/version /home/${SUDO_USER}/captureKNX/version
+			mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/version ${USER_HOME}/captureKNX/version
 		fi
 
 		#TODO: once all wanted files are removed, delete the staging folder - this needs to take place at the END of the script.
-		# rm -fr /home/${SUDO_USER}/staging/ NOT HERE
+		# rm -fr ${USER_HOME}/staging/ NOT HERE
 	else
 		echo -e "\n"$YELLOW"No repo files to move."$RESET""
 	fi;
@@ -300,15 +300,15 @@ setup1()
 		fi
 	else
 		echo -e "\n"$GREEN"Installing knxd "$RESET""
-		rm -rf /home/$SUDO_USER/staging/knxd
-		mkdir -pv /home/$SUDO_USER/staging/knxd
-		cd /home/${SUDO_USER}/staging/knxd/
+		rm -rf ${USER_HOME}/staging/knxd
+		mkdir -pv ${USER_HOME}/staging/knxd
+		cd ${USER_HOME}/staging/knxd/
 		apt-get install git-core -y
 		git clone -b debian https://github.com/knxd/knxd.git
 		if [[ $releaseTest -lt 13 ]];
 		then
 			# 'systemd-dev' is not in Bookworm (aka Rls < 13). It was added in Trixie. libsystemd-dev does all we need
-			sed -i '/systemd-dev,$/d' /home/$SUDO_USER/staging/knxd/knxd/debian/control
+			sed -i '/systemd-dev,$/d' ${USER_HOME}/staging/knxd/knxd/debian/control
 			echo -e ""$GREEN"INFO:"$RESET" deleted 'systemd-dev' from debian/control file, as it does not exist in Bookworm"
 		fi
 		sh knxd/install-debian.sh
@@ -322,7 +322,7 @@ setup1()
 	fi
 
 	echo ''
-	isKnxdClient=$(sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 show knxdclient 2>/dev/null | sed -n 's/.*Version:\s\(.*\).*/\1/p'")
+	isKnxdClient=$(sudo -u ${SUDO_USER} bash -c "source ${USER_HOME}/venv/bin/activate && pip3 show knxdclient 2>/dev/null | sed -n 's/.*Version:\s\(.*\).*/\1/p'")
 	if [[ $isKnxdClient ]];
 	then
 		echo -e "Current installed version of KNXDclient = $isKnxdClient"
@@ -332,17 +332,17 @@ setup1()
 		then
 			echo ''
 			echo -e ""$GREEN"Updating KNXDclient"$RESET""
-			sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient --upgrade"
+			sudo -u ${SUDO_USER} bash -c "source ${USER_HOME}/venv/bin/activate && pip3 install knxdclient --upgrade"
 		else
 			echo -e ""$GREEN"No KNXDclient upgrade required"$RESET""
 		fi
 	else
 		echo -e "\n"$GREEN"Installing KNXDclient"$RESET""
-		sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient"
+		sudo -u ${SUDO_USER} bash -c "source ${USER_HOME}/venv/bin/activate && pip3 install knxdclient"
 	fi
 
 	echo -e "\n"$GREEN"Installing requests"$RESET""
-	sudo -u ${SUDO_USER} bash  -c "source /home/${SUDO_USER}/venv/bin/activate && python3 -m pip install requests"
+	sudo -u ${SUDO_USER} bash  -c "source ${USER_HOME}/venv/bin/activate && python3 -m pip install requests"
 
 	echo ''
 	set +e #Suspend the error trap
@@ -365,9 +365,9 @@ setup1()
 	else
 		echo -e "\n"$GREEN"Installing telegraf"$RESET""
 		# Install steps from here: https://www.influxdata.com/downloads/
-		rm -rf /home/$SUDO_USER/staging/telegraf
-		mkdir -pv /home/$SUDO_USER/staging/telegraf
-		cd /home/${SUDO_USER}/staging/telegraf/
+		rm -rf ${USER_HOME}/staging/telegraf
+		mkdir -pv ${USER_HOME}/staging/telegraf
+		cd ${USER_HOME}/staging/telegraf/
 		
 		# influxdata-archive.key GPG fingerprint:
 		#   Primary key fingerprint: 24C9 75CB A61A 024E E1B6  3178 7C3D 5715 9FC2 F927
@@ -441,13 +441,13 @@ setup1()
 	fi
 
 	# grafana-source.yaml:
-	if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml ];
+	if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml ];
 	then
-		if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
+		if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
 		then
 			echo "Skipped: the file '/etc/grafana/provisioning/datasources/grafana-source.yaml' already exists & the new version is unchanged"
 		else
-			mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
+			mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
 		fi
 	fi
 
@@ -507,7 +507,7 @@ setup1()
 
 	if [[ $NEEDS_REBOOT ]];
 	then
-		touch /home/${SUDO_USER}/setup1_complete
+		touch ${USER_HOME}/setup1_complete
 		echo ''
 		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
 		prompt_for_reboot
@@ -519,9 +519,9 @@ setup1()
 
 setup2()
 {
-	if [ -f /home/${SUDO_USER}/setup1_complete ];
+	if [ -f ${USER_HOME}/setup1_complete ];
 	then
-		rm -rf /home/${SUDO_USER}/setup1_complete
+		rm -rf ${USER_HOME}/setup1_complete
 	fi
 	NEEDS_REBOOT=''
 	newLine=$(read_TTY)
@@ -550,7 +550,7 @@ setup2()
 	fi
 	if [[ $NEEDS_REBOOT ]];
 	then
-		touch /home/${SUDO_USER}/setup2_complete
+		touch ${USER_HOME}/setup2_complete
 		echo ''
 		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
 		prompt_for_reboot
@@ -560,9 +560,9 @@ setup2()
 
 setup3()
 {
-	if [ -f /home/${SUDO_USER}/setup2_complete ];
+	if [ -f ${USER_HOME}/setup2_complete ];
 	then
-		rm -rf /home/${SUDO_USER}/setup2_complete
+		rm -rf ${USER_HOME}/setup2_complete
 	fi
 
 	# Customise knxd.conf
@@ -849,10 +849,10 @@ setup3()
 	apt-get purge bluez -y
  	rm -f influxdb2_2.7.8-1_arm64.deb
 	rm -f grafana-enterprise_11.1.3_arm64.deb
-	rm -rfd /home/${SUDO_USER}/staging/
+	rm -rfd ${USER_HOME}/staging/
 
 	# Add a shortcut for the logs folder:
-	ln -sfnv /var/log/ /home/${SUDO_USER}/log
+	ln -sfnv /var/log/ ${USER_HOME}/log
 
 	# Wi-Fi Power Save
 	# Disable Wi-Fi power save mode:
@@ -922,9 +922,9 @@ test_install()
 	else
 		echo "Latest release of captureKNX is    v$latestcaptureKNXRls"
 	fi
-	if [ -f /home/${SUDO_USER}/captureKNX/version ];
+	if [ -f ${USER_HOME}/captureKNX/version ];
 	then
-		VERSION=$(< /home/${SUDO_USER}/captureKNX/version)
+		VERSION=$(< ${USER_HOME}/captureKNX/version)
 		if [[ $VERSION == $latestcaptureKNXRls ]];
 		then
 			echo -e ""$GREEN"Installed version of captureKNX is v$VERSION""$RESET"
@@ -1155,7 +1155,7 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" knxd NOT installed"
 	fi
 
-	isKnxdClient=$(sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 show knxdclient 2>/dev/null | sed -n 's/.*Version:\s\(.*\).*/\1/p'")
+	isKnxdClient=$(sudo -u ${SUDO_USER} bash -c "source ${USER_HOME}/venv/bin/activate && pip3 show knxdclient 2>/dev/null | sed -n 's/.*Version:\s\(.*\).*/\1/p'")
 	if [[ $isKnxdClient ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" KNXDclient installed ($isKnxdClient)"
@@ -1271,18 +1271,18 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" /etc/knxd.conf is missing required config. Re-run setup"
 	fi
 
-	if [ -d /home/${SUDO_USER}/log ];
+	if [ -d ${USER_HOME}/log ];
 	then
-		echo -n "Checking /home/${SUDO_USER}/log/telegraf/telegraf.log"
-		telegraf_error=$(sed -n -E '/^(.*) (.*)field type conflict(.*)$/h;${x;p;}' /home/${SUDO_USER}/log/telegraf/telegraf.log)
+		echo -n "Checking ${USER_HOME}/log/telegraf/telegraf.log"
+		telegraf_error=$(sed -n -E '/^(.*) (.*)field type conflict(.*)$/h;${x;p;}' ${USER_HOME}/log/telegraf/telegraf.log)
 		if [[ $telegraf_error ]];
 		then
 			echo -e '\r-------------------------------------      '
-			echo -e "\r"$YELLOW"FAIL:"$RESET" /home/${SUDO_USER}/log/telegraf/telegraf.log shows a 'field type conflict'. Telegrams are being discarded"
+			echo -e "\r"$YELLOW"FAIL:"$RESET" ${USER_HOME}/log/telegraf/telegraf.log shows a 'field type conflict'. Telegrams are being discarded"
 			echo ''
 			echo $telegraf_error
 		else
-			echo -e "\r"$GREEN"PASS:"$RESET" /home/${SUDO_USER}/log/telegraf/telegraf.log logged no 'field type conflicts'"
+			echo -e "\r"$GREEN"PASS:"$RESET" ${USER_HOME}/log/telegraf/telegraf.log logged no 'field type conflicts'"
 		fi
 	else
 		echo -e '\r-------------------------------------      '
@@ -1291,14 +1291,14 @@ test_install()
 
 	echo '-------------------------------------'
 
-	isKnxProject=$(find /home/${SUDO_USER}/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
+	isKnxProject=$(find ${USER_HOME}/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isKnxProject ]];
 	then
 		creationDatestamp=$(stat -c %w /home/$isKnxProject | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
 		echo -e ""$GREEN"PASS:"$RESET" knx project file $isKnxProject found, created $creationDatestamp"
 	else
 		echo -e ""$YELLOW"FAIL:"$RESET" knx project file NOT found"
-		echo -e "      Copy one across to the /home/${SUDO_USER}/ folder and 'sudo systemctl restart captureKNX'"
+		echo -e "      Copy one across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
 	fi
 
 	echo '-------------------------------------'
@@ -1407,7 +1407,7 @@ make_ap_nmcli ()
 	if nmcli -t -f NAME,ACTIVE con show | grep -Fxq 'hotspot:yes';
 	then
 		echo -e "\n"$YELLOW"FAIL:"$RESET" This Pi is already running as a Wi-Fi Access Point (an active 'hotspot' connection was found)."
-		echo -e ""$YELLOW"FAIL:"$RESET" Run 'sudo -E ./setup.sh noap' first if you want to change its settings, then re-run 'ap'."
+		echo -e ""$YELLOW"FAIL:"$RESET" Run 'sudo ./setup.sh noap' first if you want to change its settings, then re-run 'ap'."
 		exit 1
 	fi
 
@@ -1967,9 +1967,16 @@ dev()
 
 if [ "$EUID" -ne 0 ];
 then
-	echo -e "\nPlease re-run as 'sudo -E -H ./setup.sh'"
+	echo -e "\nPlease re-run as 'sudo ./setup.sh'"
 	echo -e '(Add "test" on the end to test the system)'
+	echo -e "(sudo -E/-H are no longer required, but won't cause problems if used out of habit)"
 	exit 1
+fi
+
+if [ -n "${SUDO_USER}" ]; then
+	USER_HOME=$(getent passwd "${SUDO_USER}" | cut -d: -f6)
+else
+	USER_HOME=${HOME}
 fi
 
 releaseTest=$(sed -n -E 's/^VERSION_ID="(.*)"$/\1/p' /etc/os-release)	# Referenced twice during installation
@@ -2010,10 +2017,10 @@ case "$1" in
 		;;
 	('')
 		activate_venv
-		if [ -f /home/${SUDO_USER}/setup2_complete ];
+		if [ -f ${USER_HOME}/setup2_complete ];
 		then
 			setup3
-		elif [ -f /home/${SUDO_USER}/setup1_complete ];
+		elif [ -f ${USER_HOME}/setup1_complete ];
 		then
 			setup2
 			setup3
