@@ -1021,6 +1021,8 @@ test_install()
 					then
 						((ap_test=ap_test+8)) # we're a client, connected to a Wi-Fi network. Add 8
 						noapCount=noapCount+1
+						isWiFiClient="true" # Distinct from isWiFi below - scopes the Ethernet+Wi-Fi warning to
+						                    # client mode only. Ethernet + Wi-Fi-as-AP is a normal, expected setup.
 					fi
 				fi
 				if [[ $connectedType == "ethernet" ]];
@@ -1042,7 +1044,7 @@ test_install()
 		unset IFS
 	fi
 
-	if [[ $isEthernet && $isWiFi ]];
+	if [[ $isEthernet && $isWiFiClient ]];
 	then
 		echo -e ""$YELLOW"WARN:"$RESET" Ethernet AND Wi-Fi connections are active. This can cause connection/performance issues"
 	else
