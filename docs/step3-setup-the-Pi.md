@@ -185,7 +185,7 @@ sudo chmod +x setup.sh
 
 35. Now run it! (Be careful here: the switches are critical. "-E" ensures your user path is passed to the script. Without it the software will be moved to the wrong location, or not at all. "-H" passes the Pi user's home directory.)
 ```txt
-sudo -E -H ./setup.sh
+sudo ./setup.sh
 ```
 
 36. The FIRST time you run the script on a brand new Pi it's going to run for ~8-9 minutes (depending on your internet speed) and then prompt you to reboot:
