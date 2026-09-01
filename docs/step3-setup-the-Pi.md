@@ -192,7 +192,7 @@ sudo ./setup.sh
 
 ![image](https://github.com/user-attachments/assets/f9723c88-8f30-4699-b85e-9b024a3c1fe0)
 
-37. Reconnect to the Pi after it reboots and return to Step 35. (Pressing up-arrow should offer you the `sudo -E -H ./setup.sh` command to save you re-typing it.)
+37. Reconnect to the Pi after it reboots and return to Step 35. (Pressing up-arrow should offer you the `sudo ./setup.sh` command to save you re-typing it.)
 
 38. It will seem to instantly prompt for another reboot. Consent to that and again up-arrow to re-run setup when you re-connect:
 
