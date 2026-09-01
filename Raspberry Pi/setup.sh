@@ -994,10 +994,12 @@ test_install()
 		IFS=$'\n'
 		for thisConnection in $activeConnections;
 		do
-			# Ask NetworkManager directly for the connection's backing file. Its on-disk filename doesn't
-			# always match the connection name - NM disambiguates with a UUID suffix if a name collision
-			# ever occurred for that connection - so guessing the path is unreliable:
-			local connectionFile=$(nmcli -t -f connection.filename con show "$thisConnection" 2>/dev/null | cut -d: -f2-)
+			# nmcli has no direct "give me the filename" query, and the on-disk filename doesn't always
+			# match the connection name (NM disambiguates with a UUID suffix if a name collision ever
+			# occurred for that connection - confirmed on real hardware). So resolve the connection's UUID
+			# and grep the known locations for the file that actually owns it:
+			local thisUuid=$(nmcli -t -f connection.uuid con show "$thisConnection" 2>/dev/null | cut -d: -f2-)
+			local connectionFile=$(grep -rlxF "uuid=$thisUuid" /etc/NetworkManager/system-connections /usr/lib/NetworkManager/system-connections /run/NetworkManager/system-connections 2>/dev/null | head -1)
 
 			if [ -f $connectionFile ];
 			then
@@ -1460,10 +1462,9 @@ END
 
 	# ================= START Wi-Fi =================
 	local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show "$wifiDevice" | cut -d: -f2-)
-	# Ask NetworkManager directly for the connection's backing file, rather than guessing its path - its
-	# on-disk filename doesn't always match the connection name (NM disambiguates with a UUID suffix if a
-	# name collision ever occurred for that connection):
-	local connectionFile=$(nmcli -t -f connection.filename con show "$wlan0Name" 2>/dev/null | cut -d: -f2-)
+	# Same fix and rationale as test_install() above - resolve via UUID rather than guessing the filename:
+	local wlan0Uuid=$(nmcli -t -f connection.uuid con show "$wlan0Name" 2>/dev/null | cut -d: -f2-)
+	local connectionFile=$(grep -rlxF "uuid=$wlan0Uuid" /etc/NetworkManager/system-connections /usr/lib/NetworkManager/system-connections /run/NetworkManager/system-connections 2>/dev/null | head -1)
 	if [ -f $connectionFile ];
 	then
 		#local oldWifiSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
