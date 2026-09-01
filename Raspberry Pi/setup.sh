@@ -1315,13 +1315,32 @@ test_install()
 		echo -e "Last successful telegram unknown. $telegrafDebugFile returned no result. Try again"
 	fi
 
- 	local captureKnxLogFile="/home/pi/captureKNX/log/captureKNX.log" # TODO: remove this baked-in reference to 'pi'
+ 	local captureKnxLogFile="${USER_HOME}/captureKNX/log/captureKNX.log"
 	declare -a unknownGroups=()
 	declare -a unknownDPTs=()
+	local logCommenced=""
+	local decodeStatus="" # "" = never observed, "fatal" = last decode attempt aborted, "ok" = last attempt completed
 	while read line;
 	do
+		# Capture the timestamp of the log's first line, i.e. when the file was last recycled:
+		if [[ -z "$logCommenced" ]];
+		then
+			local rawTimestamp=$(echo $line | awk '{print $1, $2}')
+			logCommenced=$(date -d "$rawTimestamp" +"%y%b%d-%H%M" 2>/dev/null)
+		fi
+
+		# Track whether the most recent decode_Group_Addresses attempt aborted before it could complete.
+		# (If it did, any PASS below would be meaningless - nothing was actually decoded to check against.)
+		if [[ "$line" == *"decode_Group_Addresses aborted. Invalid 'grpAddLevels'"* ]] || { [[ "$line" == *"decode_Group_Addresses:"* ]] && [[ "$line" == *"Aborting"* ]]; };
+		then
+			decodeStatus="fatal"
+		elif [[ "$line" == *"decode_Group_Addresses: found "* ]];
+		then
+			decodeStatus="ok"
+		fi
+
 		# Find and create a de-duped list of all unknown group addresses:
-		if [[ "$line" =~ "Exception decoding a telegram" ]];
+		if [[ "$line" =~ "exception decoding a telegram" ]];
 		then
 			# Extract GA from here: "<preamble> The telegram has been discarded. '8/3/1'"
 			local unknownGroup=$(echo $line | cut -d "'" -f2)
@@ -1356,8 +1375,9 @@ test_install()
 		else
 			echo -e ""$YELLOW"WARN:"$RESET captureKNX.log reports unknown Group Addresses: $unknownGroupsString""
 		fi
-	else
-		echo -e ""$GREEN"PASS:"$RESET captureKNX.log reports no unknown group addresses""
+	elif [[ "$decodeStatus" == "ok" ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" captureKNX.log reports no unknown group addresses (since log commenced at $logCommenced)"
 	fi
 
 	#Reconstitute DPTs as a comma-delimited string:
@@ -1375,8 +1395,9 @@ test_install()
 		else
 			echo -e ""$YELLOW"WARN:"$RESET captureKNX.log reports unknown DPTs: $unknownDPTsString""
 		fi
-	else
-		echo -e ""$GREEN"PASS:"$RESET captureKNX.log reports no unknown DPTs""
+	elif [[ "$decodeStatus" == "ok" ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" captureKNX.log reports no unknown DPTs (since log commenced at $logCommenced)"
 	fi
 	echo ''
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
