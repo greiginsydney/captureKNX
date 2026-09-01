@@ -1577,6 +1577,15 @@ unmake_ap_nmcli ()
 		exit
 	fi
 
+	# The 'hotspot' connection can only be bound to one Wi-Fi NIC - ask nmcli which one directly,
+	# rather than re-prompting the user to choose (which risks picking a *different* NIC to the one actually running the AP):
+	local wifiDevice=$(LANG=C nmcli -t -f connection.interface-name con show hotspot 2>/dev/null | cut -d: -f2-)
+	if [[ -z "$wifiDevice" ]];
+	then
+		echo -e "\n"$YELLOW"FAIL:"$RESET" No 'hotspot' Wi-Fi connection was found. Is this Pi actually running as an Access Point?"
+		exit 1
+	fi
+
 	while true; do
 		read -p "Setup a new wireless network? (Select N for wired) [y/n]: " wiredOrWireless
 		case $wiredOrWireless in
@@ -1596,7 +1605,7 @@ unmake_ap_nmcli ()
 
 	if [[ "$wiredOrWireless" =~ [Yy] ]];
 	then
-		local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show wlan0 | cut -d: -f2-)
+		local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show "$wifiDevice" | cut -d: -f2-)
 		if [[ $wlan0Name == 'hotspot' ]]; then wlan0Name=''; fi # Suppress auto-populate below if name is 'hotspot'
 		while true; do
 			read -e -i "$wlan0Name" -p "Set the network's SSID                                  : " newSsid
@@ -1624,10 +1633,17 @@ unmake_ap_nmcli ()
 	read -p 'Do you want to assign the Pi a static IP address?  [Y/n]: ' staticResponse
 	case $staticResponse in
 		(y|Y|"")
-			local oldPiIpV4=$(LANG=C nmcli -t -f IP4.ADDRESS device show wlan0 | cut -d: -f2- | cut -d/ -f1)
-			local oldDhcpSubnetCIDR=$(LANG=C nmcli -t -f IP4.ADDRESS device show wlan0 | cut -d/ -f2-)
-			local oldRouter=$(LANG=C nmcli -t -f IP4.GATEWAY device show wlan0 | cut -d: -f2-)
-			local oldDnsServers=$(LANG=C nmcli -t -f IP4.DNS device show wlan0 | cut -d: -f2-)
+			# Prefill from whichever device will actually carry the new connection - not always wlan0:
+			if [[ "$wiredOrWireless" =~ [Yy] ]];
+			then
+				local targetDevice="$wifiDevice"
+			else
+				local targetDevice=$(LANG=C nmcli -t -f DEVICE,TYPE device status | awk -F: '$2 == "ethernet" {print $1; exit}')
+			fi
+			local oldPiIpV4=$(LANG=C nmcli -t -f IP4.ADDRESS device show "$targetDevice" | cut -d: -f2- | cut -d/ -f1)
+			local oldDhcpSubnetCIDR=$(LANG=C nmcli -t -f IP4.ADDRESS device show "$targetDevice" | cut -d/ -f2-)
+			local oldRouter=$(LANG=C nmcli -t -f IP4.GATEWAY device show "$targetDevice" | cut -d: -f2-)
+			local oldDnsServers=$(LANG=C nmcli -t -f IP4.DNS device show "$targetDevice" | cut -d: -f2-)
 
 			if [ "$oldDhcpSubnetCIDR" ]; then local oldDhcpSubnetMask=$(CIDRtoNetmask $oldDhcpSubnetCIDR); fi
 
@@ -1674,7 +1690,7 @@ unmake_ap_nmcli ()
 		# Wireless:
 		sleep 5 # Sleep briefly having just deleted the hotspot, before creating the new wireless network connection
 		echo 'About to connect to Wi-Fi'
-		nmcli dev wifi connect "$newSsid" password "$newPsk" ifname wlan0
+		nmcli dev wifi connect "$newSsid" password "$newPsk" ifname "$wifiDevice"
 		echo 'Back from connecting to Wi-Fi'
 		# Paste in the new settings
 		case $staticResponse in
