@@ -267,11 +267,14 @@ setup1()
 	fi
 
 
-	# Added in 1.0.4 May 2025:
-	echo -e "\n"$GREEN"Disabling serial-getty@ttyAMA0.service"$RESET""
-	systemctl stop serial-getty@ttyAMA0.service
-	systemctl disable serial-getty@ttyAMA0.service
-	systemctl mask serial-getty@ttyAMA0.service
+	# Updated 1 Sept 2026. Trixie gets verbose if it's already masked:
+	if [[ "$(systemctl is-enabled serial-getty@ttyAMA0.service 2>/dev/null)" != masked* ]];
+	then
+		echo -e "\n"$GREEN"Disabling serial-getty@ttyAMA0.service"$RESET""
+		systemctl stop serial-getty@ttyAMA0.service
+		systemctl disable serial-getty@ttyAMA0.service
+		systemctl mask serial-getty@ttyAMA0.service
+	fi
 
 
 	echo -e "\n"$GREEN"Autoremoving prior to knxd installation"$RESET""
