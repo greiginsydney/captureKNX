@@ -456,9 +456,9 @@ setup1()
 
 	echo -e -n "\n"$GREEN"Customising Grafana tab title & login screen"$RESET""
 	# customise Grafana tab title & login screen. (TY https://volkovlabs.io/blog/how-to-customize-grafana-11.1.0/)
-	find "/usr/share/grafana/public/build" -type f -name "*.js" -print0 | xargs -0 sed -i 's|this.LoginTitle="Welcome to Grafana"|this.LoginTitle="Welcome to captureKNX"|g'
-	find "/usr/share/grafana/public/build" -type f -name "*.js" -print0 | xargs -0 sed -i 's|this.AppTitle="Grafana"|this.AppTitle="captureKNX"|g'
-	echo -e ""$GREEN" - DONE"$RESET""
+	# Grep first, then sed only the matches. (Claude.ai refactored to speed this, where previously it ran across ALL .js files & was noticeably slow)
+	grep -rlZ --include="*.js" -F 'this.LoginTitle="Welcome to Grafana"' /usr/share/grafana/public/build 2>/dev/null | xargs -0 -r sed -i 's|this.LoginTitle="Welcome to Grafana"|this.LoginTitle="Welcome to captureKNX"|g'
+	grep -rlZ --include="*.js" -F 'this.AppTitle="Grafana"' /usr/share/grafana/public/build 2>/dev/null | xargs -0 -r sed -i 's|this.AppTitle="Grafana"|this.AppTitle="captureKNX"|g'
 
 	if [ $SUDO_USER != 'pi' ];
 	then
