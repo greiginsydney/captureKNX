@@ -27,7 +27,7 @@ Steps to reproduce the behavior:
 If applicable, add screenshots to help explain your problem.
 
 **Setup script test**
-Run `cd ~ && sudo -E -H ./setup.sh test` and paste the output here:
+Run `cd ~ && sudo  ./setup.sh test` and paste the output here:
 
 
 **Additional context**
