@@ -1709,7 +1709,7 @@ unmake_ap_nmcli ()
 		echo 'Back from con up'
 	else
 		# Ethernet:
-		local eth0Name=$(LANG=C nmcli -t c s | awk '/ethernet/' | cut -d: -f1)
+		local eth0Name=$(LANG=C nmcli -t -f NAME,TYPE con show | awk -F: '$2 == "802-3-ethernet" {print $1; exit}')
 		if [[ ! $eth0Name ]];
 		then
 			# Bad. No ethernet device found
