@@ -26,7 +26,7 @@ First off, don't forget that captureKNX is an IT device, so MANY problems will b
 
 If the problems are continuing after a reboot, run the setup script's `test` mode and see what it reports. A healthy system should report all greens. Any yellows require investigation:
 
-`sudo -E -H ./setup.sh test`
+`sudo ./setup.sh test`
 
 ![image](https://github.com/user-attachments/assets/50e3d8cc-b1a5-4697-bfb1-415a4f3ebf0f)
 
