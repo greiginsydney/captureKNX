@@ -30,7 +30,7 @@ The upgrade process is a cut-down version of the setup process in [step3-setup-t
 
 6. Now run it!
    ```
-   sudo -E -H ./setup.sh
+   sudo ./setup.sh
    ```
 
 7. That's it. 
