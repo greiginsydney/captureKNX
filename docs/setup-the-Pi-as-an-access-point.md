@@ -15,7 +15,7 @@ Jump to [step 1 - prepare the topology export](/docs/step1-prepare-the-topology-
 
 1. Run the setup script with the "ap" attribute:
 ```txt
-sudo -E ./setup.sh ap
+sudo ./setup.sh ap
 ```
 
 2. The script will prompt you for all the required values. On its first run out of the box it will offer default values. These will usually be safe to use, but by all means change the SSID and Wi-Fi password from the defaults:
@@ -60,7 +60,7 @@ Reboot now? [Y/n]:
 
 1. If at any time you want to switch the Pi from being an Access Point to being a client on another network, run:
 ```txt
-sudo -E ./setup.sh noap
+sudo ./setup.sh noap
 
 This process will stop the Pi from being a Wi-Fi access point & instead connect to a wired or wireless network
 (Control-C to abort at any time)
