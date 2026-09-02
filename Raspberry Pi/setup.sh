@@ -1302,7 +1302,7 @@ test_install()
 	isZeroXml=$(find ${USER_HOME}/captureKNX/ -type f -name '0.xml' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isZeroXml ]]; 
 	then
-		zeroXmlCreationDatestamp=$(stat -c %w /home/$is0xml | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
+		zeroXmlCreationDatestamp=$(stat -c %w /home/$isZeroXml | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
 		((projectFileTests=projectFileTests+2))
 	fi
 	isProjectXml=$(find ${USER_HOME}/captureKNX/ -type f -name 'project.xml' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
