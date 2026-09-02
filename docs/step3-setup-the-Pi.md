@@ -131,15 +131,16 @@ Your SSH session will end here. Wait for the Pi to reboot, reconnect, sign back 
 ```txt
 python3 --version
 ```
-The output should look like this, which confirms python 3.11 (ignore the .2):
+The output should look like this, which confirms python 3.13 (ignore the .5):
 ```txt
-Python 3.11.2
+Python 3.13.5
 ```
+(The above is correct for Trixie. Bookworm will report 3.11.2. The process is the same but adjust the number below accordingly.)
 
 29. Update the following command if required with that of the same version number:
 
 ```txt
-sudo apt install python3.11-venv -y
+sudo apt install python3.13-venv -y
 ```
 ```txt
 python3 -m venv venv
