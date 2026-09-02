@@ -1320,37 +1320,37 @@ test_install()
 			echo -e "      Copy one across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
 			;;
 		(1)
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isKnxProject' found, created $projFileCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isKnxProject'" "$projFileCreationDatestamp"
 			echo -e "      Run 'sudo systemctl restart captureKNX' to extract required '0.xml' & 'project.xml' files"
 			;;
 		(2)
 			# Found 0.xml but not project.xml
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isZeroXml' found, created $zeroXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isZeroXml'" "$zeroXmlCreationDatestamp"
 			echo -e ""$YELLOW"FAIL:"$RESET" knx project file 'project.xml' NOT found"
 			echo -e "      Copy a .knxproj file across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
 			;;
 		(3|5 )
 			# Project file and (0.xml | project.xml) found. Weird.
-			echo -e ""$GREEN"INFO:"$RESET" knx project file '$isKnxProject' found, created $projFileCreationDatestamp"
+			printf ""$GREEN"INFO:"$RESET" knx project file %-30s found, created %s\n" "'$isKnxProject'" "$projFileCreationDatestamp"
 			echo -e "      Run 'sudo systemctl restart captureKNX' to extract required '0.xml' & 'project.xml' files"
 			;;
 		(4)
 			# Found project.xml but not 0.xml
 			echo -e ""$YELLOW"FAIL:"$RESET" knx project file '0.xml' NOT found"
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isProjectXml' found, created $projectXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isProjectXml'" "$projectXmlCreationDatestamp"
 			echo -e "      Copy a .knxproj file across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
 			;;
 		(6)
 			# Found 0.xml & project.xml. Valid config.
 			echo -e ""$GREEN"INFO:"$RESET" knx project file '*.knxproj' NOT found"
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isZeroXml' found, created $zeroXmlCreationDatestamp"
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isProjectXml' found, created $projectXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isZeroXml'" "$zeroXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isProjectXml'" "$projectXmlCreationDatestamp"
 			;;
 		(7)
 			# Found all three files.
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isKnxProject' found, created $projFileCreationDatestamp"
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isZeroXml' found, created $zeroXmlCreationDatestamp"
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isProjectXml' found, created $projectXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isKnxProject'" "$projFileCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isZeroXml'" "$zeroXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isProjectXml'" "$projectXmlCreationDatestamp"
 			;;
 	esac
 
