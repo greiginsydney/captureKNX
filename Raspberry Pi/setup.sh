@@ -89,33 +89,33 @@ setup1()
 		exit 1
 	fi
 
-	mkdir -p /home/$SUDO_USER/captureKNX/log
-	chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/captureKNX/
-	mkdir -p /home/$SUDO_USER/staging
-	#cd /home/$SUDO_USER/captureKNX
+	mkdir -p ${USER_HOME}/captureKNX/log
+	chown $SUDO_USER:$SUDO_USER ${USER_HOME}/captureKNX/
+	mkdir -p ${USER_HOME}/staging
+	#cd ${USER_HOME}/captureKNX
 
-	if [[ -d /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi ]];
+	if [[ -d ${USER_HOME}/staging/captureKNX/Raspberry\ Pi ]];
 	then
 		echo -e "\n"$GREEN"Moving repo files."$RESET""
 
 		# Python files: captureKNX, decode_project, decode_dpt & common.py:
-		find /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/ -maxdepth 1 -type f -name '*.py*' -exec mv -fv {} /home/${SUDO_USER}/captureKNX/ \;
+		find ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/ -maxdepth 1 -type f -name '*.py*' -exec mv -fv {} ${USER_HOME}/captureKNX/ \;
 
 		# captureKNX.service:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.service ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.service ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.service /etc/systemd/system/captureKNX.service;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.service /etc/systemd/system/captureKNX.service;
 			then
 				echo "Skipped: the file '/etc/systemd/system/captureKNX.service' already exists & the new version is unchanged"
 			else
-				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.service /etc/systemd/system/captureKNX.service
+				mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.service /etc/systemd/system/captureKNX.service
 			fi
 		fi
 
 		# telegraf.conf:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/telegraf.conf ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/telegraf.conf ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf;
 			then
 				echo "Skipped: the file '/etc/telegraf/telegraf.conf' already exists & the new version is unchanged"
 			else
@@ -124,41 +124,41 @@ setup1()
 					echo "Skipped: a customised version of '/etc/telegraf/telegraf.conf' already exists"
 				else
 					mkdir -p /etc/telegraf/
-					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf
+					mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/telegraf.conf /etc/telegraf/telegraf.conf
 				fi
 			fi
 		fi
 
 		# grafana-source.yaml:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
 			then
 				echo "Skipped: the file /etc/grafana/provisioning/datasources/grafana-source.yaml' already exists & the new version is unchanged"
 			else
 				[ -f /etc/grafana/provisioning/datasources/grafana-source.yaml ] && mv -fv /etc/grafana/provisioning/datasources/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml.old
 				mkdir -p /etc/grafana/provisioning/datasources/
-				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
+				mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
 			fi
 		fi
 
 		# captureKNX-dashboards.yaml:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml;
 			then
 				echo "Skipped: the file /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml already exists & the new version is unchanged"
 			else
 				[ -f /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml ] && mv -fv /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml.old
 				mkdir -p /etc/grafana/provisioning/dashboards/
-				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml
+				mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/captureKNX-dashboards.yaml /etc/grafana/provisioning/dashboards/captureKNX-dashboards.yaml
 			fi
 		fi
 
 		# group-monitor.json:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json;
 			then
 				echo "Skipped: the file /etc/grafana/provisioning/dashboards/group-monitor.json already exists & the new version is unchanged"
 			else
@@ -166,19 +166,19 @@ setup1()
 				then
 					# File already exists. Copy new version over as ".new" (will not be used by Grafana)
 					echo "A newer version of the file 'group-monitor.json' has been copied to /etc/grafana/provisioning/dashboards/ as '.new'"
-					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json.new
+					mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json.new
 				else
 					# Does not exist. Create directory and copy the file
 					mkdir -p /etc/grafana/provisioning/dashboards/
-					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json
+					mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/group-monitor.json /etc/grafana/provisioning/dashboards/group-monitor.json
 				fi
 			fi
 		fi
 
 		# sample-graphical-dashboard.json:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json;
 			then
 				echo "Skipped: the file /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json' already exists & the new version is unchanged"
 			else
@@ -186,19 +186,19 @@ setup1()
 				then
 					# File already exists. Copy new version over as ".new" (will not be used by Grafana)
 					echo "A newer version of the file 'sample-graphical-dashboard.json' has been copied to /etc/grafana/provisioning/dashboards/ as '.new'"
-					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json.new
+					mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json.new
 				else
 					# Does not exist. Create directory and copy the file
 					mkdir -p /etc/grafana/provisioning/dashboards/
-					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json
+					mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana/sample-graphical-dashboard.json /etc/grafana/provisioning/dashboards/sample-graphical-dashboard.json
 				fi
 			fi
 		fi
 
 		# captureKNX.env:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.env ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.env ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.env /etc/influxdb/captureKNX.env;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.env /etc/influxdb/captureKNX.env;
 			then
 				echo "Skipped: the file '/etc/influxdb/captureKNX.env' already exists & the new version is unchanged"
 			else
@@ -207,19 +207,19 @@ setup1()
 					echo "Skipped: a customised version of '/etc/influxdb/captureKNX.env' already exists"
 				else
 					mkdir -p /etc/influxdb/
-					mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.env /etc/influxdb/captureKNX.env
+					mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.env /etc/influxdb/captureKNX.env
 				fi
 			fi
 		fi
 
 		# captureKNX.logrotate:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate ];
 		then
-			if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate /etc/logrotate.d/captureKNX.logrotate;
+			if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate /etc/logrotate.d/captureKNX.logrotate;
 			then
 				echo "Skipped: the file '/etc/logrotate.d/captureKNX.logrotate' already exists & the new version is unchanged"
 			else
-				mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate /etc/logrotate.d/captureKNX.logrotate
+				mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/captureKNX.logrotate /etc/logrotate.d/captureKNX.logrotate
 			fi
 		fi
 		if ! chown --quiet root /etc/logrotate.d/captureKNX.logrotate ;
@@ -231,17 +231,17 @@ setup1()
 			echo -e "\n"$YELLOW"Error trying to 'chgrp' logrotate"$RESET""
 		fi
 
-		touch /home/${SUDO_USER}/captureKNX/log/captureKNX.log
-		chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/captureKNX/log/captureKNX.log
+		touch ${USER_HOME}/captureKNX/log/captureKNX.log
+		chown $SUDO_USER:$SUDO_USER ${USER_HOME}/captureKNX/log/captureKNX.log
 
 		# version:
-		if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/version ];
+		if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/version ];
 		then
-			mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/version /home/${SUDO_USER}/captureKNX/version
+			mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/version ${USER_HOME}/captureKNX/version
 		fi
 
 		#TODO: once all wanted files are removed, delete the staging folder - this needs to take place at the END of the script.
-		# rm -fr /home/${SUDO_USER}/staging/ NOT HERE
+		# rm -fr ${USER_HOME}/staging/ NOT HERE
 	else
 		echo -e "\n"$YELLOW"No repo files to move."$RESET""
 	fi;
@@ -266,13 +266,16 @@ setup1()
 		systemctl mask dnsmasq
 	fi
 
-
-	# Added in 1.0.4 May 2025:
-	echo -e "\n"$GREEN"Disabling serial-getty@ttyAMA0.service"$RESET""
-	systemctl stop serial-getty@ttyAMA0.service
-	systemctl disable serial-getty@ttyAMA0.service
-	systemctl mask serial-getty@ttyAMA0.service
-
+	# Updated in 2.0.1, Sept 2026. Trixie gets verbose if it's already masked, so I now test first:
+	if [[ "$(systemctl is-enabled serial-getty@ttyAMA0.service 2>/dev/null)" != masked* ]];
+	then
+		echo -e "\n"$GREEN"Disabling serial-getty@ttyAMA0.service"$RESET""
+		systemctl stop serial-getty@ttyAMA0.service
+		systemctl disable serial-getty@ttyAMA0.service
+		systemctl mask serial-getty@ttyAMA0.service
+	else
+		echo -e "\n"$GREEN"Skipping: serial-getty@ttyAMA0.service is already masked"$RESET""
+	fi
 
 	echo -e "\n"$GREEN"Autoremoving prior to knxd installation"$RESET""
 	apt-get autoremove -y
@@ -300,15 +303,15 @@ setup1()
 		fi
 	else
 		echo -e "\n"$GREEN"Installing knxd "$RESET""
-		rm -rf /home/$SUDO_USER/staging/knxd
-		mkdir -pv /home/$SUDO_USER/staging/knxd
-		cd /home/${SUDO_USER}/staging/knxd/
+		rm -rf ${USER_HOME}/staging/knxd
+		mkdir -pv ${USER_HOME}/staging/knxd
+		cd ${USER_HOME}/staging/knxd/
 		apt-get install git-core -y
 		git clone -b debian https://github.com/knxd/knxd.git
 		if [[ $releaseTest -lt 13 ]];
 		then
 			# 'systemd-dev' is not in Bookworm (aka Rls < 13). It was added in Trixie. libsystemd-dev does all we need
-			sed -i '/systemd-dev,$/d' /home/$SUDO_USER/staging/knxd/knxd/debian/control
+			sed -i '/systemd-dev,$/d' ${USER_HOME}/staging/knxd/knxd/debian/control
 			echo -e ""$GREEN"INFO:"$RESET" deleted 'systemd-dev' from debian/control file, as it does not exist in Bookworm"
 		fi
 		sh knxd/install-debian.sh
@@ -322,7 +325,7 @@ setup1()
 	fi
 
 	echo ''
-	isKnxdClient=$(sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 show knxdclient 2>/dev/null | sed -n 's/.*Version:\s\(.*\).*/\1/p'")
+	isKnxdClient=$(sudo -u ${SUDO_USER} bash -c "source ${USER_HOME}/venv/bin/activate && pip3 show knxdclient 2>/dev/null | sed -n 's/.*Version:\s\(.*\).*/\1/p'")
 	if [[ $isKnxdClient ]];
 	then
 		echo -e "Current installed version of KNXDclient = $isKnxdClient"
@@ -332,17 +335,17 @@ setup1()
 		then
 			echo ''
 			echo -e ""$GREEN"Updating KNXDclient"$RESET""
-			sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient --upgrade"
+			sudo -u ${SUDO_USER} bash -c "source ${USER_HOME}/venv/bin/activate && pip3 install knxdclient --upgrade"
 		else
 			echo -e ""$GREEN"No KNXDclient upgrade required"$RESET""
 		fi
 	else
 		echo -e "\n"$GREEN"Installing KNXDclient"$RESET""
-		sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 install knxdclient"
+		sudo -u ${SUDO_USER} bash -c "source ${USER_HOME}/venv/bin/activate && pip3 install knxdclient"
 	fi
 
 	echo -e "\n"$GREEN"Installing requests"$RESET""
-	sudo -u ${SUDO_USER} bash  -c "source /home/${SUDO_USER}/venv/bin/activate && python3 -m pip install requests"
+	sudo -u ${SUDO_USER} bash  -c "source ${USER_HOME}/venv/bin/activate && python3 -m pip install requests"
 
 	echo ''
 	set +e #Suspend the error trap
@@ -365,10 +368,10 @@ setup1()
 	else
 		echo -e "\n"$GREEN"Installing telegraf"$RESET""
 		# Install steps from here: https://www.influxdata.com/downloads/
-		rm -rf /home/$SUDO_USER/staging/telegraf
-		mkdir -pv /home/$SUDO_USER/staging/telegraf
-		cd /home/${SUDO_USER}/staging/telegraf/
-		
+		rm -rf ${USER_HOME}/staging/telegraf
+		mkdir -pv ${USER_HOME}/staging/telegraf
+		cd ${USER_HOME}/staging/telegraf/
+
 		# influxdata-archive.key GPG fingerprint:
 		#   Primary key fingerprint: 24C9 75CB A61A 024E E1B6  3178 7C3D 5715 9FC2 F927
 		#   Subkey fingerprint:      9D53 9D90 D332 8DC7 D6C8  D3B9 D8FF 8E1F 7DF8 B07E
@@ -441,21 +444,21 @@ setup1()
 	fi
 
 	# grafana-source.yaml:
-	if [ -f /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml ];
+	if [ -f ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml ];
 	then
-		if cmp -s /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
+		if cmp -s ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml;
 		then
 			echo "Skipped: the file '/etc/grafana/provisioning/datasources/grafana-source.yaml' already exists & the new version is unchanged"
 		else
-			mv -fv /home/${SUDO_USER}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
+			mv -fv ${USER_HOME}/staging/captureKNX/Raspberry\ Pi/grafana-source.yaml /etc/grafana/provisioning/datasources/grafana-source.yaml
 		fi
 	fi
 
 	echo -e -n "\n"$GREEN"Customising Grafana tab title & login screen"$RESET""
 	# customise Grafana tab title & login screen. (TY https://volkovlabs.io/blog/how-to-customize-grafana-11.1.0/)
-	find "/usr/share/grafana/public/build" -type f -name "*.js" -print0 | xargs -0 sed -i 's|this.LoginTitle="Welcome to Grafana"|this.LoginTitle="Welcome to captureKNX"|g'
-	find "/usr/share/grafana/public/build" -type f -name "*.js" -print0 | xargs -0 sed -i 's|this.AppTitle="Grafana"|this.AppTitle="captureKNX"|g'
-	echo -e ""$GREEN" - DONE"$RESET""
+	# Grep first, then sed only the matches. (Claude.ai refactored to speed this, where previously it ran across ALL .js files & was noticeably slow)
+	grep -rlZ --include="*.js" -F 'this.LoginTitle="Welcome to Grafana"' /usr/share/grafana/public/build 2>/dev/null | xargs -0 -r sed -i 's|this.LoginTitle="Welcome to Grafana"|this.LoginTitle="Welcome to captureKNX"|g'
+	grep -rlZ --include="*.js" -F 'this.AppTitle="Grafana"' /usr/share/grafana/public/build 2>/dev/null | xargs -0 -r sed -i 's|this.AppTitle="Grafana"|this.AppTitle="captureKNX"|g'
 
 	if [ $SUDO_USER != 'pi' ];
 	then
@@ -507,7 +510,7 @@ setup1()
 
 	if [[ $NEEDS_REBOOT ]];
 	then
-		touch /home/${SUDO_USER}/setup1_complete
+		touch ${USER_HOME}/setup1_complete
 		echo ''
 		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
 		prompt_for_reboot
@@ -519,9 +522,9 @@ setup1()
 
 setup2()
 {
-	if [ -f /home/${SUDO_USER}/setup1_complete ];
+	if [ -f ${USER_HOME}/setup1_complete ];
 	then
-		rm -rf /home/${SUDO_USER}/setup1_complete
+		rm -rf ${USER_HOME}/setup1_complete
 	fi
 	NEEDS_REBOOT=''
 	newLine=$(read_TTY)
@@ -550,7 +553,7 @@ setup2()
 	fi
 	if [[ $NEEDS_REBOOT ]];
 	then
-		touch /home/${SUDO_USER}/setup2_complete
+		touch ${USER_HOME}/setup2_complete
 		echo ''
 		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
 		prompt_for_reboot
@@ -560,9 +563,9 @@ setup2()
 
 setup3()
 {
-	if [ -f /home/${SUDO_USER}/setup2_complete ];
+	if [ -f ${USER_HOME}/setup2_complete ];
 	then
-		rm -rf /home/${SUDO_USER}/setup2_complete
+		rm -rf ${USER_HOME}/setup2_complete
 	fi
 
 	# Customise knxd.conf
@@ -849,10 +852,10 @@ setup3()
 	apt-get purge bluez -y
  	rm -f influxdb2_2.7.8-1_arm64.deb
 	rm -f grafana-enterprise_11.1.3_arm64.deb
-	rm -rfd /home/${SUDO_USER}/staging/
+	rm -rfd ${USER_HOME}/staging/
 
 	# Add a shortcut for the logs folder:
-	ln -sfnv /var/log/ /home/${SUDO_USER}/log
+	ln -sfnv /var/log/ ${USER_HOME}/log
 
 	# Wi-Fi Power Save
 	# Disable Wi-Fi power save mode:
@@ -922,9 +925,9 @@ test_install()
 	else
 		echo "Latest release of captureKNX is    v$latestcaptureKNXRls"
 	fi
-	if [ -f /home/${SUDO_USER}/captureKNX/version ];
+	if [ -f ${USER_HOME}/captureKNX/version ];
 	then
-		VERSION=$(< /home/${SUDO_USER}/captureKNX/version)
+		VERSION=$(< ${USER_HOME}/captureKNX/version)
 		if [[ $VERSION == $latestcaptureKNXRls ]];
 		then
 			echo -e ""$GREEN"Installed version of captureKNX is v$VERSION""$RESET"
@@ -994,16 +997,12 @@ test_install()
 		IFS=$'\n'
 		for thisConnection in $activeConnections;
 		do
-			# Look in all 3 possible locations for the matching connectionFile:
-			local connectionFile="/etc/NetworkManager/system-connections/"$thisConnection".nmconnection"
-			if [ ! -f $connectionFile ];
-			then
-				local connectionFile="/usr/lib/NetworkManager/system-connections/"$thisConnection".nmconnection"
-				if [ ! -f $connectionFile ];
-				then
-					local connectionFile="/run/NetworkManager/system-connections/"$thisConnection".nmconnection"
-				fi
-			fi
+			# nmcli has no direct "give me the filename" query, and the on-disk filename doesn't always
+			# match the connection name (NM disambiguates with a UUID suffix if a name collision ever
+			# occurred for that connection - confirmed on real hardware). So resolve the connection's UUID
+			# and grep the known locations for the file that actually owns it:
+			local thisUuid=$(nmcli -t -f connection.uuid con show "$thisConnection" 2>/dev/null | cut -d: -f2-)
+			local connectionFile=$(grep -rlxF "uuid=$thisUuid" /etc/NetworkManager/system-connections /usr/lib/NetworkManager/system-connections /run/NetworkManager/system-connections 2>/dev/null | head -1)
 
 			if [ -f $connectionFile ];
 			then
@@ -1025,6 +1024,8 @@ test_install()
 					then
 						((ap_test=ap_test+8)) # we're a client, connected to a Wi-Fi network. Add 8
 						noapCount=noapCount+1
+						isWiFiClient="true" # Distinct from isWiFi below - scopes the Ethernet+Wi-Fi warning to
+						                    # client mode only. Ethernet + Wi-Fi-as-AP is a normal, expected setup.
 					fi
 				fi
 				if [[ $connectedType == "ethernet" ]];
@@ -1046,7 +1047,7 @@ test_install()
 		unset IFS
 	fi
 
-	if [[ $isEthernet && $isWiFi ]];
+	if [[ $isEthernet && $isWiFiClient ]];
 	then
 		echo -e ""$YELLOW"WARN:"$RESET" Ethernet AND Wi-Fi connections are active. This can cause connection/performance issues"
 	else
@@ -1155,7 +1156,7 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" knxd NOT installed"
 	fi
 
-	isKnxdClient=$(sudo -u ${SUDO_USER} bash -c "source /home/${SUDO_USER}/venv/bin/activate && pip3 show knxdclient 2>/dev/null | sed -n 's/.*Version:\s\(.*\).*/\1/p'")
+	isKnxdClient=$(sudo -u ${SUDO_USER} bash -c "source ${USER_HOME}/venv/bin/activate && pip3 show knxdclient 2>/dev/null | sed -n 's/.*Version:\s\(.*\).*/\1/p'")
 	if [[ $isKnxdClient ]];
 	then
 		echo -e ""$GREEN"PASS:"$RESET" KNXDclient installed ($isKnxdClient)"
@@ -1271,18 +1272,18 @@ test_install()
 		echo -e ""$YELLOW"FAIL:"$RESET" /etc/knxd.conf is missing required config. Re-run setup"
 	fi
 
-	if [ -d /home/${SUDO_USER}/log ];
+	if [ -d ${USER_HOME}/log ];
 	then
-		echo -n "Checking /home/${SUDO_USER}/log/telegraf/telegraf.log"
-		telegraf_error=$(sed -n -E '/^(.*) (.*)field type conflict(.*)$/h;${x;p;}' /home/${SUDO_USER}/log/telegraf/telegraf.log)
+		echo -n "Checking ${USER_HOME}/log/telegraf/telegraf.log"
+		telegraf_error=$(sed -n -E '/^(.*) (.*)field type conflict(.*)$/h;${x;p;}' ${USER_HOME}/log/telegraf/telegraf.log)
 		if [[ $telegraf_error ]];
 		then
 			echo -e '\r-------------------------------------      '
-			echo -e "\r"$YELLOW"FAIL:"$RESET" /home/${SUDO_USER}/log/telegraf/telegraf.log shows a 'field type conflict'. Telegrams are being discarded"
+			echo -e "\r"$YELLOW"FAIL:"$RESET" ${USER_HOME}/log/telegraf/telegraf.log shows a 'field type conflict'. Telegrams are being discarded"
 			echo ''
 			echo $telegraf_error
 		else
-			echo -e "\r"$GREEN"PASS:"$RESET" /home/${SUDO_USER}/log/telegraf/telegraf.log logged no 'field type conflicts'"
+			echo -e "\r"$GREEN"PASS:"$RESET" ${USER_HOME}/log/telegraf/telegraf.log logged no 'field type conflicts'"
 		fi
 	else
 		echo -e '\r-------------------------------------      '
@@ -1291,15 +1292,69 @@ test_install()
 
 	echo '-------------------------------------'
 
-	isKnxProject=$(find /home/${SUDO_USER}/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
+	projectFileTests=0
+	isKnxProject=$(find ${USER_HOME}/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isKnxProject ]];
 	then
-		creationDatestamp=$(stat -c %w /home/$isKnxProject | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
-		echo -e ""$GREEN"PASS:"$RESET" knx project file $isKnxProject found, created $creationDatestamp"
-	else
-		echo -e ""$YELLOW"FAIL:"$RESET" knx project file NOT found"
-		echo -e "      Copy one across to the /home/${SUDO_USER}/ folder and 'sudo systemctl restart captureKNX'"
+		projFileCreationDatestamp=$(stat -c %w /home/$isKnxProject)
+		[[ "${projFileCreationDatestamp}" == "-" ]] || projFileCreationDatestamp=$(date -d "${projFileCreationDatestamp}" +"%Y %b %d %H:%M %Z" 2>/dev/null)
+		((projectFileTests=projectFileTests+1))
 	fi
+	isZeroXml=$(find ${USER_HOME}/captureKNX/ -type f -name '0.xml' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
+	if [[ $isZeroXml ]];
+	then
+		zeroXmlCreationDatestamp=$(stat -c %w /home/$isZeroXml)
+		[[ "${zeroXmlCreationDatestamp}" == "-" ]] || zeroXmlCreationDatestamp=$(date -d "${zeroXmlCreationDatestamp}" +"%Y %b %d %H:%M %Z" 2>/dev/null)
+		((projectFileTests=projectFileTests+2))
+	fi
+	isProjectXml=$(find ${USER_HOME}/captureKNX/ -type f -name 'project.xml' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
+	if [[ $isProjectXml ]];
+	then
+		projectXmlCreationDatestamp=$(stat -c %w /home/$isProjectXml)
+		[[ "${projectXmlCreationDatestamp}" == "-" ]] || projectXmlCreationDatestamp=$(date -d "${projectXmlCreationDatestamp}" +"%Y %b %d %H:%M %Z" 2>/dev/null)
+		((projectFileTests=projectFileTests+4))
+	fi
+	# Right-pad the filename field to the longest of the three, so "found, created" lines up:
+	fieldWidth=$(printf '%s\n' "$isKnxProject" "$isZeroXml" "$isProjectXml" | awk '{ if (length($0)>m) m=length($0) } END { print m+2 }')
+	case $projectFileTests in
+		(0)
+			echo -e ""$YELLOW"FAIL:"$RESET" knx project file '*.knxproj' NOT found"
+			echo -e "      Copy one across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
+			;;
+		(1)
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isKnxProject'" "$projFileCreationDatestamp"
+			echo -e "      Run 'sudo systemctl restart captureKNX' to extract required '0.xml' & 'project.xml' files"
+			;;
+		(2)
+			# Found 0.xml but not project.xml
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isZeroXml'" "$zeroXmlCreationDatestamp"
+			echo -e ""$YELLOW"FAIL:"$RESET" knx project file 'project.xml' NOT found"
+			echo -e "      Copy a .knxproj file across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
+			;;
+		(3|5 )
+			# Project file and (0.xml | project.xml) found. Weird.
+			printf ""$GREEN"INFO:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isKnxProject'" "$projFileCreationDatestamp"
+			echo -e "      Run 'sudo systemctl restart captureKNX' to extract required '0.xml' & 'project.xml' files"
+			;;
+		(4)
+			# Found project.xml but not 0.xml
+			echo -e ""$YELLOW"FAIL:"$RESET" knx project file '0.xml' NOT found"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isProjectXml'" "$projectXmlCreationDatestamp"
+			echo -e "      Copy a .knxproj file across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
+			;;
+		(6)
+			# Found 0.xml & project.xml. Valid config.
+			echo -e ""$GREEN"INFO:"$RESET" knx project file '*.knxproj' NOT found"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isZeroXml'" "$zeroXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isProjectXml'" "$projectXmlCreationDatestamp"
+			;;
+		(7)
+			# Found all three files.
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isKnxProject'" "$projFileCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isZeroXml'" "$zeroXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isProjectXml'" "$projectXmlCreationDatestamp"
+			;;
+	esac
 
 	echo '-------------------------------------'
 	set +e #Suspend the error trap
@@ -1309,19 +1364,38 @@ test_install()
 	then
 		((lastTelegram=lastTelegram/1000000000))
 		lastTelegramDate="Unknown"
-		lastTelegramDate=$(date -d @"$lastTelegram" +"%Y %b %d %H:%M:%S %Z")
+		lastTelegramDate=$(date -d @"$lastTelegram" +"%Y %b %d %H:%M %Z")
 		echo -e "Last successful telegram: $lastTelegramDate"
 	else
 		echo -e "Last successful telegram unknown. $telegrafDebugFile returned no result. Try again"
 	fi
 
- 	local captureKnxLogFile="/home/pi/captureKNX/log/captureKNX.log" # TODO: remove this baked-in reference to 'pi'
+ 	local captureKnxLogFile="${USER_HOME}/captureKNX/log/captureKNX.log"
 	declare -a unknownGroups=()
 	declare -a unknownDPTs=()
+	local logCommenced=""
+	local decodeStatus="" # "" = never observed, "fatal" = last decode attempt aborted, "ok" = last attempt completed
 	while read line;
 	do
+		# Capture the timestamp of the log's first line, i.e. when the file was last recycled:
+		if [[ -z "$logCommenced" ]];
+		then
+			local rawTimestamp=$(echo $line | awk '{print $1, $2}')
+			logCommenced=$(date -d "$rawTimestamp" +"%Y %b %d %H:%M:%S %Z" 2>/dev/null)
+		fi
+
+		# Track whether the most recent decode_Group_Addresses attempt aborted before it could complete.
+		# (If it did, any PASS below would be meaningless - nothing was actually decoded to check against.)
+		if [[ "$line" == *"decode_Group_Addresses aborted. Invalid 'grpAddLevels'"* ]] || { [[ "$line" == *"decode_Group_Addresses:"* ]] && [[ "$line" == *"Aborting"* ]]; };
+		then
+			decodeStatus="fatal"
+		elif [[ "$line" == *"decode_Group_Addresses: found "* ]];
+		then
+			decodeStatus="ok"
+		fi
+
 		# Find and create a de-duped list of all unknown group addresses:
-		if [[ "$line" =~ "Exception decoding a telegram" ]];
+		if [[ "$line" =~ "exception decoding a telegram" ]];
 		then
 			# Extract GA from here: "<preamble> The telegram has been discarded. '8/3/1'"
 			local unknownGroup=$(echo $line | cut -d "'" -f2)
@@ -1356,8 +1430,9 @@ test_install()
 		else
 			echo -e ""$YELLOW"WARN:"$RESET captureKNX.log reports unknown Group Addresses: $unknownGroupsString""
 		fi
-	else
-		echo -e ""$GREEN"PASS:"$RESET captureKNX.log reports no unknown group addresses""
+	elif [[ "$decodeStatus" == "ok" ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" captureKNX.log reports no unknown group addresses (since log commenced at $logCommenced)"
 	fi
 
 	#Reconstitute DPTs as a comma-delimited string:
@@ -1375,8 +1450,9 @@ test_install()
 		else
 			echo -e ""$YELLOW"WARN:"$RESET captureKNX.log reports unknown DPTs: $unknownDPTsString""
 		fi
-	else
-		echo -e ""$GREEN"PASS:"$RESET captureKNX.log reports no unknown DPTs""
+	elif [[ "$decodeStatus" == "ok" ]];
+	then
+		echo -e ""$GREEN"PASS:"$RESET" captureKNX.log reports no unknown DPTs (since log commenced at $logCommenced)"
 	fi
 	echo ''
 	echo "Test knxd's access to the port with 'knxtool vbusmonitor1 ip:localhost'"
@@ -1401,11 +1477,25 @@ make_ap_nmcli ()
 		exit
 	fi
 
+	# Refuse to run if there's an ACTIVE 'hotspot' connection right now - an accidental re-run should never
+	# reconfigure (and disrupt) a live, working AP. A 'hotspot' that merely exists but isn't currently
+	# active (e.g. left over from an earlier run) is fine - it gets safely reused further down.
+	if nmcli -t -f NAME,ACTIVE con show | grep -Fxq 'hotspot:yes';
+	then
+		echo -e "\n"$YELLOW"FAIL:"$RESET" This Pi is already running as a Wi-Fi Access Point (an active 'hotspot' connection was found)."
+		echo -e ""$YELLOW"FAIL:"$RESET" Run 'sudo ./setup.sh noap' first if you want to change its settings, then re-run 'ap'."
+		exit 1
+	fi
+
+	# Checks we have a Wi-Fi interface, and if there are multiple present, has the user nominate the one to use:
+	which_wlan
+	local wifiDevice="$selectedWlan"
+
 	# ================== START DHCP ==================
-	if  grep -q 'interface=wlan0' /etc/dnsmasq.conf;
+	if  grep -q "interface=$wifiDevice" /etc/dnsmasq.conf;
 	then
 		#Read the current values:
-		wlanLine=$(sed -n '/interface=wlan0/=' /etc/dnsmasq.conf) #This is the line number that the wlan config starts at
+		wlanLine=$(sed -n "/interface=$wifiDevice/=" /etc/dnsmasq.conf) #This is the line number that the wlan config starts at
 		oldDhcpStartIp=$(sed -n -E "$wlanLine,$ s|^\s*dhcp-range=(.*)$|\1|p" /etc/dnsmasq.conf ) # Delimiter is '|'
 		matchRegex="\s*(([0-9]{1,3}\.){3}[0-9]{1,3}),(([0-9]{1,3}\.){3}[0-9]{1,3}),(([0-9]{1,3}\.){3}[0-9]{1,3})," # Bash doesn't do digits as "\d"
 		if [[ $oldDhcpStartIp =~ $matchRegex ]] ;
@@ -1418,7 +1508,7 @@ make_ap_nmcli ()
 		echo 'No IPs in /etc/dnsmasq.conf. Adding some defaults'
 		#Create default values:
 		cat <<END >> /etc/dnsmasq.conf
-interface=wlan0      # Use the required wireless interface - usually wlan0
+interface=$wifiDevice      # Use the required wireless interface - usually wlan0
 	dhcp-range=10.10.10.10,10.10.10.100,255.255.255.0,24h
 END
 	fi
@@ -1430,8 +1520,10 @@ END
 	# ================== END DHCP ==================
 
 	# ================= START Wi-Fi =================
-	local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show wlan0 | cut -d: -f2-)
-	connectionFile="/etc/NetworkManager/system-connections/"$wlan0Name".nmconnection"
+	local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show "$wifiDevice" | cut -d: -f2-)
+	# Same fix and rationale as test_install() above - resolve via UUID rather than guessing the filename:
+	local wlan0Uuid=$(nmcli -t -f connection.uuid con show "$wlan0Name" 2>/dev/null | cut -d: -f2-)
+	local connectionFile=$(grep -rlxF "uuid=$wlan0Uuid" /etc/NetworkManager/system-connections /usr/lib/NetworkManager/system-connections /run/NetworkManager/system-connections 2>/dev/null | head -1)
 	if [ -f $connectionFile ];
 	then
 		#local oldWifiSsid=$(grep -r '^ssid=' $connectionFile | cut -s -d = -f 2)
@@ -1511,10 +1603,23 @@ END
 	systemctl enable dnsmasq
 	systemctl start dnsmasq
 
-	# Modify existing hotspot, otherwise delete and start afresh
-	if [[ $wlan0Name == "hotspot" ]];
+	# Modify existing hotspot, otherwise delete and start afresh.
+	# Check by NAME across all connections, not just what's active on $wifiDevice right now - a 'hotspot'
+	# profile can exist perfectly validly while inactive (e.g. left over from an earlier run), and nmcli
+	# happily lets you add a second, identically-named connection if you don't check for that first.
+	local hotspotUuids=($(LANG=C nmcli -t -f NAME,UUID con show | awk -F: '$1 == "hotspot" {print $2}'))
+	if [ ${#hotspotUuids[@]} -gt 0 ];
 	then
-		nmcli con mod hotspot autoconnect yes ssid "$wifiSsid"
+		if [ ${#hotspotUuids[@]} -gt 1 ];
+		then
+			echo -e ""$YELLOW"WARNING:"$RESET" Found ${#hotspotUuids[@]} connections named 'hotspot' - keeping one, removing the rest"
+			for uuid in "${hotspotUuids[@]:1}";
+			do
+				nmcli con del uuid "$uuid"
+			done
+		fi
+		# Re-assert the interface binding too, in case the surviving profile was previously bound to a different NIC:
+		nmcli con mod hotspot connection.interface-name "$wifiDevice" autoconnect yes ssid "$wifiSsid"
 	else
 		if [[ "$wlan0Name" != "" ]];
 		then
@@ -1522,7 +1627,7 @@ END
 			sleep 5
 		fi
 		echo "Creating new Wi-Fi connection to '$wifiSsid'"
-		nmcli con add type wifi ifname wlan0 con-name hotspot autoconnect yes ssid "$wifiSsid"
+		nmcli con add type wifi ifname "$wifiDevice" con-name hotspot autoconnect yes ssid "$wifiSsid"
 	fi
 	nmcli con mod hotspot 802-11-wireless.mode ap 802-11-wireless.band bg 802-11-wireless.channel $wifiChannel #ipv4.method shared
 	nmcli con mod hotspot wifi-sec.key-mgmt wpa-psk
@@ -1550,6 +1655,15 @@ unmake_ap_nmcli ()
 		exit
 	fi
 
+	# The 'hotspot' connection can only be bound to one Wi-Fi NIC - ask nmcli which one directly,
+	# rather than re-prompting the user to choose (which risks picking a *different* NIC to the one actually running the AP):
+	local wifiDevice=$(LANG=C nmcli -t -f connection.interface-name con show hotspot 2>/dev/null | cut -d: -f2-)
+	if [[ -z "$wifiDevice" ]];
+	then
+		echo -e "\n"$YELLOW"FAIL:"$RESET" No 'hotspot' Wi-Fi connection was found. Is this Pi actually running as an Access Point?"
+		exit 1
+	fi
+
 	while true; do
 		read -p "Setup a new wireless network? (Select N for wired) [y/n]: " wiredOrWireless
 		case $wiredOrWireless in
@@ -1569,7 +1683,7 @@ unmake_ap_nmcli ()
 
 	if [[ "$wiredOrWireless" =~ [Yy] ]];
 	then
-		local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show wlan0 | cut -d: -f2-)
+		local wlan0Name=$(LANG=C nmcli -t -f GENERAL.CONNECTION device show "$wifiDevice" | cut -d: -f2-)
 		if [[ $wlan0Name == 'hotspot' ]]; then wlan0Name=''; fi # Suppress auto-populate below if name is 'hotspot'
 		while true; do
 			read -e -i "$wlan0Name" -p "Set the network's SSID                                  : " newSsid
@@ -1597,10 +1711,17 @@ unmake_ap_nmcli ()
 	read -p 'Do you want to assign the Pi a static IP address?  [Y/n]: ' staticResponse
 	case $staticResponse in
 		(y|Y|"")
-			local oldPiIpV4=$(LANG=C nmcli -t -f IP4.ADDRESS device show wlan0 | cut -d: -f2- | cut -d/ -f1)
-			local oldDhcpSubnetCIDR=$(LANG=C nmcli -t -f IP4.ADDRESS device show wlan0 | cut -d/ -f2-)
-			local oldRouter=$(LANG=C nmcli -t -f IP4.GATEWAY device show wlan0 | cut -d: -f2-)
-			local oldDnsServers=$(LANG=C nmcli -t -f IP4.DNS device show wlan0 | cut -d: -f2-)
+			# Prefill from whichever device will actually carry the new connection - not always wlan0:
+			if [[ "$wiredOrWireless" =~ [Yy] ]];
+			then
+				local targetDevice="$wifiDevice"
+			else
+				local targetDevice=$(LANG=C nmcli -t -f DEVICE,TYPE device status | awk -F: '$2 == "ethernet" {print $1; exit}')
+			fi
+			local oldPiIpV4=$(LANG=C nmcli -t -f IP4.ADDRESS device show "$targetDevice" | cut -d: -f2- | cut -d/ -f1)
+			local oldDhcpSubnetCIDR=$(LANG=C nmcli -t -f IP4.ADDRESS device show "$targetDevice" | cut -d/ -f2-)
+			local oldRouter=$(LANG=C nmcli -t -f IP4.GATEWAY device show "$targetDevice" | cut -d: -f2-)
+			local oldDnsServers=$(LANG=C nmcli -t -f IP4.DNS device show "$targetDevice" | cut -d: -f2-)
 
 			if [ "$oldDhcpSubnetCIDR" ]; then local oldDhcpSubnetMask=$(CIDRtoNetmask $oldDhcpSubnetCIDR); fi
 
@@ -1647,7 +1768,7 @@ unmake_ap_nmcli ()
 		# Wireless:
 		sleep 5 # Sleep briefly having just deleted the hotspot, before creating the new wireless network connection
 		echo 'About to connect to Wi-Fi'
-		nmcli dev wifi connect "$newSsid" password "$newPsk" ifname wlan0
+		nmcli dev wifi connect "$newSsid" password "$newPsk" ifname "$wifiDevice"
 		echo 'Back from connecting to Wi-Fi'
 		# Paste in the new settings
 		case $staticResponse in
@@ -1666,7 +1787,7 @@ unmake_ap_nmcli ()
 		echo 'Back from con up'
 	else
 		# Ethernet:
-		local eth0Name=$(LANG=C nmcli -t c s | awk '/ethernet/' | cut -d: -f1)
+		local eth0Name=$(LANG=C nmcli -t -f NAME,TYPE con show | awk -F: '$2 == "802-3-ethernet" {print $1; exit}')
 		if [[ ! $eth0Name ]];
 		then
 			# Bad. No ethernet device found
@@ -1863,6 +1984,48 @@ no_charge_battery()
 }
 
 
+which_wlan()
+{
+	# Get a list of wlan devices that are type "wifi" only
+	local wlanDevices=($(LANG=C nmcli device | grep wlan | awk '$2 == "wifi" {print $1}'))
+	local wlanCount=${#wlanDevices[@]}
+
+	if [ $wlanCount -eq 0 ];
+	then
+		echo -e "\n"$YELLOW"FAIL:"$RESET No wireless interfaces found. Aborting""
+		exit 1
+	elif [ $wlanCount -eq 1 ];
+	then
+		# Only one found, use it automatically
+		selectedWlan=${wlanDevices[0]}
+		# echo "Using wireless interface: $selectedWlan" >&2
+	else
+		# Multiple found, prompt user to choose
+		echo -e "Found multiple wireless interfaces" >&2
+		for i in "${!wlanDevices[@]}";
+			do
+				echo "  ${wlanDevices[$i]}: $i" >&2
+			done
+		echo
+		while true;
+		do
+			read -p "Select interface (0-$((wlanCount-1))): " selection
+			# Validate selection
+			if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 0 ] && [ "$selection" -lt $wlanCount ];
+			then
+				selectedWlan=${wlanDevices[$selection]}
+				echo "Selected: $selectedWlan" >&2
+				break
+			else
+				echo "Invalid selection" >&2
+			fi
+		done
+	fi
+
+	# Now use $selectedWlan for your operations
+}
+
+
 # A place for me to test code within the structure of the script.
 # Ideally this function will never be released with code present. Let's see how I go.
 dev()
@@ -1882,9 +2045,16 @@ dev()
 
 if [ "$EUID" -ne 0 ];
 then
-	echo -e "\nPlease re-run as 'sudo -E -H ./setup.sh'"
+	echo -e "\nPlease re-run as 'sudo ./setup.sh'"
 	echo -e '(Add "test" on the end to test the system)'
+	echo -e "(sudo -E/-H are no longer required, but won't cause problems if used out of habit)"
 	exit 1
+fi
+
+if [ -n "${SUDO_USER}" ]; then
+	USER_HOME=$(getent passwd "${SUDO_USER}" | cut -d: -f6)
+else
+	USER_HOME=${HOME}
 fi
 
 releaseTest=$(sed -n -E 's/^VERSION_ID="(.*)"$/\1/p' /etc/os-release)	# Referenced twice during installation
@@ -1925,10 +2095,10 @@ case "$1" in
 		;;
 	('')
 		activate_venv
-		if [ -f /home/${SUDO_USER}/setup2_complete ];
+		if [ -f ${USER_HOME}/setup2_complete ];
 		then
 			setup3
-		elif [ -f /home/${SUDO_USER}/setup1_complete ];
+		elif [ -f ${USER_HOME}/setup1_complete ];
 		then
 			setup2
 			setup3

@@ -28,9 +28,9 @@ The upgrade process is a cut-down version of the setup process in [step3-setup-t
    sudo chmod +x setup.sh
    ```
 
-6. Now run it! (Be careful here: the switches are critical. "-E" ensures your user path is passed to the script. Without it the software will be moved to the wrong location, or not at all. "-H" passes the Pi user's home directory.)
+6. Now run it!
    ```
-   sudo -E -H ./setup.sh
+   sudo ./setup.sh
    ```
 
 7. That's it. 

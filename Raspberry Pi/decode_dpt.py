@@ -218,7 +218,7 @@ def DPT10(sub_DPT, value):
     if isinstance(value, tuple):
         # Which it certainly should be!
         time, day = value
-        if day:
+        if day is not None:
             value = f'{DOW[day]} {time}'
         else:
             value = f'{time}'
@@ -508,4 +508,4 @@ def DPT232(sub_DPT, value):
     '''
     RGB colour as three bytes, 0-255. Passed by knxdclient as a tuple
     '''
-    return ('#{0:X}{1:X}{2:X}'.format(*value), '')
+    return ('#{0:02X}{1:02X}{2:02X}'.format(*value), '')

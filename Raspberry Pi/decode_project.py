@@ -16,7 +16,7 @@ import glob                         # Finding the most recent (youngest) project
 import os                           # Path manipulation
 import re                           # Used to decode the topology + escape text fields sent to telegraf
 import requests                     # To push the values to telegraf
-from xml.dom.minidom import parse   # Decoding the ETS XML file
+from xml.dom.minidom import parse, parseString       # Decoding the ETS XML file
 import zipfile                      # Reading the project file (it's just a ZIP file!)
 
 import common
@@ -26,39 +26,72 @@ from common import ETS_0_XML_FILE as ETS_0_XML_FILE
 from common import ETS_PROJECT_XML_FILE as ETS_PROJECT_XML_FILE
 
 
-def unzip_project_archive():
+def get_project_timestamp(path):
     '''
-    Walk through the user's root folder recursively in search of the most recent (youngest) project file.
-    If project file is found, compare its creation time to existing 0.XML & project.XML. If they're *younger*, exit.
-    If project file and 0 or Project are OLDER, extract the files.
-    If project file not found, just exit, as previous 0.XML & project.XML may already exist.
+    Thank you Claude.ai: Returns the LastModified timestamp (an ISO-8601 string, 
+    e.g. "2026-08-17T02:37:31Z") from a project.xml <ProjectInformation> element.
+    'path' can be either an already-extracted, plain project.xml file, OR a .knxproj
+    archive - in which case its embedded project.xml is read directly out of the zip.
+    Returns '' if the timestamp can't be determined, so callers can safely compare
+    it against other results without special-casing "file missing" or "unreadable".
     '''
     try:
-        oldest = 0  # Initialise to 1970
-        if os.path.isfile(ETS_0_XML_FILE) and os.path.isfile(ETS_PROJECT_XML_FILE):
-            # Good. We have files, that's a start.
-            # Check their datestamps:
-            oldest = min(os.path.getmtime(ETS_0_XML_FILE),os.path.getmtime(ETS_PROJECT_XML_FILE))
-
-        project_files = glob.glob(PI_USER_HOME + "/**/*.knxproj", recursive = True)
-        if project_files:
-            project_file = max(project_files, key=os.path.getctime)
-            if os.path.getctime(project_file) > oldest:
-                log(f'unzip_project_archive: Unzipping {project_file}')
-                with zipfile.ZipFile(project_file) as z:
-                    allFiles = z.namelist()
-                    for etsFile in (os.path.split(ETS_0_XML_FILE)[1], os.path.split(ETS_PROJECT_XML_FILE)[1]):
-                        for thisFile in allFiles:
-                            if etsFile == thisFile.split('/')[-1]:
-                                with open(PI_USER_HOME + '/captureKNX/' + etsFile , 'wb') as f:
-                                    f.write(z.read(thisFile))
-                                break
-            else:
-                log(f'unzip_project_archive: existing XML files are younger than {project_file}. Skipping extraction')
+        if zipfile.is_zipfile(path):
+            with zipfile.ZipFile(path) as z:
+                for name in z.namelist():
+                    if name.split('/')[-1] == os.path.split(ETS_PROJECT_XML_FILE)[1]:
+                        doc = parseString(z.read(name))
+                        break
+                else:
+                    return ''
         else:
-            log(f'unzip_project_archive: No project file found')
+            if not os.path.isfile(path):
+                return ''
+            with open(path) as file:
+                doc = parse(file)
+
+        for el in doc.getElementsByTagName('ProjectInformation'):
+            return el.getAttribute('LastModified').strip()
     except Exception as e:
-        log(f'unzip_project_archive: Exception thrown trying to unzip archive: {e}')
+        log(f"get_project_timestamp: {type(e).__name__} reading '{path}': {e}")
+    return ''
+
+
+def unzip_project_archive():
+    '''
+    Walk through the user's root folder recursively in search of the most recently EXPORTED
+    project file - using the LastModified timestamp ETS embeds in project.xml.
+    If a project file is found and its embedded date is newer than what's already extracted,
+    extract it. If no project file is found, just exit - previous 0.XML & project.XML may
+    already exist.
+    '''
+    try:
+        project_files = glob.glob(PI_USER_HOME + "/**/*.knxproj", recursive=True)
+        if not project_files:
+            log(f'unzip_project_archive: No project file found')
+            return
+
+        project_file = max(project_files, key=get_project_timestamp)
+        newest_timestamp = get_project_timestamp(project_file)
+        current_timestamp = get_project_timestamp(ETS_PROJECT_XML_FILE)
+
+        if newest_timestamp and newest_timestamp > current_timestamp:
+            log(f'unzip_project_archive: Unzipping {project_file} '
+                f'(LastModified {newest_timestamp}, current is {current_timestamp or "none"})')
+            with zipfile.ZipFile(project_file) as z:
+                allFiles = z.namelist()
+                for etsFile in (os.path.split(ETS_0_XML_FILE)[1], os.path.split(ETS_PROJECT_XML_FILE)[1]):
+                    for thisFile in allFiles:
+                        if etsFile == thisFile.split('/')[-1]:
+                            with open(PI_USER_HOME + '/captureKNX/' + etsFile, 'wb') as f:
+                                f.write(z.read(thisFile))
+                            break
+        else:
+            log(f'unzip_project_archive: existing XML files (LastModified {current_timestamp or "unknown"}) '
+                f'are not older than {project_file} ({newest_timestamp or "unreadable"}). Skipping extraction')
+
+    except Exception as e:
+        log(f'unzip_project_archive: {type(e).__name__} exception thrown trying to unzip archive: {e}')
 
     return
 
@@ -79,12 +112,13 @@ def decode_GroupLevels(filename):
     if not os.path.isfile(filename):
         log(f"decode_GroupLevels: file '{filename}' not found. Aborting")
         print(f"decode_GroupLevels: file '{filename}' not found. Aborting")
-        return
+        return None
     try:
         with open(filename) as file:
             document = parse(file)
     except Exception as e:
-        log(f"decode_GroupLevels: Exception thrown trying to read file '{filename}'. {e}")
+        log(f"decode_GroupLevels: {type(e).__name__} exception thrown trying to read file '{filename}'. Aborting. ({e})")
+        return None
 
     try:
         for elements in document.getElementsByTagName('ProjectInformation'):
@@ -96,7 +130,8 @@ def decode_GroupLevels(filename):
         else:
             return 1
     except Exception as e:
-        log(f"decode_GroupLevels: Exception thrown trying to read GA Style from '{filename}'. {e}")
+        log(f"decode_GroupLevels: {type(e).__name__} exception thrown trying to read GA Style from '{filename}'. Aborting. ({e})")
+        return None
 
 
 # Decode this Topology data from 0.xml (NB: this is an edited extract):
@@ -120,12 +155,13 @@ def decode_Individual_Addresses(filename):
     if not os.path.isfile(filename):
         log(f"decode_Addresses: file '{filename}' not found. Aborting")
         print(f"decode_Addresses: file '{filename}' not found. Aborting")
-        return
+        return None
     try:
         with open(filename) as file:
             document = parse(file)
     except Exception as e:
-        log(f"decode_ETS_GA_Export: Exception thrown trying to read file '{filename}'. {e}")
+        log(f"decode_ETS_GA_Export: {type(e).__name__} exception thrown trying to read file '{filename}'. Aborting. ({e})")
+        return None
 
     try:
         locations = document.getElementsByTagName('Locations')
@@ -149,8 +185,8 @@ def decode_Individual_Addresses(filename):
                     #print(f'RefId: {RefId} - Building: {building}, floor: {floor}, room: {room}')
 
     except Exception as e:
-        print(f"decode_Individual_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
-        log(f"decode_Individual_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
+        print(f"decode_Individual_Addresses: {type(e).__name__} exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
+        log(f"decode_Individual_Addresses: {type(e).__name__} exception thrown at line {e.__traceback__.tb_lineno} trying to read rooms from '{filename}'. {e}")
 
     try:
         topo = document.getElementsByTagName('Topology')
@@ -183,8 +219,8 @@ def decode_Individual_Addresses(filename):
                                         data[deviceAddress] = (device_location, name)
                                         foundAddresses += 1
     except Exception as e:
-        print(f"decode_Individual_Addresses: Exception thrown trying to read file '{filename}'. {e}")
-        log(f"decode_Individual_Addresses: Exception thrown trying to read file '{filename}'. {e}")
+        print(f"decode_Individual_Addresses: {type(e).__name__} exception thrown trying to read file '{filename}'. {e}")
+        log(f"decode_Individual_Addresses: {type(e).__name__} exception thrown trying to read file '{filename}'. {e}")
    
     log(f'decode_Individual_Addresses: found {foundLocations} locations and {foundAddresses} individual addresses')
 
@@ -208,16 +244,22 @@ def decode_Group_Addresses(filename, grpAddLevels):
     data = {}
     foundGAs = 0
     failedGAs = 0
+
+    if grpAddLevels not in (1, 2, 3):
+        log(f"decode_Group_Addresses aborted. Invalid 'grpAddLevels'")
+        return None
+        
     # Parse XML from a file object
     if not os.path.isfile(filename):
         log(f"decode_Group_Addresses: file '{filename}' not found. Aborting")
         print(f"decode_Group_Addresses: file '{filename}' not found. Aborting")
-        return
+        return None
     try:
         with open(filename) as file:
             document = parse(file)
     except Exception as e:
-        log(f"decode_Group_Addresses: Exception thrown trying to read file '{filename}'. {e}")
+        log(f"decode_Group_Addresses: {type(e).__name__} exception thrown trying to read file '{filename}'. Aborting. ({e})")
+        return None
 
     try:
         for GAs in document.getElementsByTagName('GroupAddresses'):
@@ -225,56 +267,62 @@ def decode_Group_Addresses(filename, grpAddLevels):
                 for GroupRange in GroupRanges.getElementsByTagName('GroupRange'):
                     for GroupRange2 in GroupRange.getElementsByTagName('GroupRange'):
                         for GroupAddress in GroupRange2.getElementsByTagName('GroupAddress'):
-                            longAddress   = int((GroupAddress.getAttribute('Address')).strip())
-                            name          = (GroupAddress.getAttribute('Name')).strip()
-                            DptString     = (GroupAddress.getAttribute('DatapointType')).strip()
+                            try:
+                                longAddress   = int((GroupAddress.getAttribute('Address')).strip())
+                                name          = (GroupAddress.getAttribute('Name')).strip()
+                                DptString     = (GroupAddress.getAttribute('DatapointType')).strip()
 
-                            if longAddress:
-                                # Both the address and DPT are crucial. Discard this GA if either is absent
-                                # Bit decoding thanks to: https://knxer.net/?p=49
-                                if grpAddLevels == 3:
-                                    main = longAddress >> 11
-                                    middle = (longAddress >> 8) & 0x07
-                                    sub = longAddress & 0b0000000011111111
-                                    GA = (f'{main}/{middle}/{sub}')
-                                elif grpAddLevels == 2:
-                                    main = longAddress >> 11
-                                    sub = longAddress & 0b0000011111111111
-                                    GA = (f'{main}/{sub}')
+                                if longAddress:
+                                    # Both the address and DPT are crucial. Discard this GA if either is absent
+                                    # Bit decoding thanks to: https://knxer.net/?p=49
+                                    if grpAddLevels == 3:
+                                        main = longAddress >> 11
+                                        middle = (longAddress >> 8) & 0x07
+                                        sub = longAddress & 0b0000000011111111
+                                        GA = (f'{main}/{middle}/{sub}')
+                                    elif grpAddLevels == 2:
+                                        main = longAddress >> 11
+                                        sub = longAddress & 0b0000011111111111
+                                        GA = (f'{main}/{sub}')
+                                    else:
+                                        GA = longAddress
+
+                                if longAddress and DptString:
+                                    # Turn the DPT back into a *string* that resembles a float: "DPST-5-1" becomes 5.001
+                                    # (I couldn't get the trailing zeroes to work for all types as a float, so it's now a string)
+
+                                    DPT_split = DptString.split('-')
+                                    if len(DPT_split) == 2:
+                                        # Rare, possibly junk value, maybe an old GA no longer used. e.g. "DPST-1" Format to 1.000
+                                        # Valid occurrences are seen in ETS as (e.g.) DPT "9.*", a 2-byte float not fully defined.
+                                        sub_dpt = '000'
+                                        log(f"decode_Group_Addresses Group Address {GA}, name = |{name}| has DPT '{DptString}' but no sub-type. Appending '000'")
+                                    elif len(DPT_split) == 3:
+                                        sub_dpt = DPT_split[2].zfill(3) #Right-justifies sub-dpt to three digits.
+                                    else:
+                                        # A broken DPT? Discard the whole GA
+                                        log(f"decode_Group_Addresses failed to decode sub-type from '{DptString}' for Group Address {GA}. The GA has been discarded")
+                                        failedGAs += 1
+                                        continue
+
+                                    DPT = DPT_split[1] + '.' + sub_dpt
+
+                                    if GA not in data:
+                                        data[GA] = (DPT, name)
+                                        foundGAs += 1
+
                                 else:
-                                    GA = longAddress
-
-                            if longAddress and DptString:
-                                # Turn the DPT back into a *string* that resembles a float: "DPST-5-1" becomes 5.001
-                                # (I couldn't get the trailing zeroes to work for all types as a float, so it's now a string)
-
-                                DPT_split = DptString.split('-')
-                                if len(DPT_split) == 2:
-                                    # Rare, possibly junk value, maybe an old GA no longer used. e.g. "DPST-1" Format to 1.000
-                                    # Valid occurrences are seen in ETS as (e.g.) DPT "9.*", a 2-byte float not fully defined.
-                                    sub_dpt = '000'
-                                    log(f"decode_Group_Addresses Group Address {GA} has DPT '{DptString}' but no sub-type. Appending '000'")
-                                elif len(DPT_split) == 3:
-                                    sub_dpt = DPT_split[2].zfill(3) #Right-justifies sub-dpt to three digits.
-                                else:
-                                    # A broken DPT? Discard the whole GA
-                                    log(f"decode_Group_Addresses failed to decode sub-type from '{DptString}' for Group Address {GA}. The GA has been discarded")
+                                    log(f'decode_Group_Addresses discarded incomplete address {longAddress} aka {GA}, name = |{name}|, DptString = |{DptString}|')
                                     failedGAs += 1
-                                    continue
 
-                                DPT = DPT_split[1] + '.' + sub_dpt
-
-                                if GA not in data:
-                                    data[GA] = (DPT, name)
-                                    foundGAs += 1
-
-                            else:
-                                log(f'decode_Group_Addresses discarded incomplete address {longAddress} aka {GA}, name = |{name}|, DptString = |{DptString}|')
+                            except Exception as e:
+                                log(f"decode_Group_Addresses: {type(e).__name__} exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML processing GA element {GroupAddress.toxml()}: {e}")
                                 failedGAs += 1
+                                continue
 
     except Exception as e:
-        print(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
-        log(f"decode_Group_Addresses: Exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
+        print(f"decode_Group_Addresses: {type(e).__name__} exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
+        log(f"decode_Group_Addresses: {type(e).__name__} exception thrown at line {e.__traceback__.tb_lineno} trying to parse XML. {e}")
 
     log(f"decode_Group_Addresses: found {foundGAs} group addresses and {f'another {failedGAs}' if failedGAs != 0 else 'none'} that failed decoding")
 

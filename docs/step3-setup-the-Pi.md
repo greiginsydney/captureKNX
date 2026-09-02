@@ -131,15 +131,16 @@ Your SSH session will end here. Wait for the Pi to reboot, reconnect, sign back 
 ```txt
 python3 --version
 ```
-The output should look like this, which confirms python 3.11 (ignore the .2):
+The output should look like this, which confirms python 3.13 (ignore the .5):
 ```txt
-Python 3.11.2
+Python 3.13.5
 ```
+(The above is correct for Trixie. Bookworm will report 3.11.2. The process is the same but adjust the number below accordingly.)
 
 29. Update the following command if required with that of the same version number:
 
 ```txt
-sudo apt install python3.11-venv -y
+sudo apt install python3.13-venv -y
 ```
 ```txt
 python3 -m venv venv
@@ -183,16 +184,16 @@ sudo chmod +x setup.sh
 ```
 <br id="setup"/>
 
-35. Now run it! (Be careful here: the switches are critical. "-E" ensures your user path is passed to the script. Without it the software will be moved to the wrong location, or not at all. "-H" passes the Pi user's home directory.)
+35. Now run it!
 ```txt
-sudo -E -H ./setup.sh
+sudo ./setup.sh
 ```
 
 36. The FIRST time you run the script on a brand new Pi it's going to run for ~8-9 minutes (depending on your internet speed) and then prompt you to reboot:
 
 ![image](https://github.com/user-attachments/assets/f9723c88-8f30-4699-b85e-9b024a3c1fe0)
 
-37. Reconnect to the Pi after it reboots and return to Step 35. (Pressing up-arrow should offer you the `sudo -E -H ./setup.sh` command to save you re-typing it.)
+37. Reconnect to the Pi after it reboots and return to Step 35. (Pressing up-arrow should offer you the `sudo ./setup.sh` command to save you re-typing it.)
 
 38. It will seem to instantly prompt for another reboot. Consent to that and again up-arrow to re-run setup when you re-connect:
 

@@ -70,7 +70,7 @@ async def main() -> None:
                 except Exception as e:
                     # We failed to ID the source. Not fatal, it will be sent as 'Unknown'
                     source_name = ''
-                    log(f'main: Exception decoding a telegram from packet.src {packet.src} - {e}')
+                    log(f'main: {type(e).__name__} exception decoding a telegram from packet.src {packet.src} - {e}')
 
                 # Decode the DESTINATION (a Group Address):
                 DPT = GA_name = ''
@@ -78,11 +78,11 @@ async def main() -> None:
                     DPT, GA_name = GA_Data[str(packet.dst)]
                     DPT_main = int(DPT.split('.')[0])
                     sub_DPT = int(DPT.split('.')[1])
-                    # log(f'Telegram to {packet.src} to GAD {packet.dst}, DPT = {DPT}, decoded from 0.XML as {DPT_main}.{sub_DPT} & {float(DPT)} as a 3-digit float') # Raw data, retained here for debugging
+                    # log(f'Telegram from {packet.src} to GAD {packet.dst}, DPT = {DPT}, decoded from 0.XML as {DPT_main}.{sub_DPT} & {float(DPT)} as a 3-digit float') # Raw data, retained here for debugging
                 except Exception as e:
                     # We failed to match on the destination
                     # Discard this telegram as we don't know how to decode the data
-                    log(f'main: Exception decoding a telegram to packet.dst {packet.dst}. The telegram has been discarded. {e}')
+                    log(f'main: {type(e).__name__} exception decoding a telegram to packet.dst {packet.dst}. The telegram has been discarded. {e}')
                     continue
 
                 try:
@@ -90,7 +90,7 @@ async def main() -> None:
                 except Exception as e:
                     # We failed to decode the payload
                     # Discard this telegram as we don't know how to decode the data
-                    log(f'main: Exception decoding the payload of a telegram to packet.dst {packet.dst}. The telegram has been discarded. {e}')
+                    log(f'main: {type(e).__name__} exception decoding the payload of a telegram to packet.dst {packet.dst}. The telegram has been discarded. {e}')
                     continue
                 # log(f'Telegram from {packet.src} to GAD {packet.dst}: {value}') # Raw data, retained here for debugging
 
@@ -113,13 +113,13 @@ async def main() -> None:
                         value = value_true if (value) else value_false
                     except Exception as e:
                         # If we fail a lookup (VERY unlikely) we'll send the original DPT value unchanged
-                        log(f'Exception decoding DPT {DPT} in main at line {e.__traceback__.tb_lineno}: {e}')
+                        log(f'main: {type(e).__name__} exception decoding DPT {DPT} at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
                 elif ('DPT' + str(DPT_main)) in globals():
                     try:
                         value, unit = globals()['DPT' + str(DPT_main)](sub_DPT, value) # decode_dpt.py
                     except Exception as e:
-                        log(f'Exception decoding DPT {DPT} in main at line {e.__traceback__.tb_lineno}: {e}')
+                        log(f'main: {type(e).__name__} exception decoding DPT {DPT} at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
                         value = 'error'
                 else:
@@ -144,7 +144,7 @@ async def main() -> None:
                         log(f'Unhandled object type. DPT = {DPT}. Value is {type(value)}')
                         telegram['info'] = value
                 except Exception as e:
-                        log(f'Exception decoding DPT {DPT} of type {type(value)} in main at line {e.__traceback__.tb_lineno}: {e}')
+                        log(f'main: {type(e).__name__} exception decoding DPT {DPT} of type {type(value)} at line {e.__traceback__.tb_lineno}: {e}')
                         log(f'Destination was {packet.dst}')
                         telegram['info'] = 'error'
 
@@ -168,7 +168,7 @@ async def main() -> None:
                     log(f'Exception POSTing: {e}')
 
     except Exception as e:
-        log(f'Fatal exception in main at line {e.__traceback__.tb_lineno}: {e}')
+        log(f'main: Fatal {type(e).__name__} exception at line {e.__traceback__.tb_lineno}: {e}')
         try:
             log(f'Destination was {packet.dst}')
         except:
