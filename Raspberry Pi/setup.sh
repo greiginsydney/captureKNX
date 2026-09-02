@@ -1296,19 +1296,22 @@ test_install()
 	isKnxProject=$(find ${USER_HOME}/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isKnxProject ]];
 	then
-		projFileCreationDatestamp=$(stat -c %w /home/$isKnxProject | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
+		projFileCreationDatestamp=$(stat -c %w /home/$isKnxProject)
+		[[ "${projFileCreationDatestamp}" == "-" ]] || projFileCreationDatestamp=$(date -d "${projFileCreationDatestamp}" +"%Y %b %d %H:%M %Z" 2>/dev/null)
 		((projectFileTests=projectFileTests+1))
 	fi
 	isZeroXml=$(find ${USER_HOME}/captureKNX/ -type f -name '0.xml' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isZeroXml ]];
 	then
-		zeroXmlCreationDatestamp=$(stat -c %w /home/$isZeroXml | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
+		zeroXmlCreationDatestamp=$(stat -c %w /home/$isZeroXml)
+		[[ "${zeroXmlCreationDatestamp}" == "-" ]] || zeroXmlCreationDatestamp=$(date -d "${zeroXmlCreationDatestamp}" +"%Y %b %d %H:%M %Z" 2>/dev/null)
 		((projectFileTests=projectFileTests+2))
 	fi
 	isProjectXml=$(find ${USER_HOME}/captureKNX/ -type f -name 'project.xml' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isProjectXml ]];
 	then
-		projectXmlCreationDatestamp=$(stat -c %w /home/$isProjectXml | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
+		projectXmlCreationDatestamp=$(stat -c %w /home/$isProjectXml)
+		[[ "${projectXmlCreationDatestamp}" == "-" ]] || projectXmlCreationDatestamp=$(date -d "${projectXmlCreationDatestamp}" +"%Y %b %d %H:%M %Z" 2>/dev/null)
 		((projectFileTests=projectFileTests+4))
 	fi
 	case $projectFileTests in
@@ -1359,7 +1362,7 @@ test_install()
 	then
 		((lastTelegram=lastTelegram/1000000000))
 		lastTelegramDate="Unknown"
-		lastTelegramDate=$(date -d @"$lastTelegram" +"%Y %b %d %H:%M:%S %Z")
+		lastTelegramDate=$(date -d @"$lastTelegram" +"%Y %b %d %H:%M %Z")
 		echo -e "Last successful telegram: $lastTelegramDate"
 	else
 		echo -e "Last successful telegram unknown. $telegrafDebugFile returned no result. Try again"
