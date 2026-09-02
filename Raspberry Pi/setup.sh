@@ -1296,19 +1296,19 @@ test_install()
 	isKnxProject=$(find ${USER_HOME}/ -type f -name '*.knxproj' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isKnxProject ]];
 	then
-		projFileCreationDatestamp=$(stat -c %w /home/$isKnxProject | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
+		projFileChangedDatestamp=$(stat -c %y /home/$isKnxProject | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
 		((projectFileTests=projectFileTests+1))
 	fi
 	isZeroXml=$(find ${USER_HOME}/captureKNX/ -type f -name '0.xml' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isZeroXml ]]; 
 	then
-		zeroXmlCreationDatestamp=$(stat -c %w /home/$isZeroXml | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
+		zeroXmlChangedDatestamp=$(stat -c %y /home/$isZeroXml | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
 		((projectFileTests=projectFileTests+2))
 	fi
 	isProjectXml=$(find ${USER_HOME}/captureKNX/ -type f -name 'project.xml' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
 	if [[ $isProjectXml ]];
 	then
-		projectXmlCreationDatestamp=$(stat -c %w /home/$isProjectXml | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
+		projectXmlChangedDatestamp=$(stat -c %y /home/$isProjectXml | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
 		((projectFileTests=projectFileTests+4))
 	fi
 	case $projectFileTests in
@@ -1317,37 +1317,37 @@ test_install()
 			echo -e "      Copy one across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
 			;;
 		(1)
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isKnxProject' found, created $projFileCreationDatestamp"
+			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isKnxProject' found, last changed $projFileChangedDatestamp"
 			echo -e "      Run 'sudo systemctl restart captureKNX' to extract required '0.xml' & 'project.xml' files"
 			;;
 		(2)
 			# Found 0.xml but not project.xml
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isZeroXml' found, created $zeroXmlCreationDatestamp"
+			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isZeroXml' found, last changed $zeroXmlChangedDatestamp"
 			echo -e ""$YELLOW"FAIL:"$RESET" knx project file 'project.xml' NOT found"
 			echo -e "      Copy a .knxproj file across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
 			;;
 		(3|5 )
 			# Project file and (0.xml | project.xml) found. Weird.
-			echo -e ""$GREEN"INFO:"$RESET" knx project file '$isKnxProject' found, created $projFileCreationDatestamp"
+			echo -e ""$GREEN"INFO:"$RESET" knx project file '$isKnxProject' found, last changed $projFileChangedDatestamp"
 			echo -e "      Run 'sudo systemctl restart captureKNX' to extract required '0.xml' & 'project.xml' files"
 			;;
 		(4)
 			# Found project.xml but not 0.xml
 			echo -e ""$YELLOW"FAIL:"$RESET" knx project file '0.xml' NOT found"
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isProjectXml' found, created $projectXmlCreationDatestamp"
+			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isProjectXml' found, last changed $projectXmlChangedDatestamp"
 			echo -e "      Copy a .knxproj file across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
 			;;
 		(6)
 			# Found 0.xml & project.xml. Valid config.
 			echo -e ""$GREEN"INFO:"$RESET" knx project file '*.knxproj' NOT found"
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isZeroXml' found, created $zeroXmlCreationDatestamp"
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isProjectXml' found, created $projectXmlCreationDatestamp"
+			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isZeroXml' found, last changed $zeroXmlChangedDatestamp"
+			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isProjectXml' found, last changed $projectXmlChangedDatestamp"
 			;;
 		(7)
 			# Found all three files.
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isKnxProject' found, created $projFileCreationDatestamp"
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isZeroXml' found, created $zeroXmlCreationDatestamp"
-			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isProjectXml' found, created $projectXmlCreationDatestamp"
+			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isKnxProject' found, last changed $projFileChangedDatestamp"
+			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isZeroXml' found, last changed $zeroXmlChangedDatestamp"
+			echo -e ""$GREEN"PASS:"$RESET" knx project file '$isProjectXml' found, last changed $projectXmlChangedDatestamp"
 			;;
 	esac
 
