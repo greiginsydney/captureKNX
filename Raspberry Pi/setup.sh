@@ -371,7 +371,7 @@ setup1()
 		rm -rf ${USER_HOME}/staging/telegraf
 		mkdir -pv ${USER_HOME}/staging/telegraf
 		cd ${USER_HOME}/staging/telegraf/
-		
+
 		# influxdata-archive.key GPG fingerprint:
 		#   Primary key fingerprint: 24C9 75CB A61A 024E E1B6  3178 7C3D 5715 9FC2 F927
 		#   Subkey fingerprint:      9D53 9D90 D332 8DC7 D6C8  D3B9 D8FF 8E1F 7DF8 B07E
@@ -1300,7 +1300,7 @@ test_install()
 		((projectFileTests=projectFileTests+1))
 	fi
 	isZeroXml=$(find ${USER_HOME}/captureKNX/ -type f -name '0.xml' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f3- -d "/")
-	if [[ $isZeroXml ]]; 
+	if [[ $isZeroXml ]];
 	then
 		zeroXmlCreationDatestamp=$(stat -c %w /home/$isZeroXml | awk '{gsub(/\.[0-9]* /, " "); print }') # This cuts the ms precision from the timestamp
 		((projectFileTests=projectFileTests+2))
@@ -1376,7 +1376,7 @@ test_install()
 		if [[ -z "$logCommenced" ]];
 		then
 			local rawTimestamp=$(echo $line | awk '{print $1, $2}')
-			logCommenced=$(date -d "$rawTimestamp" +"%y%b%d-%H%M" 2>/dev/null)
+			logCommenced=$(date -d "$rawTimestamp" +"%Y %b %d %H:%M:%S %Z" 2>/dev/null)
 		fi
 
 		# Track whether the most recent decode_Group_Addresses attempt aborted before it could complete.
