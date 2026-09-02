@@ -1314,43 +1314,45 @@ test_install()
 		[[ "${projectXmlCreationDatestamp}" == "-" ]] || projectXmlCreationDatestamp=$(date -d "${projectXmlCreationDatestamp}" +"%Y %b %d %H:%M %Z" 2>/dev/null)
 		((projectFileTests=projectFileTests+4))
 	fi
+	# Right-pad the filename field to the longest of the three, so "found, created" lines up:
+	fieldWidth=$(printf '%s\n' "$isKnxProject" "$isZeroXml" "$isProjectXml" | awk '{ if (length($0)>m) m=length($0) } END { print m+2 }')
 	case $projectFileTests in
 		(0)
 			echo -e ""$YELLOW"FAIL:"$RESET" knx project file '*.knxproj' NOT found"
 			echo -e "      Copy one across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
 			;;
 		(1)
-			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isKnxProject'" "$projFileCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isKnxProject'" "$projFileCreationDatestamp"
 			echo -e "      Run 'sudo systemctl restart captureKNX' to extract required '0.xml' & 'project.xml' files"
 			;;
 		(2)
 			# Found 0.xml but not project.xml
-			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isZeroXml'" "$zeroXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isZeroXml'" "$zeroXmlCreationDatestamp"
 			echo -e ""$YELLOW"FAIL:"$RESET" knx project file 'project.xml' NOT found"
 			echo -e "      Copy a .knxproj file across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
 			;;
 		(3|5 )
 			# Project file and (0.xml | project.xml) found. Weird.
-			printf ""$GREEN"INFO:"$RESET" knx project file %-30s found, created %s\n" "'$isKnxProject'" "$projFileCreationDatestamp"
+			printf ""$GREEN"INFO:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isKnxProject'" "$projFileCreationDatestamp"
 			echo -e "      Run 'sudo systemctl restart captureKNX' to extract required '0.xml' & 'project.xml' files"
 			;;
 		(4)
 			# Found project.xml but not 0.xml
 			echo -e ""$YELLOW"FAIL:"$RESET" knx project file '0.xml' NOT found"
-			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isProjectXml'" "$projectXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isProjectXml'" "$projectXmlCreationDatestamp"
 			echo -e "      Copy a .knxproj file across to the ${USER_HOME}/ folder and 'sudo systemctl restart captureKNX'"
 			;;
 		(6)
 			# Found 0.xml & project.xml. Valid config.
 			echo -e ""$GREEN"INFO:"$RESET" knx project file '*.knxproj' NOT found"
-			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isZeroXml'" "$zeroXmlCreationDatestamp"
-			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isProjectXml'" "$projectXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isZeroXml'" "$zeroXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isProjectXml'" "$projectXmlCreationDatestamp"
 			;;
 		(7)
 			# Found all three files.
-			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isKnxProject'" "$projFileCreationDatestamp"
-			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isZeroXml'" "$zeroXmlCreationDatestamp"
-			printf ""$GREEN"PASS:"$RESET" knx project file %-30s found, created %s\n" "'$isProjectXml'" "$projectXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isKnxProject'" "$projFileCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isZeroXml'" "$zeroXmlCreationDatestamp"
+			printf ""$GREEN"PASS:"$RESET" knx project file %-*s found, created %s\n" "$fieldWidth" "'$isProjectXml'" "$projectXmlCreationDatestamp"
 			;;
 	esac
 
