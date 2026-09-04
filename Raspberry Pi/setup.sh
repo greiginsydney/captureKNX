@@ -331,7 +331,10 @@ setup1()
 		echo -e "Current installed version of KNXDclient = $isKnxdClient"
 		latestKnxdClientRls=$(curl --silent "https://api.github.com/repos/mhthies/knxdclient/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
 		echo -e "Current   online  version of KNXDclient = $latestKnxdClientRls"
-		if dpkg --compare-versions $isKnxdClient "lt" $latestKnxdClientRls ;
+		if [[ -z "$latestKnxdClientRls" ]];
+		then
+			echo -e ""$YELLOW"WARN:"$RESET" Could not determine the latest KNXDclient release (GitHub API may be rate-limited). Skipping upgrade check."
+		elif dpkg --compare-versions "$isKnxdClient" "lt" "$latestKnxdClientRls" ;
 		then
 			echo ''
 			echo -e ""$GREEN"Updating KNXDclient"$RESET""
