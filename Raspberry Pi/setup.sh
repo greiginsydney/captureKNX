@@ -568,13 +568,16 @@ setup2()
 		then
 			# The rule itself filters on ACTION=="add" (see read_TTY()), so the trigger must
 			# replay an 'add' event - not 'change' - or it will never match. Target ttyAMA0
-			# specifically, via its sysfs path, rather than the whole tty subsystem:
+			# specifically, via its sysfs path, rather than the whole tty subsystem. Note:
+			# `udevadm info -q path` returns the devpath WITHOUT a /sys prefix, but
+			# `udevadm trigger`'s positional argument requires one - it must start with
+			# /dev or /sys or it's silently treated as a literal (non-existent) path:
 			echo -e "\n"$GREEN"Reloading udev rules"$RESET""
 			udevadm control --reload-rules
 			local ttyAMA0Path=$(udevadm info -q path -n /dev/ttyAMA0 2>/dev/null)
 			if [[ $ttyAMA0Path ]];
 			then
-				udevadm trigger --action=add "$ttyAMA0Path"
+				udevadm trigger --action=add "/sys${ttyAMA0Path}"
 			fi
 			udevadm settle
 
