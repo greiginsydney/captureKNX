@@ -883,7 +883,15 @@ setup3()
 
 	echo -e ""$GREEN"Enabling captureKNX.service"$RESET""
 	systemctl enable captureKNX.service
+	set +e #Suspend the error trap
 	systemctl restart captureKNX.service
+	captureKnxRestartResult=$?
+	set -e #Resume the error trap
+	if [[ $captureKnxRestartResult -ne 0 ]];
+	then
+		echo -e "\n"$YELLOW"WARN:"$RESET" captureKNX.service failed to start. (This is expected if the Pi isn't yet connected to a live KNX bus.)"
+		echo -e "      Once connected, run 'sudo systemctl restart captureKNX.service' - or just reboot."
+	fi
 
 	echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
 	apt-get purge bluez -y
