@@ -526,10 +526,10 @@ setup2()
 	then
 		rm -rf ${USER_HOME}/setup1_complete
 	fi
-	NEEDS_REBOOT=''
 	newLine=$(read_TTY)
 	if [[ $newLine ]];
 	then
+		local rulesChanged=''
 		if [ -f /etc/udev/rules.d/80-knxd.rules ];
 		then
 			# File already exists. We might be able to skip this if it's been completed previously.
@@ -541,22 +541,37 @@ setup2()
 				sed -i -E "s/^([^#])/#\1/" /etc/udev/rules.d/80-knxd.rules # Comment-out any existing lines	- even if they're correct (a kludge after hours of blood/forehead)
 				echo -e "\n"$GREEN"Updated existing UDEV rule/file with new values"$RESET""
 				echo -e $newLine >> /etc/udev/rules.d/80-knxd.rules
-				NEEDS_REBOOT='yes'
+				rulesChanged='yes'
 			fi
 		else
 			echo -e $newLine >> /etc/udev/rules.d/80-knxd.rules
 			echo -e "\n"$GREEN"Created UDEV rule/file OK"$RESET""
-			NEEDS_REBOOT='yes'
+			rulesChanged='yes'
+		fi
+
+		if [[ $rulesChanged ]];
+		then
+			# ttyAMA0 is a platform device, already present by this point in the script -
+			# unlike USB hotplug devices, a reload+trigger reliably re-evaluates rules against
+			# it without needing a reboot:
+			echo -e "\n"$GREEN"Reloading udev rules"$RESET""
+			udevadm control --reload-rules
+			udevadm trigger --action=change --subsystem-match=tty
+			udevadm settle
+
+			if [ -e /dev/ttyKNX1 ];
+			then
+				echo -e "\n"$GREEN"PASS:"$RESET" /dev/ttyKNX1 created - no reboot required"
+			else
+				# Fallback safety net, in case the live reload didn't take for some reason:
+				echo -e "\n"$YELLOW"WARN:"$RESET" /dev/ttyKNX1 didn't appear after a live udev reload."
+				touch ${USER_HOME}/setup2_complete
+				echo 'A reboot is required before continuing. Reboot and simply re-run the script'
+				prompt_for_reboot
+			fi
 		fi
 	else
 		echo -e "\n"$YELLOW"Failed to find a serial port for UDEV rule creation"$RESET""
-	fi
-	if [[ $NEEDS_REBOOT ]];
-	then
-		touch ${USER_HOME}/setup2_complete
-		echo ''
-		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
-		prompt_for_reboot
 	fi
 }
 
