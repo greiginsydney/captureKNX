@@ -551,12 +551,16 @@ setup2()
 
 		if [[ $rulesChanged ]];
 		then
-			# ttyAMA0 is a platform device, already present by this point in the script -
-			# unlike USB hotplug devices, a reload+trigger reliably re-evaluates rules against
-			# it without needing a reboot:
+			# The rule itself filters on ACTION=="add" (see read_TTY()), so the trigger must
+			# replay an 'add' event - not 'change' - or it will never match. Target ttyAMA0
+			# specifically, via its sysfs path, rather than the whole tty subsystem:
 			echo -e "\n"$GREEN"Reloading udev rules"$RESET""
 			udevadm control --reload-rules
-			udevadm trigger --action=change --subsystem-match=tty
+			local ttyAMA0Path=$(udevadm info -q path -n /dev/ttyAMA0 2>/dev/null)
+			if [[ $ttyAMA0Path ]];
+			then
+				udevadm trigger --action=add "$ttyAMA0Path"
+			fi
 			udevadm settle
 
 			if [ -e /dev/ttyKNX1 ];
