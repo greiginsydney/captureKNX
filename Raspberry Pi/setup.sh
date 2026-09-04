@@ -1986,8 +1986,6 @@ no_charge_battery()
 
 which_wlan()
 {
-	local isRetry="$1" # "retry" internally, to prevent infinite recursion after one remediation attempt
-	
 	# Get a list of wlan devices that are type "wifi" only
 	local wlanDevices=($(LANG=C nmcli device | grep wlan | awk '$2 == "wifi" {print $1}'))
 	local wlanCount=${#wlanDevices[@]}
@@ -2024,11 +2022,18 @@ which_wlan()
 		done
 	fi
 
-	# nmcli lists a soft-blocked device just fine - it's just unusable. Check its actual STATE
-	# before handing $selectedWlan back to the caller:
-	local wlanState=$(LANG=C nmcli -t -f DEVICE,STATE device status | awk -F: -v d="$selectedWlan" '$1==d {print $2}')
-	if [[ "$wlanState" == "unavailable" ]];
-	then
+	# The device may be *listed* by nmcli even when its radio is soft-blocked - it just won't be
+	# usable. Check its actual STATE, and offer to fix it before handing $selectedWlan back to the
+	# caller:
+	local hasRetried=""
+	while true;
+	do
+		local wlanState=$(LANG=C nmcli -t -f DEVICE,STATE device status | awk -F: -v d="$selectedWlan" '$1==d {print $2}')
+		if [[ "$wlanState" != "unavailable" ]];
+		then
+			break
+		fi
+
 		set +e #Suspend the error trap
 		local rfkillWifi=$(rfkill list wifi 2>/dev/null)
 		set -e #Resume the error trap
@@ -2037,7 +2042,7 @@ which_wlan()
 		then
 			echo -e "\n"$YELLOW"FAIL:"$RESET" '$selectedWlan' is HARD blocked (check for a physical Wi-Fi switch). Aborting"
 			exit 1
-		elif echo "$rfkillWifi" | grep -q 'Soft blocked: yes' && [[ "$isRetry" != "retry" ]];
+		elif echo "$rfkillWifi" | grep -q 'Soft blocked: yes' && [[ -z "$hasRetried" ]];
 		then
 			echo -e "\n"$YELLOW"WARN:"$RESET" '$selectedWlan' is present but blocked - no Wi-Fi country has been set yet."
 			local wifiCountry=''
@@ -2056,13 +2061,13 @@ which_wlan()
 			raspi-config nonint do_wifi_country $wifiCountry
 			rfkill unblock wifi
 			sleep 2
-			which_wlan "retry"
-			return
+			hasRetried="yes"
+			# Loop back and re-check STATE for the SAME $selectedWlan - no re-prompt
 		else
 			echo -e "\n"$YELLOW"FAIL:"$RESET" '$selectedWlan' is unavailable and could not be unblocked. Aborting"
 			exit 1
 		fi
-	fi
+	done
 
 	# Now use $selectedWlan for your operations
 }
