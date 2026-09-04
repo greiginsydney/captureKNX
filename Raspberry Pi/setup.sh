@@ -291,7 +291,10 @@ setup1()
 		echo -e "\nCurrent installed version of knxd      = $isKnxd"
 		latestKnxdVersion=$(curl --silent "https://raw.githubusercontent.com/knxd/knxd/refs/heads/debian/debian/changelog" | sed -n 's/.*(\(\(.*\)\)).*/\1/p' | head -1 )
 		echo -e "Current   online  version of knxd      = $latestKnxdVersion"
-		if dpkg --compare-versions $isKnxd "lt" $latestKnxdVersion ;
+		if [[ -z "$latestKnxdVersion" ]];
+		then
+			echo -e ""$YELLOW"WARN:"$RESET" Could not determine the latest knxd release. Skipping upgrade check."
+		elif dpkg --compare-versions "$isKnxd" "lt" "$latestKnxdVersion" ;
 		then
 			echo -e ""$GREEN"TODO: Updating knxd"$RESET""
 
@@ -361,7 +364,10 @@ setup1()
 		# It's *assumed* the user has performed the 'apt-get update' at Step 26, so the latest telegraf will be available to us
 		latestTelegrafRls=$(sudo apt-cache show telegraf | sed -n 's/.*Version:\s\(.*\).*/\1/p' | head -1)
 		echo -e "Current   online  version of telegraf = $latestTelegrafRls"
-		if dpkg --compare-versions $isTelegraf "lt" $latestTelegrafRls ;
+		if [[ -z "$latestTelegrafRls" ]];
+		then
+			echo -e ""$YELLOW"WARN:"$RESET" Could not determine the latest telegraf release. Skipping upgrade check."
+		elif dpkg --compare-versions "$isTelegraf" "lt" "$latestTelegrafRls" ;
 		then
 			echo -e ""$GREEN"Updating telegraf"$RESET""
 			sudo apt-get install --only-upgrade telegraf -y
@@ -401,7 +407,10 @@ setup1()
 		echo -e "\rCurrent installed version of InfluxDB = $isInfluxd"
 		latestInfluxRls=$(sudo apt-cache show influxdb2 | sed -n 's/.*Version:\s\(.*\).*/\1/p' | head -1)
 		echo -e "Current   online  version of InfluxDB = $latestInfluxRls"
-		if dpkg --compare-versions $isInfluxd "lt" $latestInfluxRls ;
+		if [[ -z "$latestInfluxRls" ]];
+		then
+			echo -e ""$YELLOW"WARN:"$RESET" Could not determine the latest InfluxDB release. Skipping upgrade check."
+		elif dpkg --compare-versions "$isInfluxd" "lt" "$latestInfluxRls" ;
 		then
 			echo -e ""$GREEN"Updating InfluxDB"$RESET""
 			apt-get install --only-upgrade influxdb2 -y
@@ -423,7 +432,10 @@ setup1()
 		echo -e "\rCurrent installed version of grafana  = $isGrafana"
 		latestGrafanaRls=$(sudo apt-cache show grafana | sed -n 's/.*Version:\s\(.*\).*/\1/p' | head -1)
 		echo -e "Current   online  version of grafana  = $latestGrafanaRls"
-		if dpkg --compare-versions $isGrafana "lt" $latestGrafanaRls ;
+		if [[ -z "$latestGrafanaRls" ]];
+		then
+			echo -e ""$YELLOW"WARN:"$RESET" Could not determine the latest grafana release. Skipping upgrade check."
+		elif dpkg --compare-versions "$isGrafana" "lt" "$latestGrafanaRls" ;
 		then
 			echo -e ""$GREEN"Updating grafana"$RESET""
 			apt-get install --only-upgrade grafana-enterprise -y
