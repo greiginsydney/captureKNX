@@ -291,7 +291,10 @@ setup1()
 		echo -e "\nCurrent installed version of knxd      = $isKnxd"
 		latestKnxdVersion=$(curl --silent "https://raw.githubusercontent.com/knxd/knxd/refs/heads/debian/debian/changelog" | sed -n 's/.*(\(\(.*\)\)).*/\1/p' | head -1 )
 		echo -e "Current   online  version of knxd      = $latestKnxdVersion"
-		if dpkg --compare-versions $isKnxd "lt" $latestKnxdVersion ;
+		if [[ -z "$latestKnxdVersion" ]];
+		then
+			echo -e ""$YELLOW"WARN:"$RESET" Could not determine the latest knxd release. Skipping upgrade check."
+		elif dpkg --compare-versions "$isKnxd" "lt" "$latestKnxdVersion" ;
 		then
 			echo -e ""$GREEN"TODO: Updating knxd"$RESET""
 
@@ -331,7 +334,10 @@ setup1()
 		echo -e "Current installed version of KNXDclient = $isKnxdClient"
 		latestKnxdClientRls=$(curl --silent "https://api.github.com/repos/mhthies/knxdclient/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
 		echo -e "Current   online  version of KNXDclient = $latestKnxdClientRls"
-		if dpkg --compare-versions $isKnxdClient "lt" $latestKnxdClientRls ;
+		if [[ -z "$latestKnxdClientRls" ]];
+		then
+			echo -e ""$YELLOW"WARN:"$RESET" Could not determine the latest KNXDclient release (GitHub API may be rate-limited). Skipping upgrade check."
+		elif dpkg --compare-versions "$isKnxdClient" "lt" "$latestKnxdClientRls" ;
 		then
 			echo ''
 			echo -e ""$GREEN"Updating KNXDclient"$RESET""
@@ -358,7 +364,10 @@ setup1()
 		# It's *assumed* the user has performed the 'apt-get update' at Step 26, so the latest telegraf will be available to us
 		latestTelegrafRls=$(sudo apt-cache show telegraf | sed -n 's/.*Version:\s\(.*\).*/\1/p' | head -1)
 		echo -e "Current   online  version of telegraf = $latestTelegrafRls"
-		if dpkg --compare-versions $isTelegraf "lt" $latestTelegrafRls ;
+		if [[ -z "$latestTelegrafRls" ]];
+		then
+			echo -e ""$YELLOW"WARN:"$RESET" Could not determine the latest telegraf release. Skipping upgrade check."
+		elif dpkg --compare-versions "$isTelegraf" "lt" "$latestTelegrafRls" ;
 		then
 			echo -e ""$GREEN"Updating telegraf"$RESET""
 			sudo apt-get install --only-upgrade telegraf -y
@@ -398,7 +407,10 @@ setup1()
 		echo -e "\rCurrent installed version of InfluxDB = $isInfluxd"
 		latestInfluxRls=$(sudo apt-cache show influxdb2 | sed -n 's/.*Version:\s\(.*\).*/\1/p' | head -1)
 		echo -e "Current   online  version of InfluxDB = $latestInfluxRls"
-		if dpkg --compare-versions $isInfluxd "lt" $latestInfluxRls ;
+		if [[ -z "$latestInfluxRls" ]];
+		then
+			echo -e ""$YELLOW"WARN:"$RESET" Could not determine the latest InfluxDB release. Skipping upgrade check."
+		elif dpkg --compare-versions "$isInfluxd" "lt" "$latestInfluxRls" ;
 		then
 			echo -e ""$GREEN"Updating InfluxDB"$RESET""
 			apt-get install --only-upgrade influxdb2 -y
@@ -420,7 +432,10 @@ setup1()
 		echo -e "\rCurrent installed version of grafana  = $isGrafana"
 		latestGrafanaRls=$(sudo apt-cache show grafana | sed -n 's/.*Version:\s\(.*\).*/\1/p' | head -1)
 		echo -e "Current   online  version of grafana  = $latestGrafanaRls"
-		if dpkg --compare-versions $isGrafana "lt" $latestGrafanaRls ;
+		if [[ -z "$latestGrafanaRls" ]];
+		then
+			echo -e ""$YELLOW"WARN:"$RESET" Could not determine the latest grafana release. Skipping upgrade check."
+		elif dpkg --compare-versions "$isGrafana" "lt" "$latestGrafanaRls" ;
 		then
 			echo -e ""$GREEN"Updating grafana"$RESET""
 			apt-get install --only-upgrade grafana-enterprise -y
@@ -526,10 +541,10 @@ setup2()
 	then
 		rm -rf ${USER_HOME}/setup1_complete
 	fi
-	NEEDS_REBOOT=''
 	newLine=$(read_TTY)
 	if [[ $newLine ]];
 	then
+		local rulesChanged=''
 		if [ -f /etc/udev/rules.d/80-knxd.rules ];
 		then
 			# File already exists. We might be able to skip this if it's been completed previously.
@@ -541,22 +556,44 @@ setup2()
 				sed -i -E "s/^([^#])/#\1/" /etc/udev/rules.d/80-knxd.rules # Comment-out any existing lines	- even if they're correct (a kludge after hours of blood/forehead)
 				echo -e "\n"$GREEN"Updated existing UDEV rule/file with new values"$RESET""
 				echo -e $newLine >> /etc/udev/rules.d/80-knxd.rules
-				NEEDS_REBOOT='yes'
+				rulesChanged='yes'
 			fi
 		else
 			echo -e $newLine >> /etc/udev/rules.d/80-knxd.rules
 			echo -e "\n"$GREEN"Created UDEV rule/file OK"$RESET""
-			NEEDS_REBOOT='yes'
+			rulesChanged='yes'
+		fi
+
+		if [[ $rulesChanged ]];
+		then
+			# The rule itself filters on ACTION=="add" (see read_TTY()), so the trigger must
+			# replay an 'add' event - not 'change' - or it will never match. Target ttyAMA0
+			# specifically, via its sysfs path, rather than the whole tty subsystem. Note:
+			# `udevadm info -q path` returns the devpath WITHOUT a /sys prefix, but
+			# `udevadm trigger`'s positional argument requires one - it must start with
+			# /dev or /sys or it's silently treated as a literal (non-existent) path:
+			echo -e "\n"$GREEN"Reloading udev rules"$RESET""
+			udevadm control --reload-rules
+			local ttyAMA0Path=$(udevadm info -q path -n /dev/ttyAMA0 2>/dev/null)
+			if [[ $ttyAMA0Path ]];
+			then
+				udevadm trigger --action=add "/sys${ttyAMA0Path}"
+			fi
+			udevadm settle
+
+			if [ -e /dev/ttyKNX1 ];
+			then
+				echo -e "\n"$GREEN"PASS:"$RESET" /dev/ttyKNX1 created - no reboot required"
+			else
+				# Fallback safety net, in case the live reload didn't take for some reason:
+				echo -e "\n"$YELLOW"WARN:"$RESET" /dev/ttyKNX1 didn't appear after a live udev reload."
+				touch ${USER_HOME}/setup2_complete
+				echo 'A reboot is required before continuing. Reboot and simply re-run the script'
+				prompt_for_reboot
+			fi
 		fi
 	else
 		echo -e "\n"$YELLOW"Failed to find a serial port for UDEV rule creation"$RESET""
-	fi
-	if [[ $NEEDS_REBOOT ]];
-	then
-		touch ${USER_HOME}/setup2_complete
-		echo ''
-		echo 'A reboot is required before continuing. Reboot and simply re-run the script'
-		prompt_for_reboot
 	fi
 }
 
@@ -846,7 +883,15 @@ setup3()
 
 	echo -e ""$GREEN"Enabling captureKNX.service"$RESET""
 	systemctl enable captureKNX.service
+	set +e #Suspend the error trap
 	systemctl restart captureKNX.service
+	captureKnxRestartResult=$?
+	set -e #Resume the error trap
+	if [[ $captureKnxRestartResult -ne 0 ]];
+	then
+		echo -e "\n"$YELLOW"WARN:"$RESET" captureKNX.service failed to start. (This is expected if the Pi isn't yet connected to a live KNX bus.)"
+		echo -e "      Once connected, run 'sudo systemctl restart captureKNX.service' - or just reboot."
+	fi
 
 	echo -e "\n"$GREEN"Cleanup. Deleting packages NLR"$RESET""
 	apt-get purge bluez -y
@@ -2022,9 +2067,55 @@ which_wlan()
 		done
 	fi
 
+	# The device may be *listed* by nmcli even when its radio is soft-blocked - it just won't be
+	# usable. Check its actual STATE, and offer to fix it before handing $selectedWlan back to the
+	# caller:
+	local hasRetried=""
+	while true;
+	do
+		local wlanState=$(LANG=C nmcli -t -f DEVICE,STATE device status | awk -F: -v d="$selectedWlan" '$1==d {print $2}')
+		if [[ "$wlanState" != "unavailable" ]];
+		then
+			break
+		fi
+
+		set +e #Suspend the error trap
+		local rfkillWifi=$(rfkill list wifi 2>/dev/null)
+		set -e #Resume the error trap
+
+		if echo "$rfkillWifi" | grep -q 'Hard blocked: yes';
+		then
+			echo -e "\n"$YELLOW"FAIL:"$RESET" '$selectedWlan' is HARD blocked (check for a physical Wi-Fi switch). Aborting"
+			exit 1
+		elif echo "$rfkillWifi" | grep -q 'Soft blocked: yes' && [[ -z "$hasRetried" ]];
+		then
+			echo -e "\n"$YELLOW"WARN:"$RESET" '$selectedWlan' is present but blocked - no Wi-Fi country has been set yet."
+			local wifiCountry=''
+			while true;
+			do
+				read -p "Enter your 2-letter Wi-Fi country code (e.g. AU, US, GB): " wifiCountry
+				if [[ "$wifiCountry" =~ ^[A-Za-z]{2}$ ]];
+				then
+					wifiCountry=${wifiCountry^^}
+					break
+				else
+					echo "Invalid entry - please enter exactly 2 letters"
+				fi
+			done
+			echo "Setting Wi-Fi country to $wifiCountry and unblocking..."
+			raspi-config nonint do_wifi_country $wifiCountry
+			rfkill unblock wifi
+			sleep 2
+			hasRetried="yes"
+			# Loop back and re-check STATE for the SAME $selectedWlan - no re-prompt
+		else
+			echo -e "\n"$YELLOW"FAIL:"$RESET" '$selectedWlan' is unavailable and could not be unblocked. Aborting"
+			exit 1
+		fi
+	done
+
 	# Now use $selectedWlan for your operations
 }
-
 
 # A place for me to test code within the structure of the script.
 # Ideally this function will never be released with code present. Let's see how I go.
